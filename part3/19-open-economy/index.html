@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 19 章 · 开放经济：国际收支、汇率与三元悖论 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="19">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第三篇 · 宏观、货币与增长 · 第二阶段 · 总量、货币与增长</span>
+<h1><span class="ch-num">第 19 章</span>开放经济：国际收支、汇率与三元悖论</h1>
+<p class="lede">把 <a href='../15-national-accounts/index.html'>第 15 章 · 国民账户与价格指数：如何度量总量</a> 的 NX = S − I 展开到跨境：经常账户、资本账户与官方储备必须钩稽；汇率把两国价格与利率连起来。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s2">总量 · 增长</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../../part1/07-trade/index.html'>第 07 章 · 比较优势、专业化与贸易收益</a> 的实物贸易加上货币与资产维度；<a href='../17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a> 的利率、<a href='../../part5/30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a> 的远期/期权定价都在这里第一次跨出国界。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">国际收支是一张复式记账表：每笔跨境交易都有借贷两侧，总和恒为零；汇率与利率是两张表之间的换算率，三元悖论说明三个约束不能同时满足（类似分布式系统里的一致性/可用性/分区容忍取舍）。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>会用国际收支恒等式核算经常账户、资本账户与储备变动</li>
+<li>能计算名义/实际汇率、PPP 隐含汇率与高估/低估幅度</li>
+<li>说明利率平价与三元悖论，并解释固定汇率下货币政策为何不独立</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>国际收支恒等式</td><td><a href="https://en.wikipedia.org/wiki/Balance_of_payments" target="_blank" rel="noopener">Balance of payments</a> · <a href="https://en.wikipedia.org/wiki/Exchange_rate" target="_blank" rel="noopener">Exchange rate</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>NX = S − I</td><td><a href="https://en.wikipedia.org/wiki/Exchange_rate" target="_blank" rel="noopener">Exchange rate</a> · <a href="https://en.wikipedia.org/wiki/Balance_of_payments" target="_blank" rel="noopener">Balance of payments</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>名义与实际汇率</td><td><a href="https://en.wikipedia.org/wiki/Exchange_rate" target="_blank" rel="noopener">Exchange rate</a> · <a href="https://en.wikipedia.org/wiki/Purchasing_power_parity" target="_blank" rel="noopener">Purchasing power parity</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>购买力平价</td><td><a href="https://en.wikipedia.org/wiki/Purchasing_power_parity" target="_blank" rel="noopener">Purchasing power parity</a> · <a href="https://en.wikipedia.org/wiki/Exchange_rate" target="_blank" rel="noopener">Exchange rate</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>利率平价与远期汇率</td><td><a href="https://en.wikipedia.org/wiki/Fisher_hypothesis" target="_blank" rel="noopener">Fisher hypothesis</a> · <a href="https://en.wikipedia.org/wiki/Monetary_policy" target="_blank" rel="noopener">Monetary policy</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>三元悖论</td><td><a href="https://en.wikipedia.org/wiki/Impossible_trinity" target="_blank" rel="noopener">Impossible trinity</a> · <a href="https://en.wikipedia.org/wiki/Exchange_rate" target="_blank" rel="noopener">Exchange rate</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>资本流动与风险溢价</td><td><a href="https://en.wikipedia.org/wiki/Risk_premium" target="_blank" rel="noopener">Risk premium</a> · <a href="https://en.wikipedia.org/wiki/Risk_aversion" target="_blank" rel="noopener">Risk aversion</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>汇率制度</td><td><a href="https://en.wikipedia.org/wiki/Exchange_rate" target="_blank" rel="noopener">Exchange rate</a> · <a href="https://en.wikipedia.org/wiki/Purchasing_power_parity" target="_blank" rel="noopener">Purchasing power parity</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s19-1"><h2><span class="sec-num">§19.1</span>国际收支：一张必须配平的表</h2>
+<p>国民收入恒等式给出</p><p class="eq">NX = S − I  ;  CA ≈ NX + 净要素收入 + 经常转移</p><p class="eq">CA + KA + ΔR ≡ 0   (经常账户 + 资本与金融账户 + 官方储备变动)</p><p>含义：经常账户顺差必然对应资本净流出（或储备增加）。把顺差说成「赚了钱」而不说明对应资产变化，是漏掉半张表。浮动汇率下 ΔR≈0，汇率调整使 CA+KA≈0；固定汇率下央行必须被动买卖外汇，储备随之变动。</p>
+</section>
+<section id="s19-2"><h2><span class="sec-num">§19.2</span>汇率、PPP 与实际汇率</h2>
+<p>定义 <code>e</code> 为本币/外币（数值上升=本币贬值），<code>P</code> 为本国价格水平、<code>P*</code> 为外国价格水平：</p><p class="eq">实际汇率 ε = e·P*/P ;  PPP 隐含名义汇率 e_PPP = P/P* ;  ε=1 时购买力平价成立</p><p><code>ε>1</code> 表示本国商品相对便宜（实际贬值），有利于净出口。PPP 是长期锚而非短期定价公式：可贸易品套利、运输成本、非贸易品（服务、房租）与生产率差异（巴拉萨–萨缪尔森效应）都会造成系统性偏离。</p>
+</section>
+<section id="s19-3"><h2><span class="sec-num">§19.3</span>利率平价与三元悖论</h2>
+<p>无抛补利率平价（UIP）与抛补利率平价（CIP）：</p><p class="eq">UIP: i ≈ i* + E[Δe]/e  ;  CIP: F = S·(1+i)/(1+i*)</p><p>若资本自由流动且汇率固定（预期贬值≈0），则必须有 <code>i=i*</code>：本国央行无法独立设定利率。<strong>三元悖论</strong>说，汇率稳定、资本自由流动、货币政策独立三者只能取二。小国选固定汇率往往要接受他国货币政策；要独立政策则需浮动汇率或资本管制。</p>
+<div class="card tip"><p style="margin-bottom:0"><strong>接口</strong>：CIP 是 <a href='../../part5/30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a> 无套利定价的直接前身——远期价格不是预测，而是由即期价格与两国利率「算」出来的；风险溢价、交易成本与危机时的信用利差会让 CIP 出现偏离。</p></div>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>国际收支、PPP、利率平价与三元悖论</h3>
+<pre class="code" data-file="code/19-open.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 19-open.py | 开放经济的核心恒等式（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+C_SPEND, I_SPEND, G_SPEND, Y_OUT = 700.0, 280.0, 300.0, 1300.0
+KA_FLOW = -30.0
+E_SPOT, P_HOME, P_FOREIGN = 7.0, 8.0, 1.2
+I_HOME, I_FOREIGN = 0.05, 0.03
+RISK_PREMIUM = 0.01
+# ---- 国民账户与国际收支 ----
+saving = Y_OUT - C_SPEND - G_SPEND
+nx = Y_OUT - C_SPEND - I_SPEND - G_SPEND
+ca = nx
+reserve_change = -(ca + KA_FLOW)
+# ---- 汇率与 PPP ----
+real_ex = E_SPOT * P_FOREIGN / P_HOME
+e_ppp = P_HOME / P_FOREIGN
+misalign = (E_SPOT - e_ppp) / e_ppp
+# ---- 利率平价 ----
+expected_dep = I_HOME - I_FOREIGN
+e_expected = E_SPOT * (1 + expected_dep)
+forward = E_SPOT * (1 + I_HOME) / (1 + I_FOREIGN)
+fixed_rate_i = I_FOREIGN + RISK_PREMIUM
+# ---- 数值验证：打印可手算核对的量 ----
+print("S=%.2f  I=%.2f  NX=S-I=%.2f  (支出法 NX=%.2f)" %
+      (saving, I_SPEND, saving - I_SPEND, nx))
+print("国际收支: CA=%.2f KA=%.2f ΔR=%.2f  合计=%.2f" %
+      (ca, KA_FLOW, reserve_change, ca + KA_FLOW + reserve_change))
+print("实际汇率 eps=%.4f  PPP 隐含 e=%.4f  名义偏离=%.2f%%" %
+      (real_ex, e_ppp, 100 * misalign))
+print("UIP 预期贬值=%.4f 预期即期 e=%.4f  CIP 远期 F=%.4f" %
+      (expected_dep, e_expected, forward))
+print("固定汇率+资本自由流动: 本国 i 必须≈%.4f (含风险溢价)，无法独立设为 %.2f" %
+      (fixed_rate_i, I_HOME))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>E_SPOT</code> 改成 6.0，观察实际汇率与 PPP 偏离的符号；把 <code>I_FOREIGN</code> 改成 0.05 看利差与远期如何变化。　<strong>预期与判读：</strong>S=300、I=280、NX=20；CA=20、KA=−30、ΔR=10，合计为 0；ε=1.05、PPP 隐含 e≈6.6667，即期汇率比 PPP 隐含值高 5%（本币实际低估）；UIP 预期贬值 2%、预期 e=7.14、CIP 远期≈7.1359；固定汇率下 i≈4%。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>E_SPOT 上升（本币贬值）抬高 ε；两国利差决定远期升贴水；RISK_PREMIUM 上升使固定汇率下本国利率更高。　文件位置：<code>part3/19-open-economy/code/19-open.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Balance_of_payments" target="_blank" rel="noopener">Balance of payments</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>经常账户与资本账户恒等关系</p>
+<span class="why"><strong>怎么用</strong>：国际收支账户结构</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Balance_of_payments</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Purchasing_power_parity" target="_blank" rel="noopener">Purchasing power parity</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>长期汇率的一价定律版本</p>
+<span class="why"><strong>怎么用</strong>：购买力平价与偏离</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Purchasing_power_parity</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Impossible_trinity" target="_blank" rel="noopener">Impossible trinity</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>汇率稳定、资本自由流动与独立货币政策不可兼得</p>
+<span class="why"><strong>怎么用</strong>：三元悖论</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Impossible_trinity</code></p></div>
+<div class="repo-card">
+<h3><a href="https://www.imf.org/en/Data" target="_blank" rel="noopener">IMF Data</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>国际收支、汇率与跨国宏观数据</p>
+<span class="why"><strong>怎么用</strong>：跨国宏观与国际收支数据</span>
+<p style="margin:0"><code>https://www.imf.org/en/Data</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把 CA 顺差当成「净赚的钱」而不看对应的资本流出与储备变化。</li>
+<li>把 PPP 当短期汇率预测：它是长期锚，短期由利率、预期与风险偏好主导。</li>
+<li>把远期汇率当市场对未来即期的预测：CIP 下它由利差机械决定。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>推导加入净要素收入后 CA 与 NX 的差额，并说明为什么两者常被混用。</li>
+<li>在脚本里加入 1% 的交易成本，计算无套利区间（联系 <a href='../../part5/30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a> 的买卖价差）。</li>
+<li>用三元悖论解释 <a href='../17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a> 中「央行加息」在固定汇率与浮动汇率下的不同效果。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Exchange rate</strong>（百科）：名义/实际汇率与标价方式<br><a href="https://en.wikipedia.org/wiki/Exchange_rate" target="_blank" rel="noopener">Exchange rate</a></li>
+<li><strong>Balance of payments</strong>（百科）：经常账户与资本账户恒等关系<br><a href="https://en.wikipedia.org/wiki/Balance_of_payments" target="_blank" rel="noopener">Balance of payments</a></li>
+<li><strong>Purchasing power parity</strong>（百科）：长期汇率的一价定律版本<br><a href="https://en.wikipedia.org/wiki/Purchasing_power_parity" target="_blank" rel="noopener">Purchasing power parity</a></li>
+<li><strong>Impossible trinity</strong>（百科）：汇率稳定、资本自由流动与独立货币政策不可兼得<br><a href="https://en.wikipedia.org/wiki/Impossible_trinity" target="_blank" rel="noopener">Impossible trinity</a></li>
+<li><strong>IMF Data</strong>（数据）：国际收支、汇率与跨国宏观数据<br><a href="https://www.imf.org/en/Data" target="_blank" rel="noopener">IMF Data</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=open%20economy%20exchange%20rate%20impossible%20trinity" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=open%20economy%20exchange%20rate%20impossible%20trinity" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=open%20economy%20exchange%20rate%20impossible%20trinity" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../15-national-accounts/index.html'>第 15 章 · 国民账户与价格指数：如何度量总量</a>　NX = S − I 的来源</li>
+<li><a href='../17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a>　政策利率与利差</li>
+<li><a href='../../part5/30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a>　远期与无套利定价</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

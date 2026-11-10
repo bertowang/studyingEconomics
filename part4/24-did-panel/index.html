@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 24 章 · 面板与准实验：DID、固定效应与断点回归 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="24">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第四篇 · 计量经济学与因果推断 · 第三阶段 · 数据与因果识别</span>
+<h1><span class="ch-num">第 24 章</span>面板与准实验：DID、固定效应与断点回归</h1>
+<p class="lede">没有随机实验时，用时间与个体两个维度的变异构造反事实；每种设计都对应一条可以被检验或反驳的关键假设。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s3">数据 · 因果</span>
+<span>建议 4 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a> 的识别策略落到三类常用设计；<a href='../25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a> 处理时间维度的另一类依赖结构，<a href='../../part6/31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a> 讨论这些设计的规范报告。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">DID 是「差分再差分」，等价于用对照组的变化估计处理组若不处理会怎样；固定效应是给每个个体减去自身均值，把不随时间变化的混杂变量整体消掉；RDD 是只看阈值附近的局部 A/B。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>会计算双重差分估计量并检验平行趋势</li>
+<li>实现个体固定效应的组内去均值估计</li>
+<li>实现局部线性断点回归并与朴素均值差比较</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>双重差分</td><td><a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Difference in differences</a> · <a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Parallel trends assumption</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>平行趋势假设</td><td><a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Parallel trends assumption</a> · <a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Difference in differences</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>事件研究与预趋势</td><td><a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Difference in differences</a> · <a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Parallel trends assumption</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>面板数据</td><td><a href="https://en.wikipedia.org/wiki/Panel_data" target="_blank" rel="noopener">Panel data</a> · <a href="https://en.wikipedia.org/wiki/Fixed_effects_model" target="_blank" rel="noopener">Fixed effects model</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>个体固定效应</td><td><a href="https://en.wikipedia.org/wiki/Fixed_effects_model" target="_blank" rel="noopener">Fixed effects model</a> · <a href="https://en.wikipedia.org/wiki/Panel_data" target="_blank" rel="noopener">Panel data</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>组内去均值</td><td><a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Difference in differences</a> · <a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Parallel trends assumption</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>断点回归</td><td><a href="https://en.wikipedia.org/wiki/Regression_discontinuity_design" target="_blank" rel="noopener">Regression discontinuity design</a> · <a href="https://en.wikipedia.org/wiki/Causality_(economics)" target="_blank" rel="noopener">Causality (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>局部随机化与带宽</td><td><a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Difference in differences</a> · <a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Parallel trends assumption</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s24-1"><h2><span class="sec-num">§24.1</span>DID：两次差分消掉两类混杂</h2>
+<p>两期两组面板：<code>Y_it = α_i + γ_t + τ·(G_i×Post_t) + ε_it</code>。估计量</p><p class="eq">τ̂_DID = [Ȳ_{处理,后} − Ȳ_{处理,前}] − [Ȳ_{对照,后} − Ȳ_{对照,前}]</p><p>第一次差分去掉不随时间变的组间差异 <code>α_i</code>，第二次去掉共同时间冲击 <code>γ_t</code>。<strong>关键假设是平行趋势</strong>：若无处理，两组的趋势应相同。它本身不可直接检验（反事实），但可以用处理前的多期数据做<strong>预趋势检验</strong>，或用事件研究图展示各期系数。</p>
+</section>
+<section id="s24-2"><h2><span class="sec-num">§24.2</span>固定效应：吸收不随时间变的异质性</h2>
+<p>设 <code>y_it = α_i + βx_it + u_it</code>，<code>α_i</code> 与 <code>x_it</code> 相关（如企业能力与投入）。对每个个体取组内均值再相减：</p><p class="eq">(y_it − ȳ_i) = β(x_it − x̄_i) + (u_it − ū_i)   ⇒ α_i 被消去</p><p>代价：所有不随时间变化的变量（性别、地理）都被吸收，无法估计其系数；且要求 <code>x</code> 在组内<strong>有时间变异</strong>。随机效应模型假设 <code>α_i ⟂ x_it</code>，效率更高但假设更强，Hausman 检验用于在两者间选择。</p>
+</section>
+<section id="s24-3"><h2><span class="sec-num">§24.3</span>断点回归：阈值附近的局部实验</h2>
+<p>处理由连续变量是否越过阈值决定：<code>D=1{X≥c}</code>。若个体无法精确操纵 <code>X</code>，则 <code>c</code> 附近可视为局部随机化。局部线性估计：</p><p class="eq">Y = a + b·(X−c) + τ·D + error ,  仅用 |X−c| ≤ h 的样本</p><p><code>b</code> 控制平滑趋势，<code>τ</code> 就是阈值处的跳跃。与朴素均值差相比，它剔除了 <code>X</code> 本身带来的趋势。带宽 <code>h</code> 是偏差-方差权衡：太大引入趋势偏差、太小方差暴涨；需报告带宽敏感性并做操纵检验（密度连续性）。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>DID、固定效应与局部线性 RDD</h3>
+<pre class="code" data-file="code/24-did-panel.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 24-did-panel.py | 三种准实验设计（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+N_UNITS, TAU = 4000, 3.0
+N_FE_UNITS, T_FE = 600, 4
+N_RDD = 20000
+BANDWIDTH = 0.3
+
+def mean(v):
+    return statistics.fmean(v)
+
+def linfit(xs, ys):
+    mx, my = mean(xs), mean(ys)
+    sxx = sum((x - mx) ** 2 for x in xs)
+    b = sum((xs[i] - mx) * (ys[i] - my) for i in range(len(xs))) / sxx
+    return my - b * mx, b
+
+# ---- 1. DID：两期两组 ----
+rng = random.Random(7)
+cells = {(g, t): [] for g in (0, 1) for t in (0, 1)}
+trend_cells_pretrend = {(g, t): [] for g in (0, 1) for t in (-1, 0, 1)}
+for i in range(N_UNITS):
+    a_i = rng.gauss(0, 1)
+    g = 1 if i &gt;= N_UNITS // 2 else 0
+    for t in (0, 1):
+        y = 10 + a_i + 0.5 * t + 1.0 * g + TAU * g * t + rng.gauss(0, 0.5)
+        cells[(g, t)].append(y)
+    for t in (-1, 0, 1):
+        y = 10 + a_i + 0.5 * t + 1.0 * g + (TAU * g * t if t == 1 else 0) + \
+            0.8 * g * t + rng.gauss(0, 0.5)
+        trend_cells_pretrend[(g, t)].append(y)
+m = {k: mean(v) for k, v in cells.items()}
+did = (m[(1, 1)] - m[(1, 0)]) - (m[(0, 1)] - m[(0, 0)])
+mt = {k: mean(v) for k, v in trend_cells_pretrend.items()}
+pre_gap = (mt[(1, 0)] - mt[(1, -1)]) - (mt[(0, 0)] - mt[(0, -1)])
+did_bad = (mt[(1, 1)] - mt[(1, 0)]) - (mt[(0, 1)] - mt[(0, 0)])
+# ---- 2. 固定效应 ----
+rng2 = random.Random(17)
+pooled_x, pooled_y, dx, dy = [], [], [], []
+for _ in range(N_FE_UNITS):
+    a_i = rng2.gauss(0, 1)
+    xs = [0.5 * a_i + rng2.gauss(0, 1) for _ in range(T_FE)]
+    ys = [a_i + 2.0 * x + rng2.gauss(0, 0.5) for x in xs]
+    pooled_x.extend(xs); pooled_y.extend(ys)
+    mx, my = mean(xs), mean(ys)
+    dx.extend([x - mx for x in xs]); dy.extend([y - my for y in ys])
+_, b_pooled = linfit(pooled_x, pooled_y)
+b_fe = sum(dx[i] * dy[i] for i in range(len(dx))) / sum(v * v for v in dx)
+# ---- 3. RDD：局部线性 ----
+rng3 = random.Random(31)
+x_all, y_all, x_l, y_l, x_r, y_r = [], [], [], [], [], []
+for _ in range(N_RDD):
+    xv = rng3.uniform(-1, 1)
+    d = 1 if xv &gt;= 0 else 0
+    yv = 0.5 * xv + TAU * d + rng3.gauss(0, 0.5)
+    x_all.append(xv); y_all.append(yv)
+    if abs(xv) &lt;= BANDWIDTH:
+        (x_l if xv &lt; 0 else x_r).append(xv)
+        (y_l if xv &lt; 0 else y_r).append(yv)
+naive = mean([y_all[i] for i in range(N_RDD) if x_all[i] &gt;= 0]) - \
+        mean([y_all[i] for i in range(N_RDD) if x_all[i] &lt; 0])
+a_l, b_l = linfit(x_l, y_l)
+a_r, b_r = linfit(x_r, y_r)
+rdd = a_r - a_l
+# ---- 数值验证：打印可手算核对的量 ----
+print("真实处理效应 tau=%.2f" % TAU)
+print("DID(平行趋势成立)=%.4f" % did)
+print("预趋势差分=%.4f (显著非 0 说明违背平行趋势)" % pre_gap)
+print("DID(存在 0.8 差别趋势)=%.4f (被推离真值)" % did_bad)
+print("固定效应: 混合 OLS beta=%.4f (上偏)  组内去均值 beta=%.4f (真值 2)" %
+      (b_pooled, b_fe))
+print("RDD: 朴素均值差=%.4f (含 0.5x 趋势) 局部线性跳跃=%.4f" % (naive, rdd))
+print("带宽内样本: 左=%d 右=%d" % (len(x_l), len(x_r)))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>0.8*g*t</code> 改成 0，观察预趋势差分是否归零、DID 是否回到 3；把 <code>BANDWIDTH</code> 改成 0.05 看 RDD 方差如何变化。　<strong>预期与判读：</strong>DID≈3.0；加入差别趋势后预趋势差分≈0.8 且 DID≈3.8；混合 OLS 系数明显大于 2，组内去均值≈2；RDD 朴素均值差≈3.5（混入趋势），局部线性跳跃≈3.0。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>N_UNITS/N_RDD 控制抽样误差；BANDWIDTH 是 RDD 的偏差-方差权衡；差别趋势系数直接决定 DID 偏误。　文件位置：<code>part4/24-did-panel/code/24-did-panel.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Difference in differences</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>处理组与对照组的前后差分之差</p>
+<span class="why"><strong>怎么用</strong>：双重差分的标准设定</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Difference_in_differences</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Parallel trends assumption</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>DID 成立的关键识别假设</p>
+<span class="why"><strong>怎么用</strong>：关键识别假设</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Difference_in_differences</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Fixed_effects_model" target="_blank" rel="noopener">Fixed effects model</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>吸收不随时间变化的个体异质性</p>
+<span class="why"><strong>怎么用</strong>：固定效应与随机效应</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Fixed_effects_model</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Regression_discontinuity_design" target="_blank" rel="noopener">Regression discontinuity design</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>利用阈值附近局部随机性识别因果</p>
+<span class="why"><strong>怎么用</strong>：断点回归设计</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Regression_discontinuity_design</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>只报告 DID 点估计不报告预趋势：平行趋势才是识别的核心。</li>
+<li>把固定效应理解为「控制了所有变量」：它只吸收不随时间变化的成分。</li>
+<li>RDD 用全样本做均值差：阈值外的趋势会伪装成处理效应。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>把 DID 扩展成多期事件研究，画出各期系数并解释领先项。</li>
+<li>在固定效应 DGP 里加入随时间变化的遗漏变量，观察 FE 是否仍一致。</li>
+<li>扫描 RDD 带宽 0.05～0.8，画 τ̂ 与标准误的权衡曲线。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Difference in differences</strong>（百科）：处理组与对照组的前后差分之差<br><a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Difference in differences</a></li>
+<li><strong>Parallel trends assumption</strong>（百科）：DID 成立的关键识别假设<br><a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Parallel trends assumption</a></li>
+<li><strong>Panel data</strong>（百科）：同一主体多期观测的数据结构<br><a href="https://en.wikipedia.org/wiki/Panel_data" target="_blank" rel="noopener">Panel data</a></li>
+<li><strong>Fixed effects model</strong>（百科）：吸收不随时间变化的个体异质性<br><a href="https://en.wikipedia.org/wiki/Fixed_effects_model" target="_blank" rel="noopener">Fixed effects model</a></li>
+<li><strong>Causal Inference for the Brave and True</strong>（教材）：用 Python 讲因果推断的开放教材，含可运行代码<br><a href="https://matheusfacure.github.io/python-causality-handbook/landing-page.html" target="_blank" rel="noopener">Causal Inference for the Brave and True</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=difference%20in%20differences%20fixed%20effects%20panel%20data" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=difference%20in%20differences%20fixed%20effects%20panel%20data" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=difference%20in%20differences%20fixed%20effects%20panel%20data" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a>　反事实与识别假设</li>
+<li><a href='../23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a>　IV 作为另一类设计</li>
+<li><a href='../../part6/31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a>　预注册与稳健性报告</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

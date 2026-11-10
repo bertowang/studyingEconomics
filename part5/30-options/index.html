@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="30">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第五篇 · 投资学、资产定价与风险管理 · 第四阶段 · 不确定性与资产定价</span>
+<h1><span class="ch-num">第 30 章</span>期权、二叉树与蒙特卡洛：无套利定价的闭环</h1>
+<p class="lede">把「复制组合 + 无套利」写成可回溯的二叉树，再与 Black-Scholes 闭式解和蒙特卡洛模拟三方对照。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s4">定价 · 决策</span>
+<span>建议 4 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../26-returns/index.html'>第 26 章 · 收益、复利与波动：把价格变成可建模的序列</a> 的 GBM、<a href='../../part3/19-open-economy/index.html'>第 19 章 · 开放经济：国际收支、汇率与三元悖论</a> 的远期无套利与 <a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a> 的贴现合流；<a href='../../part6/31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a>、<a href='../../part6/32-capstone/index.html'>第 32 章 · 综合课题：一项政策评估从数据到结论</a> 会回到「模型可信度」这一主线。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">二叉树是动态规划：从叶子节点的 payoff 往回递推期望；风险中性概率不是真实概率，而是让贴现期望等于无套利价格的「等价测度」，相当于换了一套计价单位。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能实现 CRR 二叉树并回溯欧式看涨/看跌期权价格</li>
+<li>会用 math.erf 写 Black-Scholes 公式并验证平价关系</li>
+<li>理解风险中性概率、蒙特卡洛误差与 delta 对冲</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>或有权益与 payoff</td><td><a href="https://en.wikipedia.org/wiki/Option_(finance)" target="_blank" rel="noopener">Option (finance)</a> · <a href="https://en.wikipedia.org/wiki/Binomial_options_pricing_model" target="_blank" rel="noopener">Binomial options pricing model</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>无套利与复制组合</td><td><a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory" target="_blank" rel="noopener">Modern portfolio theory</a> · <a href="https://en.wikipedia.org/wiki/Diversification_(finance)" target="_blank" rel="noopener">Diversification (finance)</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>风险中性概率</td><td><a href="https://en.wikipedia.org/wiki/Risk-neutral_measure" target="_blank" rel="noopener">Risk-neutral measure</a> · <a href="https://en.wikipedia.org/wiki/Arbitrage" target="_blank" rel="noopener">Arbitrage</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>CRR 二叉树回溯</td><td><a href="https://en.wikipedia.org/wiki/Binomial_options_pricing_model" target="_blank" rel="noopener">Binomial options pricing model</a> · <a href="https://en.wikipedia.org/wiki/Arbitrage" target="_blank" rel="noopener">Arbitrage</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>Black-Scholes 公式</td><td><a href="https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model" target="_blank" rel="noopener">Black–Scholes model</a> · <a href="https://en.wikipedia.org/wiki/Geometric_Brownian_motion" target="_blank" rel="noopener">Geometric Brownian motion</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>平价关系</td><td><a href="https://en.wikipedia.org/wiki/Option_(finance)" target="_blank" rel="noopener">Option (finance)</a> · <a href="https://en.wikipedia.org/wiki/Binomial_options_pricing_model" target="_blank" rel="noopener">Binomial options pricing model</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>蒙特卡洛定价</td><td><a href="https://en.wikipedia.org/wiki/Monte_Carlo_method" target="_blank" rel="noopener">Monte Carlo method</a> · <a href="https://en.wikipedia.org/wiki/Geometric_Brownian_motion" target="_blank" rel="noopener">Geometric Brownian motion</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>delta 与对冲</td><td><a href="https://en.wikipedia.org/wiki/Option_(finance)" target="_blank" rel="noopener">Option (finance)</a> · <a href="https://en.wikipedia.org/wiki/Binomial_options_pricing_model" target="_blank" rel="noopener">Binomial options pricing model</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s30-1"><h2><span class="sec-num">§30.1</span>无套利与风险中性</h2>
+<p>期权是或有权益，到期 payoff 为 <code>max(S_T−K,0)</code>（看涨）或 <code>max(K−S_T,0)</code>（看跌）。若能用标的与无风险借贷构造复制组合，则价格由无套利唯一确定，与投资者风险偏好无关：</p><p class="eq">p = (e^{rΔt} − d)/(u − d) ;  C₀ = e^{−rΔt}[p·C_u + (1−p)·C_d]</p><p>这里 <code>p</code> 是<strong>风险中性概率</strong>，不是真实上涨概率；真实漂移 μ 被无套利条件替换成 r。这是 <a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a> 期望效用之后最重要的一次视角转换：<strong>定价用等价测度，决策用真实测度</strong>。</p>
+</section>
+<section id="s30-2"><h2><span class="sec-num">§30.2</span>Black-Scholes 与平价关系</h2>
+<p>当二叉树步数趋于无穷，得到连续时间闭式解：</p><p class="eq">d₁=[ln(S/K)+(r+½σ²)T]/(σ√T) , d₂=d₁−σ√T</p><p class="eq">C = S·N(d₁) − K·e^{−rT}N(d₂) ;  P = K·e^{−rT}N(−d₂) − S·N(−d₁)</p><p><code>N(·)</code> 用标准库 <code>math.erf</code> 实现：<code>N(x)=½[1+erf(x/√2)]</code>。看涨看跌平价 <code>C − P = S − K·e^{−rT}</code> 是检验实现是否正确的最快单元测试。</p>
+</section>
+<section id="s30-3"><h2><span class="sec-num">§30.3</span>蒙特卡洛与对冲</h2>
+<p>高维或路径依赖 payoff 没有闭式解时，用 <code>S_T = S₀exp[(r−½σ²)T + σ√T Z]</code> 抽样、取贴现平均：</p><p class="eq">Ĉ = e^{−rT}·(1/N)Σ max(S_T^{(n)}−K,0) ;  标准误 ≈ σ_payoff/√N</p><p>误差按 <code>1/√N</code> 下降，与 <a href='../../part0/02-probability-simulation/index.html'>第 02 章 · 概率、统计与模拟：从分布到证据</a> 的中心极限定理完全一致；降低方差可用对偶变量、控制变量与准随机序列。<code>Δ=∂C/∂S</code> 给出复制组合里需要持有的标的份额，动态再平衡就是 delta 对冲；现实中的离散对冲、交易成本与跳跃风险是模型误差的主要来源。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>二叉树、Black-Scholes、蒙特卡洛与平价校验</h3>
+<pre class="code" data-file="code/30-options.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 30-options.py | 欧式期权三种定价方法（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+S0, K, R, SIGMA, T = 100.0, 100.0, 0.05, 0.20, 1.0
+N_STEPS = 200
+N_PATHS = 20000
+
+def norm_cdf(x):
+    return 0.5 * (1 + math.erf(x / math.sqrt(2)))
+
+# ---- 1. CRR 二叉树回溯 ----
+dt = T / N_STEPS
+u = math.exp(SIGMA * math.sqrt(dt))
+d = 1 / u
+p = (math.exp(R * dt) - d) / (u - d)
+disc = math.exp(-R * dt)
+call = [max(S0 * (u ** j) * (d ** (N_STEPS - j)) - K, 0.0)
+        for j in range(N_STEPS + 1)]
+put = [max(K - S0 * (u ** j) * (d ** (N_STEPS - j)), 0.0)
+       for j in range(N_STEPS + 1)]
+for step in range(N_STEPS, 0, -1):
+    call = [disc * (p * call[j + 1] + (1 - p) * call[j]) for j in range(step)]
+    put = [disc * (p * put[j + 1] + (1 - p) * put[j]) for j in range(step)]
+c_tree, p_tree = call[0], put[0]
+# ---- 2. Black-Scholes 闭式解 ----
+d1 = (math.log(S0 / K) + (R + 0.5 * SIGMA ** 2) * T) / (SIGMA * math.sqrt(T))
+d2 = d1 - SIGMA * math.sqrt(T)
+c_bs = S0 * norm_cdf(d1) - K * math.exp(-R * T) * norm_cdf(d2)
+p_bs = K * math.exp(-R * T) * norm_cdf(-d2) - S0 * norm_cdf(-d1)
+# ---- 3. 蒙特卡洛 ----
+rng = random.Random(7)
+payoffs = []
+for _ in range(N_PATHS):
+    z = rng.gauss(0, 1)
+    st = S0 * math.exp((R - 0.5 * SIGMA ** 2) * T + SIGMA * math.sqrt(T) * z)
+    payoffs.append(max(st - K, 0.0))
+c_mc = math.exp(-R * T) * statistics.fmean(payoffs)
+mc_se = math.exp(-R * T) * statistics.pstdev(payoffs) / math.sqrt(N_PATHS)
+# ---- 4. delta 有限差分 ----
+def bs_call(s):
+    dd1 = (math.log(s / K) + (R + 0.5 * SIGMA ** 2) * T) / (SIGMA * math.sqrt(T))
+    dd2 = dd1 - SIGMA * math.sqrt(T)
+    return s * norm_cdf(dd1) - K * math.exp(-R * T) * norm_cdf(dd2)
+delta = (bs_call(S0 + 0.01) - bs_call(S0 - 0.01)) / 0.02
+# ---- 数值验证：打印可手算核对的量 ----
+print("参数: S=K=%.0f r=%.2f sigma=%.2f T=%.0f N=%d" %
+      (S0, R, SIGMA, T, N_STEPS))
+print("二叉树   call=%.6f put=%.6f" % (c_tree, p_tree))
+print("B-S 公式 call=%.6f put=%.6f" % (c_bs, p_bs))
+print("蒙特卡洛 call=%.6f ±%.6f (1 倍标准误, %d 路径)" % (c_mc, mc_se, N_PATHS))
+print("平价校验 C-P=%.6f  S-K*e^(-rT)=%.6f  差=%.2e" %
+      (c_tree - p_tree, S0 - K * math.exp(-R * T),
+       abs((c_tree - p_tree) - (S0 - K * math.exp(-R * T)))))
+print("delta=%.6f (≈N(d1)=%.6f)" % (delta, norm_cdf(d1)))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>N_STEPS</code> 改成 10、50、200，观察二叉树价格如何收敛到 B-S；把 <code>N_PATHS</code> 改成 2000 看蒙特卡洛标准误是否按 1/√N 放大。　<strong>预期与判读：</strong>S=K=100、r=5%、σ=20%、T=1 时二叉树 call≈10.4406/put≈5.5635，B-S call≈10.4506/put≈5.5735（200 步离散误差约 0.01）；蒙特卡洛 call≈10.47 ±0.10；C−P 与 S−K·e^(−rT)≈4.8771 一致；delta≈0.6368。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>N_STEPS 控制离散化误差；N_PATHS 控制蒙特卡洛误差；SIGMA 上升同时提高 call 与 put 价格。　文件位置：<code>part5/30-options/code/30-options.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Binomial_options_pricing_model" target="_blank" rel="noopener">Binomial options pricing model</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>离散时间风险中性定价与回溯</p>
+<span class="why"><strong>怎么用</strong>：CRR 二叉树</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Binomial_options_pricing_model</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model" target="_blank" rel="noopener">Black–Scholes model</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>连续时间无套利定价的闭式解</p>
+<span class="why"><strong>怎么用</strong>：闭式解与假设</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Monte_Carlo_method" target="_blank" rel="noopener">Monte Carlo method</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>用模拟逼近期望与积分</p>
+<span class="why"><strong>怎么用</strong>：蒙特卡洛方法</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Monte_Carlo_method</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Risk-neutral_measure" target="_blank" rel="noopener">Risk-neutral measure</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>贴现期望等于无套利价格</p>
+<span class="why"><strong>怎么用</strong>：等价鞅测度</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Risk-neutral_measure</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把风险中性概率当真实上涨概率：它只是便于贴现的等价权重。</li>
+<li>忽略平价关系校验：它是发现实现 bug 最便宜的手段。</li>
+<li>把 BS 的常数波动假设当事实：隐含波动率微笑正是它的系统性偏离。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>把二叉树改成美式看跌期权（每节点比较提前行权价值），观察价格何时高于欧式。</li>
+<li>用对偶变量法（同时取 Z 与 −Z）重跑蒙特卡洛，比较标准误。</li>
+<li>用 <a href='../26-returns/index.html'>第 26 章 · 收益、复利与波动：把价格变成可建模的序列</a> 的 GBM 路径实现亚式期权定价，说明为何没有闭式解。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Option (finance)</strong>（百科）：或有权益与非线性 payoff<br><a href="https://en.wikipedia.org/wiki/Option_(finance)" target="_blank" rel="noopener">Option (finance)</a></li>
+<li><strong>Binomial options pricing model</strong>（百科）：离散时间风险中性定价与回溯<br><a href="https://en.wikipedia.org/wiki/Binomial_options_pricing_model" target="_blank" rel="noopener">Binomial options pricing model</a></li>
+<li><strong>Black–Scholes model</strong>（百科）：连续时间无套利定价的闭式解<br><a href="https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model" target="_blank" rel="noopener">Black–Scholes model</a></li>
+<li><strong>Monte Carlo method</strong>（百科）：用模拟逼近期望与积分<br><a href="https://en.wikipedia.org/wiki/Monte_Carlo_method" target="_blank" rel="noopener">Monte Carlo method</a></li>
+<li><strong>Risk-neutral measure</strong>（百科）：贴现期望等于无套利价格<br><a href="https://en.wikipedia.org/wiki/Risk-neutral_measure" target="_blank" rel="noopener">Risk-neutral measure</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=binomial%20option%20pricing%20Black%20Scholes%20Monte%20Carlo" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=binomial%20option%20pricing%20Black%20Scholes%20Monte%20Carlo" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=binomial%20option%20pricing%20Black%20Scholes%20Monte%20Carlo" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../26-returns/index.html'>第 26 章 · 收益、复利与波动：把价格变成可建模的序列</a>　GBM 与对数收益</li>
+<li><a href='../../part3/19-open-economy/index.html'>第 19 章 · 开放经济：国际收支、汇率与三元悖论</a>　远期与利率平价</li>
+<li><a href='../../part6/32-capstone/index.html'>第 32 章 · 综合课题：一项政策评估从数据到结论</a>　端到端综合课题</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

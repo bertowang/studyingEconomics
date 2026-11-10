@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 04 章 · 供需、弹性与税收归宿：第一个均衡 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="04">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第一篇 · 原理与个体决策 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 04 章</span>供需、弹性与税收归宿：第一个均衡</h1>
+<p class="lede">局部均衡是全书第一个「不动点」：价格调整到需求量等于供给量。弹性决定谁承担税负，无谓损失量化扭曲的代价。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">原理 · 个体</span>
+<span>建议 2 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>承接 03 章的生产侧约束，加入需求侧偏好并让价格出清市场。<a href='../../part2/09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a> 用同一套供需算福利，<a href='../../part2/10-monopoly/index.html'>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视</a> 打破价格接受假设，<a href='../../part3/16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a> 把它加总到总需求总供给。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">均衡价格就是让 <code>excess_demand(p)=Qd(p)−Qs(p)</code> 归零的根；税收是在买方价与卖方价之间插入一个 6 元的「楔子」，等价于给求解器加一条约束。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能由线性供需曲线解出均衡价格与数量，并计算点弹性</li>
+<li>推导单位税的消费者价格、生产者价格、税收收入与无谓损失</li>
+<li>解释「税负落在弹性小的一侧」并会用数字验证</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>需求与供给</td><td><a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a> · <a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>均衡与不动点</td><td><a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a> · <a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>点弹性</td><td><a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a> · <a href="https://en.wikipedia.org/wiki/Tax_incidence" target="_blank" rel="noopener">Tax incidence</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>税收归宿</td><td><a href="https://en.wikipedia.org/wiki/Tax_incidence" target="_blank" rel="noopener">Tax incidence</a> · <a href="https://en.wikipedia.org/wiki/Deadweight_loss" target="_blank" rel="noopener">Deadweight loss</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>无谓损失</td><td><a href="https://en.wikipedia.org/wiki/Deadweight_loss" target="_blank" rel="noopener">Deadweight loss</a> · <a href="https://en.wikipedia.org/wiki/Tax_incidence" target="_blank" rel="noopener">Tax incidence</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>比较静态</td><td><a href="https://en.wikipedia.org/wiki/Marginalism" target="_blank" rel="noopener">Marginalism</a> · <a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s4-1"><h2><span class="sec-num">§4.1</span>均衡作为不动点</h2>
+<p>设需求 <code>Q_d = a − b·p</code>、供给 <code>Q_s = c + d·p</code>（<code>a,b,c,d > 0</code>）。令超额需求为零：</p><p class="eq">p* = (a − c)/(b + d) ,   Q* = a − b·p* = c + d·p*</p><p>稳定性直觉：若 <code>p > p*</code>，供给大于需求，卖不掉的库存迫使价格下降；反之价格上升。这其实是<strong>一个最简单的迭代求解器</strong>，<a href='../../part2/14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a> 的一般均衡会把它升级成多市场价格向量的不动点问题。</p>
+</section>
+<section id="s4-2"><h2><span class="sec-num">§4.2</span>弹性：量纲无关的响应度</h2>
+<p>弹性用百分比变化之比，因而与单位无关：</p><p class="eq">ε_d = (dQ_d/dp)·(p/Q)  ;  ε_s = (dQ_s/dp)·(p/Q)</p><p>弹性是<strong>比较静态的局部导数</strong>，会随均衡点移动；线性需求在高价区更富弹性。政策分析特别依赖弹性：需求缺乏弹性时，加税主要落在消费者身上；供给缺乏弹性时主要落在生产者身上。</p>
+</section>
+<section id="s4-3"><h2><span class="sec-num">§4.3</span>单位税：楔子、归宿与无谓损失</h2>
+<p>对每单位商品征税 <code>t</code>，买方价 <code>p_c</code> 与卖方价 <code>p_s</code> 满足 <code>p_c − p_s = t</code>。联立线性供需可得：</p><p class="eq">p_s = (a − c − b·t)/(b + d) ,  p_c = p_s + t ,  Q_t = a − b·p_c</p><p class="eq">消费者承担份额 = d/(b+d) ; 生产者承担份额 = b/(b+d)</p><p class="eq">税收收入 T = t·Q_t ;  无谓损失 DWL = ½·t·(Q* − Q_t)</p><p>注意<strong>归宿与法定纳税人无关</strong>：向卖家征税和向买家征税得到同一个楔子。弹性小的一侧「更离不开市场」，因而被套牢。无谓损失是三角形面积：被税收挤掉的交易本来双方都愿意做，这部分互利的消失是净福利损失，不是转移支付。</p>
+<div class="card tip"><p style="margin-bottom:0"><strong>推广到 <a href='../../part2/12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a></strong>：把外部成本看成「社会边际成本比私人边际成本高一截」，庇古税正是用同样的楔子把这块差额内部化；区别在于那里税是为了纠正扭曲，而不是制造扭曲。</p></div>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>均衡、弹性、单位税与无谓损失</h3>
+<pre class="code" data-file="code/04-supply-demand.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""04-supply-demand.py | 线性供需的均衡与税收归宿全量核算"""
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+A, B, C, D = 100.0, 2.0, 10.0, 3.0    # Qd=A-B*p, Qs=C+D*p
+TAX = 6.0                              # 单位税
+# ---- 模型：无税均衡 ----
+p0 = (A - C) / (B + D)
+q0 = A - B * p0
+ed = -B * p0 / q0
+es = D * p0 / q0
+# ---- 比较静态：征税后 ----
+ps = (A - C - B * TAX) / (B + D)
+pc = ps + TAX
+qt = A - B * pc
+revenue = TAX * qt
+dwl = 0.5 * TAX * (q0 - qt)
+consumer_share = (pc - p0) / TAX
+producer_share = (p0 - ps) / TAX
+# ---- 数值验证：打印可手算核对的量 ----
+print("无税: p*=%.4f Q*=%.4f 需求弹性=%.4f 供给弹性=%.4f" % (p0, q0, ed, es))
+print("征税: 买方价=%.4f 卖方价=%.4f 楔子=%.4f Q=%.4f" % (pc, ps, pc - ps, qt))
+print("消费者承担=%.4f 生产者承担=%.4f (理论 %.4f / %.4f)" %
+      (consumer_share, producer_share, D / (B + D), B / (B + D)))
+print("税收收入=%.4f 无谓损失=%.4f 总剩余损失=%.4f" % (revenue, dwl, revenue + dwl))
+print("校验: 无税 Qs=%.4f, 征税 Qs=%.4f, 征税 Qd=%.4f" % (C + D * p0, C + D * ps, qt))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>D</code> 改成 8（供给更富弹性），观察消费者承担份额是否上升；把 <code>TAX</code> 改成 12 观察 DWL 是否按 t² 增长。　<strong>预期与判读：</strong>p*=18、Q*=64、ε_d=−0.5625、ε_s=0.84375；征税后 ps=15.6、pc=21.6、Q=56.8；消费者承担 0.6、生产者 0.4；税收 340.8、DWL 21.6。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>D 越大（供给越弹性）消费者承担越多；TAX 翻倍使 DWL 约变 4 倍；B 越大需求越弹性、数量下降越多。　文件位置：<code>part1/04-supply-demand/code/04-supply-demand.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>局部均衡最基本的模型</p>
+<span class="why"><strong>怎么用</strong>：局部均衡的百科条目与图示</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Supply_and_demand</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Tax_incidence" target="_blank" rel="noopener">Tax incidence</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>税负归宿由弹性决定，与法定纳税人无关</p>
+<span class="why"><strong>怎么用</strong>：税负归宿与弹性关系的严格说明</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Tax_incidence</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Deadweight_loss" target="_blank" rel="noopener">Deadweight loss</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>扭曲造成的净福利损失</p>
+<span class="why"><strong>怎么用</strong>：无谓损失的几何与福利含义</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Deadweight_loss</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>以为「向谁征税」决定谁承担：法定归宿与经济归宿是两回事。</li>
+<li>把税收收入当作社会损失：它是转移支付，真正的净损失是 DWL。</li>
+<li>用斜率代替弹性：斜率带单位，弹性是无量纲的百分比响应度，跨市场比较必须用弹性。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>推导从量税与从价税在均衡数量上的等价条件，并用脚本验证。</li>
+<li>令 <code>TAX</code> 从 0 到 40 扫描，画出税收收入与 DWL 的两条曲线，解释为什么收入先增后减。</li>
+<li>把本例的需求改成 <code>Qd = A·p**(-B)</code>（常弹性需求），说明解析解要怎么改。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Supply and demand</strong>（百科）：局部均衡最基本的模型<br><a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a></li>
+<li><strong>Elasticity (economics)</strong>（百科）：相对变化的响应程度，量纲无关<br><a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a></li>
+<li><strong>Tax incidence</strong>（百科）：税负归宿由弹性决定，与法定纳税人无关<br><a href="https://en.wikipedia.org/wiki/Tax_incidence" target="_blank" rel="noopener">Tax incidence</a></li>
+<li><strong>Deadweight loss</strong>（百科）：扭曲造成的净福利损失<br><a href="https://en.wikipedia.org/wiki/Deadweight_loss" target="_blank" rel="noopener">Deadweight loss</a></li>
+<li><strong>FRED 经济数据</strong>（数据）：美联储圣路易斯分行的宏观与金融时间序列，免费可下载<br><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=supply%20demand%20equilibrium%20tax%20incidence" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=supply%20demand%20equilibrium%20tax%20incidence" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=supply%20demand%20equilibrium%20tax%20incidence" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part2/09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a>　从供需到消费者/生产者剩余</li>
+<li><a href='../../part2/12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a>　庇古税与科斯定理</li>
+<li><a href='../../part3/16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a>　总需求总供给与乘数</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 12 章 · 外部性、公共品与科斯谈判 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="12">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第二篇 · 市场结构、策略与失灵 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 12 章</span>外部性、公共品与科斯谈判</h1>
+<p class="lede">当私人边际成本与社会边际成本分离，竞争均衡不再有效；庇古税与科斯谈判是两条互补的修复路径。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">市场 · 策略</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>打破 <a href='../09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a> 福利定理的「无外部性、市场完备」前提；<a href='../13-information/index.html'>第 13 章 · 信息不对称：逆向选择、信号与道德风险</a> 继续打破「信息对称」，<a href='../../part1/04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a> 的税收楔子在这里被反向使用。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">外部性就是函数调用的副作用没有被计入成本：调用方只看自己的开销，系统总开销更高。庇古税是给副作用定一个价格并计入账；科斯方案是让受影响双方直接协商并内部化。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能量化负外部性造成的过度产量与无谓损失</li>
+<li>推导庇古税 t = 边际外部损害，并验证它恢复社会最优</li>
+<li>说明科斯定理的前提与交易成本、公共品搭便车的失败机制</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>私人成本与社会成本</td><td><a href="https://en.wikipedia.org/wiki/Marginal_cost" target="_blank" rel="noopener">Marginal cost</a> · <a href="https://en.wikipedia.org/wiki/Production_function" target="_blank" rel="noopener">Production function</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>边际外部损害</td><td><a href="https://en.wikipedia.org/wiki/Marginalism" target="_blank" rel="noopener">Marginalism</a> · <a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>庇古税</td><td><a href="https://en.wikipedia.org/wiki/Pigouvian_tax" target="_blank" rel="noopener">Pigouvian tax</a> · <a href="https://en.wikipedia.org/wiki/Externality" target="_blank" rel="noopener">Externality</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>社会最优产量</td><td><a href="https://en.wikipedia.org/wiki/Externality" target="_blank" rel="noopener">Externality</a> · <a href="https://en.wikipedia.org/wiki/Pigouvian_tax" target="_blank" rel="noopener">Pigouvian tax</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>科斯定理与产权</td><td><a href="https://en.wikipedia.org/wiki/Coase_theorem" target="_blank" rel="noopener">Coase theorem</a> · <a href="https://en.wikipedia.org/wiki/Externality" target="_blank" rel="noopener">Externality</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>交易成本</td><td><a href="https://en.wikipedia.org/wiki/Marginal_cost" target="_blank" rel="noopener">Marginal cost</a> · <a href="https://en.wikipedia.org/wiki/Production_function" target="_blank" rel="noopener">Production function</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>公共品与萨缪尔森条件</td><td><a href="https://en.wikipedia.org/wiki/Public_good" target="_blank" rel="noopener">Public good</a> · <a href="https://en.wikipedia.org/wiki/Externality" target="_blank" rel="noopener">Externality</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>搭便车</td><td><a href="https://en.wikipedia.org/wiki/Externality" target="_blank" rel="noopener">Externality</a> · <a href="https://en.wikipedia.org/wiki/Pigouvian_tax" target="_blank" rel="noopener">Pigouvian tax</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s12-1"><h2><span class="sec-num">§12.1</span>外部性：从私人最优到社会最优</h2>
+<p>设反需求 <code>p = a − bQ</code>、私人边际成本 <code>c</code>、每单位外部损害 <code>e</code>。竞争均衡令 <code>p = c</code>，社会最优令 <code>p = c + e</code>：</p><p class="eq">Q_0 = (a−c)/b ,  Q* = (a−c−e)/b ,  超额产量 = e/b</p><p class="eq">外部性造成的福利损失 = ∫_{Q*}^{Q_0} [(c+e) − p(q)] dq = ½·e·(e/b) = e²/(2b)</p><p>注意价格低本身不是问题，问题是<strong>多生产的那些单位上社会成本高于支付意愿</strong>。庇古税 <code>t = e</code> 把生产者面对的边际成本抬到 <code>c+e</code>，市场在<strong>不指定产量</strong>的情况下自行走到 <code>Q*</code>——这正是「用价格改约束、不用命令改结果」的思路。</p>
+</section>
+<section id="s12-2"><h2><span class="sec-num">§12.2</span>科斯定理：产权、谈判与交易成本</h2>
+<p>科斯定理说：若产权清晰、交易成本为零、无收入效应，则无论产权初始判给谁，双方谈判都会达到有效产量（只是分配不同）。它的价值不在于证明「政府不必干预」，而在于把注意力转向<strong>交易成本</strong>：</p><table><thead><tr><th style="width:28%">现实条件</th><th style="width:34%">后果</th><th style="width:38%">对应工具</th></tr></thead><tbody>
+<tr><td>受影响者众多</td><td>组织与搭便车成本高</td><td>庇古税 / 总量管制与交易</td></tr>
+<tr><td>损害难计量</td><td>谈判缺乏共同事实</td><td>监测、披露、标准</td></tr>
+<tr><td>收入效应显著</td><td>产权分配影响最终结果</td><td>需结合公平目标评估</td></tr>
+</tbody></table><p>排放权交易（cap-and-trade）是两者混合：先由政府定总量，再由市场定价，等价于让科斯谈判在一个标准化、可分割的产权上发生。</p>
+</section>
+<section id="s12-3"><h2><span class="sec-num">§12.3</span>公共品：加总支付意愿而非加总数量</h2>
+<p>私人品的最优条件是每人 <code>MRS = MRT</code>；公共品非竞争，一人消费不减少他人消费，因此<strong>萨缪尔森条件</strong>是纵向加总：</p><p class="eq">Σ_i MRS_i = MRT   （n 人各自边际支付意愿之和 = 边际成本）</p><p>自愿捐赠时每人只把自己的边际收益与成本比较，均衡总量远低于社会最优，且人数越多缺口越大。这与 <a href='../11-games-oligopoly/index.html'>第 11 章 · 博弈论与寡头：策略互动与不动点</a> 囚徒困境完全同构：搭便车是占优策略。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>庇古税、科斯交易成本与公共品供给</h3>
+<pre class="code" data-file="code/12-externality.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 12-externality.py | 外部性内部化与公共品搭便车（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+A, B, C_PRIV, DAMAGE = 100.0, 2.0, 10.0, 12.0
+TRANSACTION_COST = 2.0       # 科斯谈判的单位组织成本
+N_PERSONS = 3                # 公共品人数
+PG_INTERCEPT, PG_COST = 20.0, 12.0
+# ---- 竞争均衡与社会最优 ----
+q0 = (A - C_PRIV) / B
+q_opt = (A - C_PRIV - DAMAGE) / B
+ext_loss = DAMAGE ** 2 / (2 * B)
+tax_revenue = DAMAGE * q_opt
+q_taxed = (A - C_PRIV - DAMAGE) / B
+# ---- 科斯：谈判净收益与交易成本 ----
+gross_gain = DAMAGE * (q0 - q_opt) - 0.5 * B * (q0 - q_opt) ** 2
+net_gain = gross_gain - TRANSACTION_COST * (q0 - q_opt)
+# ---- 公共品：私人自愿 vs 萨缪尔森条件 ----
+# 每人 MRS_i = 20 - G, 边际成本 = 12
+g_private = PG_INTERCEPT - PG_COST                    # 20 - G = 12
+g_social = (N_PERSONS * PG_INTERCEPT - PG_COST) / N_PERSONS / 1.0  # n*(20-G)=12
+# ---- 数值验证：打印可手算核对的量 ----
+print("私人 MC=%.2f 社会 MC=%.2f (含损害 %.2f)" % (C_PRIV, C_PRIV + DAMAGE, DAMAGE))
+print("竞争 Q0=%.4f 社会最优 Q*=%.4f 超额=%.4f" % (q0, q_opt, q0 - q_opt))
+print("外部性福利损失=%.4f (=e^2/2b)" % ext_loss)
+print("庇古税 t=%.2f 后产量=%.4f (应=Q*) 税收=%.4f" % (DAMAGE, q_taxed, tax_revenue))
+print("科斯谈判总增益=%.4f 扣交易成本后净增益=%.4f" % (gross_gain, net_gain))
+print("公共品自愿总量=%.4f 社会最优总量=%.4f 缺口=%.4f" %
+      (g_private, g_social, g_social - g_private))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>DAMAGE</code> 改成 24，观察 Q* 与外部性损失（应变为 4 倍）；把 <code>TRANSACTION_COST</code> 调大看科斯谈判何时失效。　<strong>预期与判读：</strong>Q0=45、Q*=39、超额 6；损失 36；庇古税 12 后产量 39、税收 468；科斯毛增益 36、净增益 24；公共品自愿总量 8、社会最优 16、缺口 8。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>DAMAGE 翻倍使 DWL 变 4 倍；N_PERSONS 越大公共品缺口越大；交易成本超过边际增益时谈判破裂。　文件位置：<code>part2/12-externality/code/12-externality.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Externality" target="_blank" rel="noopener">Externality</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>私人成本与社会成本分离</p>
+<span class="why"><strong>怎么用</strong>：外部性分类与几何</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Externality</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Pigouvian_tax" target="_blank" rel="noopener">Pigouvian tax</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>把外部性内部化的单位税</p>
+<span class="why"><strong>怎么用</strong>：庇古税推导</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Pigouvian_tax</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Coase_theorem" target="_blank" rel="noopener">Coase theorem</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>产权清晰且交易成本为零时的谈判效率</p>
+<span class="why"><strong>怎么用</strong>：科斯定理的前提与争议</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Coase_theorem</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把庇古税当成「为罚款而罚款」：税额应等于边际外部损害，不是弥补财政缺口。</li>
+<li>忽略税收收入与损害减少是两笔账：评估福利要同时算产量、损害与转移。</li>
+<li>把科斯定理读成「产权无关紧要」：产权决定分配，且交易成本为零这个前提极强。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>若边际损害随产量递增 <code>e(Q)=kQ</code>，推导最优税额并说明为何不再是常数。</li>
+<li>用 <a href='../../part1/04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a> 的楔子公式说明庇古税与单位税在数学上完全同构、福利结论为何相反。</li>
+<li>把公共品人数从 1 扫到 20，画出自愿总量与社会最优先量的缺口曲线。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Externality</strong>（百科）：私人成本与社会成本分离<br><a href="https://en.wikipedia.org/wiki/Externality" target="_blank" rel="noopener">Externality</a></li>
+<li><strong>Pigouvian tax</strong>（百科）：把外部性内部化的单位税<br><a href="https://en.wikipedia.org/wiki/Pigouvian_tax" target="_blank" rel="noopener">Pigouvian tax</a></li>
+<li><strong>Public good</strong>（百科）：非排他与非竞争性导致搭便车<br><a href="https://en.wikipedia.org/wiki/Public_good" target="_blank" rel="noopener">Public good</a></li>
+<li><strong>Coase theorem</strong>（百科）：产权清晰且交易成本为零时的谈判效率<br><a href="https://en.wikipedia.org/wiki/Coase_theorem" target="_blank" rel="noopener">Coase theorem</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=Pigouvian%20tax%20Coase%20theorem%20externality" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=Pigouvian%20tax%20Coase%20theorem%20externality" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=Pigouvian%20tax%20Coase%20theorem%20externality" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part1/04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a>　税收楔子的一般形式</li>
+<li><a href='../09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a>　福利定理的前提清单</li>
+<li><a href='../13-information/index.html'>第 13 章 · 信息不对称：逆向选择、信号与道德风险</a>　信息不对称下的机制设计</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

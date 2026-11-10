@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 00 章 · 绪论：一条主线，五个阶段 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="00">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">卷首 · 共同语言 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 00 章</span>绪论：一条主线，五个阶段</h1>
+<p class="lede">把经济学原理、微观、宏观、计量与投资看成同一个问题的五层放大：稀缺下的选择、选择的均衡、均衡的失灵、从数据里识别因果、在不确定中做决策。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">共同语言</span>
+<span>建议 1 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>这是全书入口：后面每一章都会回到这条主线，说明自己承接哪一个环节、又引出哪一个环节。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">把经济学想成一个分层系统：偏好与技术是「配置」，价格与均衡是「运行时调度」，市场失灵是「约束不满足」，计量是「从日志反推系统参数」，投资是「在噪声环境下做在线决策」。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能说清全书主线「稀缺 → 选择 → 均衡 → 效率 → 失灵 → 动态 → 不确定 → 证据 → 决策」</li>
+<li>知道每个阶段的输出物：可推导的模型、可运行的模拟、可复现的估计、可检验的决策</li>
+<li>掌握固定的四步学习闭环：读模型 → 跑代码 → 改参数 → 写结论</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>全书主线与五个阶段</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>有机组合而非课程拼接</td><td><a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory" target="_blank" rel="noopener">Modern portfolio theory</a> · <a href="https://en.wikipedia.org/wiki/Diversification_(finance)" target="_blank" rel="noopener">Diversification (finance)</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>模型的三层用法</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>给程序员的阅读约定</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>先修数学清单</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>符号与数据约定</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>AI 使用说明</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s0-1"><h2><span class="sec-num">§0.1</span>为什么这几门课其实是同一门课</h2>
+<p>常见课程表把「原理、微观、宏观、计量、投资」拆成五门课，容易让人误以为是五套互不相干的工具。本书从<strong>一个反复出现的计算问题</strong>出发把它们接起来：</p><p class="eq">给定资源、技术与信息 → 求一个可行的最优选择 → 研究许多人同时选择时是否自洽（均衡）</p><p>把这句话逐层放大，就得到全书主线：</p><table><thead><tr><th style="width:16%">环节</th><th style="width:34%">要回答的问题</th><th style="width:22%">对应课程</th><th style="width:28%">对应篇章</th></tr></thead><tbody>
+<tr><td>稀缺与选择</td><td>在约束下最优是什么</td><td>经济学原理</td><td>卷首、第一篇 03～08</td></tr>
+<tr><td>均衡与效率</td><td>个体最优同时成立吗？结果好不好</td><td>微观经济学</td><td>第二篇 09～14</td></tr>
+<tr><td>动态与总量</td><td>把时间、货币、增长、开放加进来</td><td>宏观经济学</td><td>第三篇 15～19</td></tr>
+<tr><td>证据与识别</td><td>模型参数能不能从观测数据里求出来</td><td>计量经济学</td><td>第四篇 20～25</td></tr>
+<tr><td>不确定与决策</td><td>未来是分布而非确定值时怎么下注</td><td>投资学</td><td>第五篇 26～30</td></tr>
+<tr><td>方法论与综合</td><td>结论可信吗？如何端到端做完一个课题</td><td>研究实践</td><td>第六篇 31～32</td></tr>
+</tbody></table><p>关键在于<strong>同一个数学骨架反复出现</strong>：约束最优化（消费者、生产者、组合选择）、不动点（均衡、纳什、一般均衡、稳态）、条件期望（回归、资产定价）、以及「反事实」（因果推断、政策评估、期权 payoff）。学会识别这四种骨架，五门课就变成五种应用配置。</p>
+</section>
+<section id="s0-2"><h2><span class="sec-num">§0.2</span>五个学习阶段与本书结构</h2>
+<ol class="roadmap">
+<li><strong>第一阶段 · 个体、市场与效率</strong>（00～14）：先把「选择」写成可解的数学问题，再研究多人互动的均衡与失灵，最后用一般均衡收口微观。</li>
+<li><strong>第二阶段 · 总量、货币与增长</strong>（15～19）：把「加总」当成一个新问题而不是简单求和，处理核算恒等式、短期波动、长期增长与开放经济。</li>
+<li><strong>第三阶段 · 数据与因果识别</strong>（20～25）：从模拟出的数据生成过程出发，手写 OLS、诊断、IV、DID 与时间序列，回答「什么条件下估计量等于因果参数」。</li>
+<li><strong>第四阶段 · 不确定性与资产定价</strong>（26～30）：把随机收益、组合优化、因子模型、利率期限结构与无套利定价接成一条链。</li>
+<li><strong>第五阶段 · 综合与方法论</strong>（31～32、附录）：多重检验与复现规范，最后用一个端到端课题把全部环节跑通。</li>
+</ol>
+<p><strong>高屋建瓴的读法</strong>：每章开头有「本章位置」（承接什么、引出什么）与「给程序员的翻译」（映射到计算概念）；每章结尾有常见误区、习题与扩展链接。先看位置再钻细节，不会被公式淹没。</p>
+</section>
+<section id="s0-3"><h2><span class="sec-num">§0.3</span>模型的三层用法：解释、预测、反事实</h2>
+<p>同一个模型有三种用法，混淆它们是初学阶段最常见的错误：</p><table><thead><tr><th style="width:18%">用法</th><th style="width:26%">问句</th><th style="width:28%">需要的前提</th><th style="width:28%">本书对应</th></tr></thead><tbody>
+<tr><td>解释（正推）</td><td>给定参数，均衡会是什么样</td><td>模型设定正确</td><td>03～19 章的模拟</td></tr>
+<tr><td>预测（外推）</td><td>未来一期最可能是什么</td><td>结构稳定、分布不变</td><td>25、26、30 章</td></tr>
+<tr><td>反事实（干预）</td><td>若政策改成 t，结果会变多少</td><td>识别假设成立，参数不随干预改变</td><td>20～24、31 章</td></tr>
+</tbody></table><div class="card warn"><p style="margin-bottom:0"><strong>卢卡斯批判</strong>是第三层的陷阱：若政策改变了人们形成预期的方式，用历史数据拟合出的参数就不能直接拿来做反事实。程序员的类比是：训练集分布与部署分布不一致时，离线指标再好也不能推断线上效果。</p></div>
+</section>
+<section id="s0-4"><h2><span class="sec-num">§0.4</span>给程序员的阅读约定与先修清单</h2>
+<div class="card contract"><span class="card-label">代码契约（全书每章适用）</span><ul style="margin-bottom:0">
+<li><strong>零依赖</strong>：只用 <code>math</code>、<code>random</code>、<code>statistics</code> 等标准库；矩阵运算、最小二乘、分位数全部手写展开，方便对照公式。</li>
+<li><strong>可复现</strong>：固定 <code>random.seed(7)</code>；数据由代码里的「数据生成过程」合成，不下载、不读文件。</li>
+<li><strong>参数集中</strong>：脚本开头的 <code># ---- 参数区 ----</code> 集中所有可调量，先改这里。</li>
+<li><strong>数值可核对</strong>：结尾 <code>print</code> 打印可手算的量，页面「预期与判读」给出数值与解释。</li>
+<li><strong>可批量验证</strong>：<code>./tools/run_python.sh</code> 跑完全部 <code>code/*.py</code>；页面与脚本由 <code>tools/extract_code.py</code> 同步。</li>
+</ul></div>
+<p>为什么不用 <code>numpy</code> / <code>statsmodels</code>？因为教材要展示的是<strong>算法本身</strong>：把 <code>(XᵀX)⁻¹Xᵀy</code> 写成能读懂的循环，比调用 <code>OLS(...).fit()</code> 更有助于理解假设从哪里进来。附录 A.5 给出这些手写实现与工业库的对应表，学完之后应能无缝切换到成熟工具。</p><table><thead><tr><th style="width:22%">主题</th><th style="width:52%">需要到什么程度</th><th style="width:26%">对应章节</th></tr></thead><tbody>
+<tr><td>微积分 / 最优化</td><td>偏导、一阶条件、拉格朗日乘子、二分法求根</td><td>01、05、06、27</td></tr>
+<tr><td>线性代数</td><td>矩阵乘法、转置、2×2 求逆、二次型</td><td>21、23、27</td></tr>
+<tr><td>概率统计</td><td>期望、方差、条件期望、大数定律、中心极限定理</td><td>02、20、21、26</td></tr>
+<tr><td>编程</td><td>循环、列表推导、函数、浮点误差意识</td><td>全书</td></tr>
+</tbody></table><p><strong>符号约定</strong>：价格用 <code>p</code>、数量 <code>q</code>、效用 <code>u</code>、成本 <code>C</code>；随机变量大写（<code>Y</code>）、实现值小写（<code>y</code>）；<code>β̂</code> 表示估计量，<code>β</code> 表示真实参数；对数一律写成 <code>ln</code>（自然对数）。代码里用 <code>math.log</code>，与公式一致。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>最小可运行脚本：稀缺下的最优选择</h3>
+<pre class="code" data-file="code/00-hello-econ.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""00-hello-econ.py | 第一个经济程序：把「选择」写成约束最优化"""
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+BUDGET = 100.0          # 预算
+PX, PY = 2.0, 5.0       # 两种商品的价格
+ALPHA = 0.5             # Cobb-Douglas 效用中 x 的份额
+GRID = 100              # 网格精度
+# ---- 模型：u(x,y) = x^a * y^(1-a)，约束 p_x*x + p_y*y = B ----
+best = (-1.0, 0.0, 0.0)
+for i in range(GRID + 1):
+    x = BUDGET / PX * i / GRID
+    y = (BUDGET - PX * x) / PY
+    u = (x ** ALPHA) * (y ** (1 - ALPHA))
+    if u &gt; best[0]:
+        best = (u, x, y)
+# ---- 解析解（后面第 05 章会推导）----
+analytic_x = ALPHA * BUDGET / PX
+analytic_y = (1 - ALPHA) * BUDGET / PY
+# ---- 数值验证：打印可手算核对的量 ----
+print("预算=%.2f 价格=(%.2f, %.2f) a=%.2f" % (BUDGET, PX, PY, ALPHA))
+print("网格最优 x=%.2f y=%.2f u=%.4f" % (best[1], best[2], best[0]))
+print("解析最优 x=%.2f y=%.2f" % (analytic_x, analytic_y))
+print("支出校验=%.2f (应等于预算)" % (PX * best[1] + PY * best[2]))</code></pre>
+<p class="code-hint"><strong>操作：</strong>直接运行 <code>python3 part0/00-preface/code/00-hello-econ.py</code>；把 <code>ALPHA</code> 改成 0.3 观察最优组合怎么移动。　<strong>预期与判读：</strong>网格最优 x=25.00、y=10.00、u≈15.8114；解析解同为 25 与 10；支出 100 恰好用尽预算。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>ALPHA 越大越偏好 x；PX 上升使 x 的需求按 αB/PX 下降；GRID 决定数值解与解析解的接近程度。　文件位置：<code>part0/00-preface/code/00-hello-econ.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></h3>
+<span class="tag">教材 · 参考资料</span>
+<p>免费开源的本科经济学教材，以实证与数据贯穿全书，与本书的系统视角最接近</p>
+<span class="why"><strong>怎么用</strong>：对照本书主线：以数据与实证贯穿原理教材</span>
+<p style="margin:0"><code>https://www.core-econ.org/</code></p></div>
+<div class="repo-card">
+<h3><a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></h3>
+<span class="tag">教材 · 参考资料</span>
+<p>免费、可下载的本科原理教材，适合查公式与习题</p>
+<span class="why"><strong>怎么用</strong>：查漏补缺用：标准本科原理教材的公式与习题</span>
+<p style="margin:0"><code>https://openstax.org/details/books/principles-economics</code></p></div>
+<div class="repo-card">
+<h3><a href="https://ocw.mit.edu/search/?q=economics" target="_blank" rel="noopener">MIT OpenCourseWare 经济学课程</a></h3>
+<span class="tag">课程 · 参考资料</span>
+<p>检索 14.01 微观、14.02 宏观、14.32 计量等完整课程材料</p>
+<span class="why"><strong>怎么用</strong>：想系统上课时按 14.01 / 14.02 / 14.32 检索配套材料</span>
+<p style="margin:0"><code>https://ocw.mit.edu/search/?q=economics</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把五门课当五套不相干的工具：其实约束优化、不动点、条件期望、反事实四种骨架反复出现。</li>
+<li>只跑代码不改参数：看不出价格、偏好、弹性对结果的方向性影响，等于只抄了答案。</li>
+<li>把拟合优度当成因果证据：相关与反事实是两件事，第 20 章会正式处理。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>用四步闭环为 <a href='../../part1/04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a> 写一份实验记录模板（预期值、实际值、偏差、原因四列）。</li>
+<li>把 00 号脚本的 <code>PX</code> 从 2 改成 4，先手算最优组合与最大效用，再运行核对。</li>
+<li>列举三个你熟悉的工程决策，分别对应稀缺、均衡、识别、定价中的哪一个环节。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>CORE Econ 开放教材</strong>（教材）：免费开源的本科经济学教材，以实证与数据贯穿全书，与本书的系统视角最接近<br><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></li>
+<li><strong>OpenStax Principles of Economics</strong>（教材）：免费、可下载的本科原理教材，适合查公式与习题<br><a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></li>
+<li><strong>MIT OpenCourseWare 经济学课程</strong>（课程）：检索 14.01 微观、14.02 宏观、14.32 计量等完整课程材料<br><a href="https://ocw.mit.edu/search/?q=economics" target="_blank" rel="noopener">MIT OpenCourseWare 经济学课程</a></li>
+<li><strong>American Economic Association</strong>（机构）：学会资源、JEL 分类与教学资料<br><a href="https://www.aeaweb.org/" target="_blank" rel="noopener">American Economic Association</a></li>
+<li><strong>NBER</strong>（机构）：工作论文与数据集，追踪前沿实证研究的入口<br><a href="https://www.nber.org/" target="_blank" rel="noopener">NBER</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=economics%20curriculum%20principles%20microeconometrics%20investment" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=economics%20curriculum%20principles%20microeconometrics%20investment" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=economics%20curriculum%20principles%20microeconometrics%20investment" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../index.html#roadmap'>全书学习路线</a>　全书学习路线与最短路径</li>
+<li><a href='../../part2/14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a>　微观部分如何用一般均衡收口</li>
+<li><a href='../../part6/32-capstone/index.html'>第 32 章 · 综合课题：一项政策评估从数据到结论</a>　端到端综合课题</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

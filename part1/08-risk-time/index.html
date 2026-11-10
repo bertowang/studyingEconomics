@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 08 章 · 跨期选择与不确定下的决策 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="08">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第一篇 · 原理与个体决策 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 08 章</span>跨期选择与不确定下的决策</h1>
+<p class="lede">把时间贴现与风险偏好写进同一个最优化框架：欧拉方程决定今天与明天的消费比例，凹效用决定愿意为规避风险付多少钱。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">原理 · 个体</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../../part0/02-probability-simulation/index.html'>第 02 章 · 概率、统计与模拟：从分布到证据</a> 的分布与 <a href='../05-consumer-choice/index.html'>第 05 章 · 消费者理论：偏好、需求与希克斯分解</a> 的效用合流；这是通向 <a href='../../part5/26-returns/index.html'>第 26 章 · 收益、复利与波动：把价格变成可建模的序列</a> 收益建模、<a href='../../part5/27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> 组合选择与 <a href='../../part5/30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a> 期权定价的桥。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">贴现因子就是异步任务里的折扣率；确定性等价是把一个随机 payoff 压缩成「确定给多少我才愿意换」，类似把延迟分布换成等价的固定 SLA。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>会计算现值、年金与跨期欧拉方程</li>
+<li>能由期望效用计算确定性等价与风险溢价</li>
+<li>理解风险厌恶来自效用函数的凹性而非「不喜欢波动」的心理描述</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>贴现与现值</td><td><a href="https://en.wikipedia.org/wiki/Present_value" target="_blank" rel="noopener">Present value</a> · <a href="https://en.wikipedia.org/wiki/Discounted_utility" target="_blank" rel="noopener">Discounted utility</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>跨期预算与欧拉方程</td><td><a href="https://en.wikipedia.org/wiki/Present_value" target="_blank" rel="noopener">Present value</a> · <a href="https://en.wikipedia.org/wiki/Discounted_utility" target="_blank" rel="noopener">Discounted utility</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>期望效用</td><td><a href="https://en.wikipedia.org/wiki/Utility" target="_blank" rel="noopener">Utility</a> · <a href="https://en.wikipedia.org/wiki/Indifference_curve" target="_blank" rel="noopener">Indifference curve</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>确定性等价</td><td><a href="https://en.wikipedia.org/wiki/Expected_utility_hypothesis" target="_blank" rel="noopener">Expected utility hypothesis</a> · <a href="https://en.wikipedia.org/wiki/Risk_aversion" target="_blank" rel="noopener">Risk aversion</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>风险溢价</td><td><a href="https://en.wikipedia.org/wiki/Risk_premium" target="_blank" rel="noopener">Risk premium</a> · <a href="https://en.wikipedia.org/wiki/Risk_aversion" target="_blank" rel="noopener">Risk aversion</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>风险厌恶系数</td><td><a href="https://en.wikipedia.org/wiki/Risk_aversion" target="_blank" rel="noopener">Risk aversion</a> · <a href="https://en.wikipedia.org/wiki/Expected_utility_hypothesis" target="_blank" rel="noopener">Expected utility hypothesis</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>蒙特卡洛验证</td><td><a href="https://en.wikipedia.org/wiki/Monte_Carlo_method" target="_blank" rel="noopener">Monte Carlo method</a> · <a href="https://en.wikipedia.org/wiki/Geometric_Brownian_motion" target="_blank" rel="noopener">Geometric Brownian motion</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s8-1"><h2><span class="sec-num">§8.1</span>跨期：现值、年金与欧拉方程</h2>
+<p>一笔未来现金流 <code>C_t</code> 的现值是 <code>C_t/(1+r)^t</code>；等额年金可求和为闭式：</p><p class="eq">PV = C·[1 − (1+r)^(−T)] / r  ;  永续 PV = C/r</p><p>两期消费者最大化 <code>u(c₁) + β·u(c₂)</code>，预算 <code>c₁ + c₂/(1+r) ≤ y₁ + y₂/(1+r)</code>，一阶条件即<strong>欧拉方程</strong>：</p><p class="eq">u'(c₁) = β(1+r)·u'(c₂)  ;  对数效用下 c₂/c₁ = β(1+r)</p><p>读法：<code>β(1+r)</code> 大于 1 时把消费推到明天（耐心或高利率），小于 1 时提前消费。宏观的 <a href='../../part3/16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a> 消费函数、<a href='../../part3/17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a> 实际利率、<a href='../../part3/18-growth/index.html'>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</a> 储蓄率与增长都由这条式子在不同约束下推出；<a href='../../part5/29-bonds/index.html'>第 29 章 · 债券、久期与期限结构：利率风险的一阶与二阶</a> 债券定价则是它的直接应用。</p>
+</section>
+<section id="s8-2"><h2><span class="sec-num">§8.2</span>风险：期望效用与确定性等价</h2>
+<p>不确定下不最大化期望财富，而最大化<strong>期望效用</strong>（冯·诺依曼–摩根斯坦公理）：</p><p class="eq">EU = Σ p_s·u(w_s) ;  CE 满足 u(CE) = EU ;  风险溢价 RP = E[w] − CE</p><p>由 Jensen 不等式，<code>u</code> 凹 ⇒ <code>E[u(w)] ≤ u(E[w])</code> ⇒ <code>CE ≤ E[w]</code> ⇒ 风险溢价非负。风险厌恶的局部度量是 <code>A(w)=−u''/u'</code>（阿罗–普拉特）；对数效用 <code>A=1/w</code>，财富越高越不怕小赌。</p>
+<div class="card tip"><p style="margin-bottom:0"><strong>与 <a href='../../part5/27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> 的接口</strong>：均值-方差准则等价于「效用二次 或 收益正态」下的期望效用近似，因此 <code>E[r] − (A/2)Var(r)</code> 里的风险系数不是随手加的惩罚项，而是凹效用的二阶展开。</p></div>
+</section>
+<section id="s8-3"><h2><span class="sec-num">§8.3</span>用蒙特卡洛核对解析结果</h2>
+<p>脚本同时用解析式与固定种子的随机抽样计算确定性等价：<code>ln</code> 效用下 <code>CE = exp(E[ln w])</code>，即财富的几何平均。这给出了本书第一次「模拟估计一个已知量」的闭环，<a href='../../part5/30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a> 会把它放大成期权定价的主力方法。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>现值、欧拉方程、确定性等价与蒙特卡洛</h3>
+<pre class="code" data-file="code/08-risk.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 08-risk.py | 跨期贴现与期望效用（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+C_ANNUAL, RATE, YEARS = 100.0, 0.05, 20
+BETA = 0.95
+W_LOW, W_HIGH, P_HIGH = 80.0, 120.0, 0.5
+N_DRAWS = 20000
+# ---- 跨期：年金现值 ----
+pv = C_ANNUAL * (1 - (1 + RATE) ** (-YEARS)) / RATE
+perpetuity = C_ANNUAL / RATE
+c_ratio = BETA * (1 + RATE)     # 对数效用下 c2/c1
+# ---- 风险：解析期望效用 ----
+eu = (1 - P_HIGH) * math.log(W_LOW) + P_HIGH * math.log(W_HIGH)
+ce = math.exp(eu)
+expected_w = (1 - P_HIGH) * W_LOW + P_HIGH * W_HIGH
+rp = expected_w - ce
+# ---- 蒙特卡洛核对 ----
+draws = [W_HIGH if random.random() &lt; P_HIGH else W_LOW for _ in range(N_DRAWS)]
+mc_mean = statistics.fmean(draws)
+mc_ce = math.exp(statistics.fmean([math.log(w) for w in draws]))
+# ---- 数值验证：打印可手算核对的量 ----
+print("年金现值(T=%d)=%.4f  永续现值=%.4f" % (YEARS, pv, perpetuity))
+print("欧拉方程 c2/c1=beta*(1+r)=%.4f" % c_ratio)
+print("EU=%.6f  CE=%.6f (=sqrt(80*120)=%.6f)" % (eu, ce, math.sqrt(W_LOW * W_HIGH)))
+print("E[w]=%.4f  风险溢价 RP=%.4f" % (expected_w, rp))
+print("蒙特卡洛: 平均财富=%.4f  几何平均(CE)=%.4f  与解析差=%.4f" %
+      (mc_mean, mc_ce, mc_ce - ce))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>W_LOW/W_HIGH</code> 的价差拉大（如 40/160），观察 RP 如何上升；把 <code>BETA</code> 改成 1.0 看 c₂/c₁。　<strong>预期与判读：</strong>20 年年金现值≈1246.22、永续=2000；c₂/c₁=0.9975；CE=√9600≈97.9796、RP≈2.0204；蒙特卡洛几何平均≈98 左右，与解析值一致。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>价差越大 RP 越大；P_HIGH 偏离 0.5 会改变 CE；BETA 上升使消费后移。　文件位置：<code>part1/08-risk-time/code/08-risk.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Present_value" target="_blank" rel="noopener">Present value</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>跨期选择的贴现基础</p>
+<span class="why"><strong>怎么用</strong>：贴现与现值公式</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Present_value</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Expected_utility_hypothesis" target="_blank" rel="noopener">Expected utility hypothesis</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>不确定下的偏好表示</p>
+<span class="why"><strong>怎么用</strong>：期望效用公理</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Expected_utility_hypothesis</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Risk_aversion" target="_blank" rel="noopener">Risk aversion</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>凹效用、风险溢价与确定性等价</p>
+<span class="why"><strong>怎么用</strong>：阿罗-普拉特度量与 Jensen 不等式</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Risk_aversion</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把期望财富最大化当决策准则：凹效用下应最大化期望效用。</li>
+<li>把风险溢价当成「不理性的恐惧」：它来自边际效用递减，是可计算的价格。</li>
+<li>把名义利率当实际利率做跨期决策：需扣除预期通胀，见 <a href='../../part3/17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a> 费雪方程。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>推导指数效用 <code>u(w)=−e^(−aw)</code> 下 CE 与 RP，并说明为什么与财富水平无关。</li>
+<li>把 <code>RATE</code> 从 0 到 0.2 扫描，画年金现值曲线并解释凸性。</li>
+<li>在脚本里令 <code>BETA=1.0, RATE=0</code>，说明欧拉方程给出的平滑消费结论。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Present value</strong>（百科）：跨期选择的贴现基础<br><a href="https://en.wikipedia.org/wiki/Present_value" target="_blank" rel="noopener">Present value</a></li>
+<li><strong>Expected utility hypothesis</strong>（百科）：不确定下的偏好表示<br><a href="https://en.wikipedia.org/wiki/Expected_utility_hypothesis" target="_blank" rel="noopener">Expected utility hypothesis</a></li>
+<li><strong>Risk aversion</strong>（百科）：凹效用、风险溢价与确定性等价<br><a href="https://en.wikipedia.org/wiki/Risk_aversion" target="_blank" rel="noopener">Risk aversion</a></li>
+<li><strong>Compound interest</strong>（百科）：复利与长期增长的非线性<br><a href="https://en.wikipedia.org/wiki/Compound_interest" target="_blank" rel="noopener">Compound interest</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=expected%20utility%20risk%20aversion%20intertemporal%20choice" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=expected%20utility%20risk%20aversion%20intertemporal%20choice" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=expected%20utility%20risk%20aversion%20intertemporal%20choice" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part5/26-returns/index.html'>第 26 章 · 收益、复利与波动：把价格变成可建模的序列</a>　收益、对数收益与复利</li>
+<li><a href='../../part5/27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a>　均值-方差与期望效用的关系</li>
+<li><a href='../../part5/30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a>　蒙特卡洛定价</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

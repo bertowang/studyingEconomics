@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="10">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第二篇 · 市场结构、策略与失灵 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 10 章</span>市场势力：垄断定价、勒纳指数与价格歧视</h1>
+<p class="lede">当企业面对向下倾斜的需求曲线，边际收益不再等于价格；产量下降、价格上升，福利出现净损失。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">市场 · 策略</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>打破 <a href='../09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a> 福利定理的「价格接受」前提。<a href='../11-games-oligopoly/index.html'>第 11 章 · 博弈论与寡头：策略互动与不动点</a> 进一步引入少数企业间的策略互动，<a href='../13-information/index.html'>第 13 章 · 信息不对称：逆向选择、信号与道德风险</a> 说明信息优势如何变成另一种市场势力。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">垄断者是在自己的需求曲线上做一维最大化：多卖一单位得到的边际收益 = 价格 − 因降价损失的老客户收入。价格歧视是「按用户分组做分段计价」，本质是把消费者剩余转成生产者剩余。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能由 MR=MC 解出垄断产量并计算无谓损失</li>
+<li>推导勒纳指数与需求弹性的关系 (p−MC)/p = 1/|ε|</li>
+<li>比较统一价格与三级价格歧视下的产量、利润与福利</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>边际收益曲线</td><td><a href="https://en.wikipedia.org/wiki/Marginalism" target="_blank" rel="noopener">Marginalism</a> · <a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>MR=MC 定价</td><td><a href="https://en.wikipedia.org/wiki/Monopoly" target="_blank" rel="noopener">Monopoly</a> · <a href="https://en.wikipedia.org/wiki/Price_discrimination" target="_blank" rel="noopener">Price discrimination</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>勒纳指数与弹性</td><td><a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a> · <a href="https://en.wikipedia.org/wiki/Tax_incidence" target="_blank" rel="noopener">Tax incidence</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>垄断无谓损失</td><td><a href="https://en.wikipedia.org/wiki/Deadweight_loss" target="_blank" rel="noopener">Deadweight loss</a> · <a href="https://en.wikipedia.org/wiki/Tax_incidence" target="_blank" rel="noopener">Tax incidence</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>三级价格歧视</td><td><a href="https://en.wikipedia.org/wiki/Price_discrimination" target="_blank" rel="noopener">Price discrimination</a> · <a href="https://en.wikipedia.org/wiki/Monopoly" target="_blank" rel="noopener">Monopoly</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>价格歧视的福利条件</td><td><a href="https://en.wikipedia.org/wiki/Price_discrimination" target="_blank" rel="noopener">Price discrimination</a> · <a href="https://en.wikipedia.org/wiki/Monopoly" target="_blank" rel="noopener">Monopoly</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>自然垄断与规制</td><td><a href="https://en.wikipedia.org/wiki/Monopoly" target="_blank" rel="noopener">Monopoly</a> · <a href="https://en.wikipedia.org/wiki/Price_discrimination" target="_blank" rel="noopener">Price discrimination</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s10-1"><h2><span class="sec-num">§10.1</span>边际收益与最优产量</h2>
+<p>设反需求 <code>p = a − bQ</code>、恒定边际成本 <code>c</code>。收益 <code>R = aQ − bQ²</code>，故</p><p class="eq">MR = a − 2bQ ;  MR = c ⇒ Q_m = (a−c)/(2b) ,  p_m = (a+c)/2</p><p>竞争均衡满足 <code>p = c</code>，产量 <code>Q_c = (a−c)/b = 2Q_m</code>。垄断把价格抬到 MC 之上，交易量减少，DWL 是需求与 MC 之间被挤掉的三角形。</p>
+<p>把 FOC 改写可得<strong>勒纳指数</strong>：</p><p class="eq">(p − MC)/p = −1/ε_d   ⇒   |ε_d| 必须大于 1（垄断者永不在缺乏弹性区生产）</p><p>这条式子把「 markup 」与「替代难度」直接挂钩：需求越缺乏弹性（替代品越少），加价越狠。它是反垄断中界定市场势力、<a href='../../part5/28-capm-factors/index.html'>第 28 章 · CAPM 与因子模型：什么风险该有补偿</a> 中理解定价因子的常用近似。</p>
+</section>
+<section id="s10-2"><h2><span class="sec-num">§10.2</span>三级价格歧视</h2>
+<p>若企业能分割两个市场且无法套利，就分别令 <code>MR₁ = MR₂ = MC</code>，等价于：</p><p class="eq">p_i·(1 − 1/|ε_i|) = MC   ⇒   弹性小的市场定价更高</p><p>与统一价格相比，歧视定价通常会提高利润；<strong>总产量是否增加不确定</strong>，因此福利结论也不是一边倒：若它打开了原本服务不到的市场，可能同时提高产出与福利。判断标准是总产量，不是「是否区别定价」。</p>
+</section>
+<section id="s10-3"><h2><span class="sec-num">§10.3</span>自然垄断与规制的两难</h2>
+<table><thead><tr><th style="width:24%">规制方式</th><th>做法</th><th>问题</th></tr></thead><tbody>
+<tr><td>边际成本定价</td><td>p = MC</td><td>若 AC 递减，企业亏损，需补贴</td></tr>
+<tr><td>平均成本定价</td><td>p = AC</td><td>零利润但仍有 DWL</td></tr>
+<tr><td>回报率规制</td><td>按成本加合理利润</td><td>缺乏降本激励（A-J 效应）</td></tr>
+<tr><td>两部定价</td><td>入门费 + p = MC</td><td>需要能阻止套利、识别需求</td></tr>
+</tbody></table>
+<p>共同主题：<strong>信息不对称下的机制设计</strong>。规制者不知道真实成本曲线，企业有动机夸大成本——这正是 <a href='../13-information/index.html'>第 13 章 · 信息不对称：逆向选择、信号与道德风险</a> 的委托代理问题。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>垄断、勒纳指数与三级价格歧视</h3>
+<pre class="code" data-file="code/10-monopoly.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 10-monopoly.py | MR=MC、弹性加价与分组定价（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+A, B, MC = 100.0, 2.0, 10.0     # 单市场反需求 p=A-B*Q
+M1 = (100.0, 2.0)               # 市场 1: (a, b)
+M2 = (80.0, 4.0)                # 市场 2
+GRID = 20000
+# ---- 单市场：竞争 / 垄断 ----
+qc = (A - MC) / B
+qm = (A - MC) / (2 * B)
+pm = A - B * qm
+profit_m = (pm - MC) * qm
+cs_m = 0.5 * qm * (A - pm)
+dwl = 0.5 * (pm - MC) * (qc - qm)
+eps = -pm / (B * qm)
+lerner = (pm - MC) / pm
+# ---- 统一价格 vs 分别定价（两市场，MC 相同）----
+def total_q(p):
+    return sum(max(0.0, (a - p) / b) for a, b in (M1, M2))
+best_p, best_pi = MC, 0.0
+for i in range(GRID + 1):
+    p = MC + (A - MC) * i / GRID
+    pi = (p - MC) * total_q(p)
+    if pi &gt; best_pi:
+        best_p, best_pi = p, pi
+sep = []
+for a, b in (M1, M2):
+    q = (a - MC) / (2 * b)
+    sep.append((q, a - b * q, (a - b * q - MC) * q))
+sep_profit = sum(x[2] for x in sep)
+# ---- 数值验证：打印可手算核对的量 ----
+print("竞争 Q=%.4f p=%.4f" % (qc, MC))
+print("垄断 Q=%.4f p=%.4f 利润=%.4f" % (qm, pm, profit_m))
+print("垄断 CS=%.4f DWL=%.4f" % (cs_m, dwl))
+print("需求弹性=%.4f 勒纳指数=%.4f 1/|eps|=%.4f" % (eps, lerner, 1 / abs(eps)))
+print("统一价格 p=%.4f 利润=%.4f 总产量=%.4f" % (best_p, best_pi, total_q(best_p)))
+for i, (q, p, pi) in enumerate(sep, 1):
+    print("  市场%d 分别定价 q=%.4f p=%.4f 利润=%.4f" % (i, q, p, pi))
+print("歧视总利润=%.4f 增量=%.4f" % (sep_profit, sep_profit - best_pi))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>M2</code> 的斜率改成 2.0（两市场弹性相同），观察歧视定价的利润增量是否趋于零。　<strong>预期与判读：</strong>竞争 Q=45、p=10；垄断 Q=22.5、p=55、利润 1012.5、DWL=506.25；ε≈−1.2222、勒纳指数≈0.8182=1/|ε|；统一价≈51.67 利润≈1302.08，分别定价利润=1318.75，增量≈16.67。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>B 越小需求越弹性、加价越低；MC 上升压缩产量；两市场需求弹性越接近，歧视收益越小。　文件位置：<code>part2/10-monopoly/code/10-monopoly.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Monopoly" target="_blank" rel="noopener">Monopoly</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>边际收益等于边际成本的定价</p>
+<span class="why"><strong>怎么用</strong>：垄断定价的标准推导</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Monopoly</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Price_discrimination" target="_blank" rel="noopener">Price discrimination</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>按支付意愿分段榨取剩余</p>
+<span class="why"><strong>怎么用</strong>：三级歧视与弹性规则</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Price_discrimination</code></p></div>
+<div class="repo-card">
+<h3><a href="https://www.cbo.gov/" target="_blank" rel="noopener">Congressional Budget Office</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>政策评估与财政预测报告，学习政策分析的范本</p>
+<span class="why"><strong>怎么用</strong>：阅读真实的政策评估与规制成本分析</span>
+<p style="margin:0"><code>https://www.cbo.gov/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把 MR 当成价格：降价卖出的额外一单位会压低所有旧单位的收入，MR 低于 p。</li>
+<li>断言价格歧视一定降低福利：结论取决于总产量是否增加。</li>
+<li>在需求缺乏弹性区间谈垄断均衡：FOC 会自动排除 |ε|≤1 的点。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>推导固定成本存在时的自然垄断条件，并说明为什么 MC 定价会亏损。</li>
+<li>用脚本验证「完全价格歧视」下产量回到竞争水平、DWL 为零但 CS 归零。</li>
+<li>结合 <a href='../13-information/index.html'>第 13 章 · 信息不对称：逆向选择、信号与道德风险</a> 说明规制者为何难以获得真实成本信息。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Monopoly</strong>（百科）：边际收益等于边际成本的定价<br><a href="https://en.wikipedia.org/wiki/Monopoly" target="_blank" rel="noopener">Monopoly</a></li>
+<li><strong>Price discrimination</strong>（百科）：按支付意愿分段榨取剩余<br><a href="https://en.wikipedia.org/wiki/Price_discrimination" target="_blank" rel="noopener">Price discrimination</a></li>
+<li><strong>Deadweight loss</strong>（百科）：扭曲造成的净福利损失<br><a href="https://en.wikipedia.org/wiki/Deadweight_loss" target="_blank" rel="noopener">Deadweight loss</a></li>
+<li><strong>Congressional Budget Office</strong>（数据）：政策评估与财政预测报告，学习政策分析的范本<br><a href="https://www.cbo.gov/" target="_blank" rel="noopener">Congressional Budget Office</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=monopoly%20pricing%20price%20discrimination%20regulation" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=monopoly%20pricing%20price%20discrimination%20regulation" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=monopoly%20pricing%20price%20discrimination%20regulation" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a>　效率基准与 DWL</li>
+<li><a href='../11-games-oligopoly/index.html'>第 11 章 · 博弈论与寡头：策略互动与不动点</a>　寡头与古诺竞争</li>
+<li><a href='../13-information/index.html'>第 13 章 · 信息不对称：逆向选择、信号与道德风险</a>　信息与机制设计</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

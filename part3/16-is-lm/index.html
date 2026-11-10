@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="16">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第三篇 · 宏观、货币与增长 · 第二阶段 · 总量、货币与增长</span>
+<h1><span class="ch-num">第 16 章</span>短期波动：乘数、IS-LM 与 AD-AS</h1>
+<p class="lede">把 <a href='../../part2/14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a> 的合成谬误具体化：人人同时多储蓄会压低总需求；乘数、挤出效应与总供给约束是宏观短期分析的三个齿轮。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s2">总量 · 增长</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../15-national-accounts/index.html'>第 15 章 · 国民账户与价格指数：如何度量总量</a> 的核算恒等式升级为行为方程；<a href='../17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a> 把 LM 一侧替换成央行的政策规则，<a href='../18-growth/index.html'>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</a> 把视野从短期拉到长期增长。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">乘数是带反馈的迭代：<code>Y ← c·Y + A</code> 收敛到 <code>A/(1−c)</code>，收敛速度由谱半径 c 决定；IS-LM 是两条约束的联立求解，挤出效应来自利率这条额外反馈通道。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能推导简单凯恩斯乘数并用迭代法验证收敛</li>
+<li>会联立 IS 与 LM 求出均衡产出与利率，量化挤出效应</li>
+<li>区分总需求冲击与总供给冲击，说明菲利普斯曲线的斜率来源</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>凯恩斯交叉与乘数</td><td><a href="https://en.wikipedia.org/wiki/Multiplier_(economics)" target="_blank" rel="noopener">Multiplier (economics)</a> · <a href="https://en.wikipedia.org/wiki/IS%E2%80%93LM_model" target="_blank" rel="noopener">IS–LM model</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>边际消费倾向</td><td><a href="https://en.wikipedia.org/wiki/Marginalism" target="_blank" rel="noopener">Marginalism</a> · <a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>储蓄悖论</td><td><a href="https://en.wikipedia.org/wiki/IS%E2%80%93LM_model" target="_blank" rel="noopener">IS–LM model</a> · <a href="https://en.wikipedia.org/wiki/AD%E2%80%93AS_model" target="_blank" rel="noopener">AD–AS model</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>IS 曲线</td><td><a href="https://en.wikipedia.org/wiki/IS%E2%80%93LM_model" target="_blank" rel="noopener">IS–LM model</a> · <a href="https://en.wikipedia.org/wiki/AD%E2%80%93AS_model" target="_blank" rel="noopener">AD–AS model</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>LM 曲线与货币需求</td><td><a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a> · <a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>挤出效应</td><td><a href="https://en.wikipedia.org/wiki/IS%E2%80%93LM_model" target="_blank" rel="noopener">IS–LM model</a> · <a href="https://en.wikipedia.org/wiki/AD%E2%80%93AS_model" target="_blank" rel="noopener">AD–AS model</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>AD-AS 与价格黏性</td><td><a href="https://en.wikipedia.org/wiki/AD%E2%80%93AS_model" target="_blank" rel="noopener">AD–AS model</a> · <a href="https://en.wikipedia.org/wiki/IS%E2%80%93LM_model" target="_blank" rel="noopener">IS–LM model</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>菲利普斯曲线</td><td><a href="https://en.wikipedia.org/wiki/IS%E2%80%93LM_model" target="_blank" rel="noopener">IS–LM model</a> · <a href="https://en.wikipedia.org/wiki/AD%E2%80%93AS_model" target="_blank" rel="noopener">AD–AS model</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s16-1"><h2><span class="sec-num">§16.1</span>乘数：一个一阶线性反馈</h2>
+<p>简单凯恩斯模型：消费 <code>C = c₀ + c(Y−T)</code>，计划支出 <code>E = C + I + G + NX</code>，均衡 <code>Y = E</code>：</p><p class="eq">Y = [c₀ − cT + I + G + NX] / (1−c)  ;  支出乘数 = 1/(1−c)</p><p><code>c=0.8</code> 时乘数为 5。数值上它就是迭代 <code>Y_{t+1}=cY_t+A</code> 的不动点，收敛速度由 <code>|c|</code> 决定。<strong>储蓄悖论</strong>：每家想多存钱（c 下降）使总需求与总收入下降，最终总储蓄未必增加——<a href='../../part2/14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a> 合成谬误的最经典案例。</p>
+<p>政府税收乘数是 <code>−c/(1−c)</code>，平衡预算乘数为 1（政府支出与税收等额增加时）。这些结论都依赖「有闲置产能、价格不立刻调整」的短期假设。</p>
+</section>
+<section id="s16-2"><h2><span class="sec-num">§16.2</span>IS-LM：加入利率与货币市场</h2>
+<p>让投资对利率敏感 <code>I = I₀ − d·r</code>，货币需求 <code>L = kY − h·r = M/P</code>。两式联立：</p><p class="eq">IS: Y(1−c) = A − d·r   ;   LM: r = (kY − M/P)/h</p><p class="eq">Y* = [A + d(M/P)/h] / [(1−c) + dk/h]</p><p>分母多出 <code>dk/h</code>，使政府支出乘数从 <code>1/(1−c)</code> 降到 <code>1/[(1−c)+dk/h]</code>：财政扩张推高利率，私人投资被<strong>挤出</strong>。流动性陷阱（h 很大）或投资利率不敏感（d 很小）时挤出很弱，乘数接近简单模型。</p>
+</section>
+<section id="s16-3"><h2><span class="sec-num">§16.3</span>AD-AS 与菲利普斯曲线</h2>
+<table><thead><tr><th style="width:22%">框架</th><th>价格假设</th><th>主要结论</th></tr></thead><tbody>
+<tr><td>凯恩斯交叉 / IS-LM</td><td>价格水平固定</td><td>产出由总需求决定</td></tr>
+<tr><td>AD-AS 短期</td><td>价格/工资黏性</td><td>需求冲击同时影响产出与价格</td></tr>
+<tr><td>AD-AS 长期</td><td>价格完全灵活</td><td>产出回到潜在水平，需求只影响价格</td></tr>
+</tbody></table>
+<p>短期总供给曲线向上倾斜，对应<strong>菲利普斯曲线</strong> <code>π = πᵉ + κ·产出缺口 + 供给冲击</code>：需求过热推高通胀；但 <code>πᵉ</code> 会随经验调整，因此不存在可长期利用的「通胀换就业」稳定替代关系。<a href='../17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a> 的泰勒规则正是把这条关系写进政策反应函数。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>乘数迭代、IS-LM 联立与挤出效应</h3>
+<pre class="code" data-file="code/16-multiplier.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 16-multiplier.py | 凯恩斯乘数与 IS-LM（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+C_MPC, AUTONOMOUS = 0.8, 100.0
+D_INV, K_MONEY, H_MONEY = 20.0, 0.5, 20.0
+M_OVER_P = 200.0
+DG = 10.0
+ITERS = 40
+# ---- 简单乘数：迭代求不动点 ----
+y = 0.0
+for _ in range(ITERS):
+    y = C_MPC * y + AUTONOMOUS
+y_simple = AUTONOMOUS / (1 - C_MPC)
+tax_mult = -C_MPC / (1 - C_MPC)
+# ---- IS-LM 联立 ----
+def solve_y(a):
+    return (a + D_INV * (M_OVER_P / H_MONEY)) / ((1 - C_MPC) + D_INV * K_MONEY / H_MONEY)
+
+def solve_r(y):
+    return (K_MONEY * y - M_OVER_P) / H_MONEY
+y0, r0 = solve_y(AUTONOMOUS), None
+r0 = solve_r(y0)
+y1 = solve_y(AUTONOMOUS + DG)
+r1 = solve_r(y1)
+mult_islm = (y1 - y0) / DG
+# ---- 数值验证：打印可手算核对的量 ----
+print("迭代 Y=%.4f 解析 Y=%.4f 乘数=%.4f 税收乘数=%.4f" %
+      (y, y_simple, 1 / (1 - C_MPC), tax_mult))
+print("IS-LM 初始 Y=%.4f r=%.4f" % (y0, r0))
+print("G 增加 %.2f 后 Y=%.4f r=%.4f" % (DG, y1, r1))
+print("IS-LM 支出乘数=%.4f (简单乘数 %.4f，挤出 %.4f)" %
+      (mult_islm, 1 / (1 - C_MPC), 1 / (1 - C_MPC) - mult_islm))
+print("储蓄悖论: c 从 0.8 降到 0.6 时均衡 Y 由 %.2f 降到 %.2f" %
+      (AUTONOMOUS / (1 - 0.8), AUTONOMOUS / (1 - 0.6)))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>D_INV</code> 改成 0（投资对利率不敏感），观察 IS-LM 乘数是否回到 5。　<strong>预期与判读：</strong>迭代收敛到 Y≈500（解析 500），乘数 5、税收乘数 −4；IS-LM 初始 Y≈428.57、r≈0.71；G 增加 10 后 Y≈442.86、r≈1.07，乘数≈1.43；c 降到 0.6 时 Y 从 500 降到 250。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>D_INV 或 H_MONEY 上升使挤出减弱；C_MPC 上升提高乘数；M_OVER_P 上升通过 LM 右移提高产出。　文件位置：<code>part3/16-is-lm/code/16-multiplier.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Multiplier_(economics)" target="_blank" rel="noopener">Multiplier (economics)</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>边际消费倾向决定的支出乘数</p>
+<span class="why"><strong>怎么用</strong>：乘数的推导与前提</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Multiplier_(economics)</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/IS%E2%80%93LM_model" target="_blank" rel="noopener">IS–LM model</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>产品市场与货币市场同时均衡</p>
+<span class="why"><strong>怎么用</strong>：产品与货币市场同时均衡</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/IS%E2%80%93LM_model</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/AD%E2%80%93AS_model" target="_blank" rel="noopener">AD–AS model</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>总需求总供给与短期波动</p>
+<span class="why"><strong>怎么用</strong>：总需求总供给框架</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/AD%E2%80%93AS_model</code></p></div>
+<div class="repo-card">
+<h3><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>美联储圣路易斯分行的宏观与金融时间序列，免费可下载</p>
+<span class="why"><strong>怎么用</strong>：用真实 GDP 与利率做对照</span>
+<p style="margin:0"><code>https://fred.stlouisfed.org/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把恒等式 S=I 当成「储蓄增加会带来投资增加」的因果链：短期由收入调整实现相等。</li>
+<li>忽略价格黏性前提：长期价格灵活时需求冲击只影响价格水平。</li>
+<li>把菲利普斯曲线当作稳定的政策菜单：预期调整会使替代关系消失。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>把 <code>H_MONEY</code> 设为 1e6 模拟流动性陷阱，观察乘数是否回到简单模型。</li>
+<li>推导平衡预算乘数并用脚本数值验证等于 1。</li>
+<li>用 <a href='../18-growth/index.html'>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</a> 的语言说明：短期波动模型与长期增长模型分别固定了什么、放松了什么。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>IS–LM model</strong>（百科）：产品市场与货币市场同时均衡<br><a href="https://en.wikipedia.org/wiki/IS%E2%80%93LM_model" target="_blank" rel="noopener">IS–LM model</a></li>
+<li><strong>AD–AS model</strong>（百科）：总需求总供给与短期波动<br><a href="https://en.wikipedia.org/wiki/AD%E2%80%93AS_model" target="_blank" rel="noopener">AD–AS model</a></li>
+<li><strong>Multiplier (economics)</strong>（百科）：边际消费倾向决定的支出乘数<br><a href="https://en.wikipedia.org/wiki/Multiplier_(economics)" target="_blank" rel="noopener">Multiplier (economics)</a></li>
+<li><strong>FRED 经济数据</strong>（数据）：美联储圣路易斯分行的宏观与金融时间序列，免费可下载<br><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=IS%20LM%20aggregate%20demand%20multiplier" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=IS%20LM%20aggregate%20demand%20multiplier" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=IS%20LM%20aggregate%20demand%20multiplier" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../15-national-accounts/index.html'>第 15 章 · 国民账户与价格指数：如何度量总量</a>　总量核算恒等式</li>
+<li><a href='../17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a>　泰勒规则与通胀动态</li>
+<li><a href='../18-growth/index.html'>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</a>　长期增长与稳态</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

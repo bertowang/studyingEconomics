@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 23 章 · 内生性与工具变量：2SLS 的手写实现 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="23">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第四篇 · 计量经济学与因果推断 · 第三阶段 · 数据与因果识别</span>
+<h1><span class="ch-num">第 23 章</span>内生性与工具变量：2SLS 的手写实现</h1>
+<p class="lede">当解释变量与误差相关，OLS 连无偏性都失去；工具变量用「只通过 x 影响 y 的外生变动」隔离出因果通道。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s3">数据 · 因果</span>
+<span>建议 4 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>放松 <a href='../21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a> 最关键的外生性假设；<a href='../24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a> 用面板与断点设计提供另一类识别策略，<a href='../20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a> 的选择偏误在这里得到结构性表达。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">工具变量是一次「天然 A/B 实验的外生分流器」：z 随机改变 x，但不直接改 y；2SLS 就是先只用 z 预测 x（去掉与误差相关的部分），再用预测值回归 y。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能写出内生性偏误公式并判断方向</li>
+<li>实现 IV 估计量与两阶段最小二乘，验证两者代数等价</li>
+<li>解释相关性、排他性、单调性与弱工具变量问题</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>内生性来源</td><td><a href="https://en.wikipedia.org/wiki/Endogeneity_(economics)" target="_blank" rel="noopener">Endogeneity (economics)</a> · <a href="https://en.wikipedia.org/wiki/Omitted-variable_bias" target="_blank" rel="noopener">Omitted-variable bias</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>遗漏变量偏误公式</td><td><a href="https://en.wikipedia.org/wiki/Omitted-variable_bias" target="_blank" rel="noopener">Omitted-variable bias</a> · <a href="https://en.wikipedia.org/wiki/Endogeneity_(economics)" target="_blank" rel="noopener">Endogeneity (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>工具变量相关性</td><td><a href="https://en.wikipedia.org/wiki/Instrumental_variable" target="_blank" rel="noopener">Instrumental variable</a> · <a href="https://en.wikipedia.org/wiki/Two-stage_least_squares" target="_blank" rel="noopener">Two-stage least squares</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>排他性约束</td><td><a href="https://en.wikipedia.org/wiki/Endogeneity_(economics)" target="_blank" rel="noopener">Endogeneity (economics)</a> · <a href="https://en.wikipedia.org/wiki/Omitted-variable_bias" target="_blank" rel="noopener">Omitted-variable bias</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>IV 估计量</td><td><a href="https://en.wikipedia.org/wiki/Endogeneity_(economics)" target="_blank" rel="noopener">Endogeneity (economics)</a> · <a href="https://en.wikipedia.org/wiki/Omitted-variable_bias" target="_blank" rel="noopener">Omitted-variable bias</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>两阶段最小二乘</td><td><a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target="_blank" rel="noopener">Ordinary least squares</a> · <a href="https://www.statsmodels.org/stable/generated/statsmodels.regression.linear_model.OLS.html" target="_blank" rel="noopener">statsmodels OLS 文档</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>弱工具变量</td><td><a href="https://en.wikipedia.org/wiki/Instrumental_variable" target="_blank" rel="noopener">Instrumental variable</a> · <a href="https://en.wikipedia.org/wiki/Two-stage_least_squares" target="_blank" rel="noopener">Two-stage least squares</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>局部平均处理效应 LATE</td><td><a href="https://en.wikipedia.org/wiki/Endogeneity_(economics)" target="_blank" rel="noopener">Endogeneity (economics)</a> · <a href="https://en.wikipedia.org/wiki/Omitted-variable_bias" target="_blank" rel="noopener">Omitted-variable bias</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s23-1"><h2><span class="sec-num">§23.1</span>内生性偏误</h2>
+<p>设真模型 <code>y = β₀ + β₁x + β₂w + u</code>，但回归里漏掉 <code>w</code>：</p><p class="eq">plim β̂₁(OLS) = β₁ + β₂·Cov(x,w)/Var(x)   (遗漏变量偏误)</p><p>三种常见来源：遗漏变量、 simultaneity（y 反过来影响 x）、度量误差（衰减偏误）。<a href='../20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a> 的自我选择就是遗漏「能力」这一特例。<strong>加大样本不会消除偏误</strong>，只会把错误的数估得更精确——这是程序员常犯的「堆数据」直觉错误。</p>
+</section>
+<section id="s23-2"><h2><span class="sec-num">§23.2</span>IV 与 2SLS</h2>
+<p>工具 z 需满足：<strong>相关性</strong> <code>Cov(z,x)≠0</code>、<strong>排他性</strong> <code>Cov(z,u)=0</code>（z 只通过 x 影响 y）。恰识别时：</p><p class="eq">β̂_IV = Cov(z,y)/Cov(z,x) = β₁ + Cov(z,u)/Cov(z,x)</p><p>2SLS：第一阶段 <code>x = π₀ + π₁z + v</code> 得 <code>x̂</code>；第二阶段用 <code>x̂</code> 回归 y。由于 <code>x̂</code> 只由 z 构成，与 u 无关，估计一致；且恰识别时与 IV 公式代数等价。第一阶段 F 统计量小于 10 常被视为<strong>弱工具</strong>警戒线：此时 IV 偏误向 OLS 靠拢、且标准误失真。</p>
+</section>
+<section id="s23-3"><h2><span class="sec-num">§23.3</span>IV 估的是什么</h2>
+<p>处理效应异质时，IV 识别的是<strong>局部平均处理效应 LATE</strong>：被工具「推动」而改变行为的那一群人（compliers）的平均效应，而不是全体 ATE。条件包括无关性、单调性（无 defiers）与排他性。</p>
+<div class="card warn"><p style="margin-bottom:0">排他性<strong>不能由数据检验</strong>（只能在不恰好识别时做过识别检验，且检验力有限）。它必须靠制度背景、研究设计与因果图来论证。把「找到显著的第一阶段」当成 IV 有效，是最常见的误用。</p></div>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>内生性偏误、IV/2SLS 等价与弱工具变量</h3>
+<pre class="code" data-file="code/23-iv.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 23-iv.py | 工具变量与两阶段最小二乘（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+N, REPS = 20000, 400
+BETA1 = 2.0
+PI_STRONG, PI_WEAK = 0.8, 0.05
+S_U, S_E = 1.0, 1.0
+
+def cov(a, b):
+    ma, mb = statistics.fmean(a), statistics.fmean(b)
+    return sum((a[i] - ma) * (b[i] - mb) for i in range(len(a))) / len(a)
+
+def slope(xs, ys):
+    return cov(xs, ys) / cov(xs, xs)
+
+def dgp(rng, n, pi):
+    z = [rng.gauss(0, 1) for _ in range(n)]
+    u = [rng.gauss(0, S_U) for _ in range(n)]
+    e = [rng.gauss(0, S_E) for _ in range(n)]
+    x = [pi * z[i] + 0.6 * u[i] + e[i] for i in range(n)]
+    y = [1.0 + BETA1 * x[i] + u[i] for i in range(n)]
+    return z, x, y
+
+def estimate(z, x, y):
+    b_ols = slope(x, y)
+    b_iv = cov(z, y) / cov(z, x)
+    pi1 = slope(z, x)
+    zbar, xbar = statistics.fmean(z), statistics.fmean(x)
+    xhat = [xbar + pi1 * (zi - zbar) for zi in z]
+    b_2sls = slope(xhat, y)
+    return b_ols, b_iv, b_2sls, pi1
+
+rng = random.Random(7)
+z, x, y = dgp(rng, N, PI_STRONG)
+b_ols, b_iv, b_2sls, pi1 = estimate(z, x, y)
+# ---- 弱工具：重复抽样的 IV 分布 ----
+weak_rng = random.Random(19)
+weak_iv = []
+for _ in range(REPS):
+    zz, xx, yy = dgp(weak_rng, 500, PI_WEAK)
+    weak_iv.append(cov(zz, yy) / cov(zz, xx))
+# ---- 数值验证：打印可手算核对的量 ----
+print("真实 beta1=%.2f" % BETA1)
+print("OLS=%.6f (内生性导致上偏)  IV=%.6f  2SLS=%.6f" % (b_ols, b_iv, b_2sls))
+print("IV 与 2SLS 差=%.2e (代数等价)" % abs(b_iv - b_2sls))
+print("第一阶段斜率 pi1=%.6f (强工具)" % pi1)
+print("弱工具 %d 次: IV 均值=%.4f 标准差=%.4f (偏回 OLS 且方差巨大)" %
+      (REPS, statistics.fmean(weak_iv), statistics.pstdev(weak_iv)))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>PI_STRONG</code> 改成 0.05，观察 IV 是否向 OLS 靠拢；把 <code>0.6*u</code> 改成 0（无内生性）看 OLS 是否回到 2。　<strong>预期与判读：</strong>OLS≈2.29 明显上偏；IV 与 2SLS 都≈1.99 且差在 1e−16 量级；强工具第一阶段斜率≈0.80；弱工具重复抽样下 IV 均值≈2.28 偏向 OLS、标准差≈9.3，方差爆炸。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>0.6 这个系数控制内生性强度；PI 越小工具越弱；N 越大 IV 越接近真值。　文件位置：<code>part4/23-iv/code/23-iv.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Endogeneity_(economics)" target="_blank" rel="noopener">Endogeneity (economics)</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>解释变量与误差相关造成偏误</p>
+<span class="why"><strong>怎么用</strong>：内生性来源综述</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Endogeneity_(economics)</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Instrumental_variable" target="_blank" rel="noopener">Instrumental variable</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>用外生变动隔离出因果通道</p>
+<span class="why"><strong>怎么用</strong>：工具变量条件</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Instrumental_variable</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Two-stage_least_squares" target="_blank" rel="noopener">Two-stage least squares</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>IV 的两阶段实现</p>
+<span class="why"><strong>怎么用</strong>：两阶段实现</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Two-stage_least_squares</code></p></div>
+<div class="repo-card">
+<h3><a href="https://mixtape.scunning.com/" target="_blank" rel="noopener">Causal Inference: The Mixtape</a></h3>
+<span class="tag">教材 · 参考资料</span>
+<p>因果推断开放教材，DID / IV / RDD 讲得直观</p>
+<span class="why"><strong>怎么用</strong>：DID / IV / RDD 的直观教材</span>
+<p style="margin:0"><code>https://mixtape.scunning.com/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>以为样本量能解决内生性：偏误不随 N 消失。</li>
+<li>只报告第一阶段显著就宣称 IV 有效：排他性需制度性论证。</li>
+<li>忽略弱工具：会使估计偏向 OLS 并让 t 检验失真。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>推导 <code>plim β̂_OLS − β₁ = Cov(x,u)/Var(x)</code> 并用脚本数值验证。</li>
+<li>加入第二个工具做过识别，说明为什么此时能检验（而非证明）排他性。</li>
+<li>用 <a href='../20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a> 的语言解释 LATE 与 ATE 的差别。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Endogeneity (economics)</strong>（百科）：解释变量与误差相关造成偏误<br><a href="https://en.wikipedia.org/wiki/Endogeneity_(economics)" target="_blank" rel="noopener">Endogeneity (economics)</a></li>
+<li><strong>Omitted-variable bias</strong>（百科）：遗漏变量的偏误方向与大小<br><a href="https://en.wikipedia.org/wiki/Omitted-variable_bias" target="_blank" rel="noopener">Omitted-variable bias</a></li>
+<li><strong>Instrumental variable</strong>（百科）：用外生变动隔离出因果通道<br><a href="https://en.wikipedia.org/wiki/Instrumental_variable" target="_blank" rel="noopener">Instrumental variable</a></li>
+<li><strong>Two-stage least squares</strong>（百科）：IV 的两阶段实现<br><a href="https://en.wikipedia.org/wiki/Two-stage_least_squares" target="_blank" rel="noopener">Two-stage least squares</a></li>
+<li><strong>Causal Inference: The Mixtape</strong>（教材）：因果推断开放教材，DID / IV / RDD 讲得直观<br><a href="https://mixtape.scunning.com/" target="_blank" rel="noopener">Causal Inference: The Mixtape</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=instrumental%20variables%20two%20stage%20least%20squares%20endogeneity" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=instrumental%20variables%20two%20stage%20least%20squares%20endogeneity" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=instrumental%20variables%20two%20stage%20least%20squares%20endogeneity" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a>　识别与选择偏误</li>
+<li><a href='../22-diagnostics/index.html'>第 22 章 · 诊断与修正：异方差、自相关与共线性</a>　异方差下的稳健推断</li>
+<li><a href='../24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a>　DID 与固定效应</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 28 章 · CAPM 与因子模型：什么风险该有补偿 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="28">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第五篇 · 投资学、资产定价与风险管理 · 第四阶段 · 不确定性与资产定价</span>
+<h1><span class="ch-num">第 28 章</span>CAPM 与因子模型：什么风险该有补偿</h1>
+<p class="lede">把 <a href='../27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> 的结论推到市场均衡：只有无法分散的系统性风险（beta）才该获得风险溢价。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s4">定价 · 决策</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>给 <a href='../27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> 的组合优化加上市场均衡条件；<a href='../../part6/31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a> 会讨论因子挖掘中的多重检验问题，<a href='../../part4/23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a> 的估计误差在这里再次出现。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">beta 就是资产收益对市场因子的回归斜率；CAPM 声称「alpha 应该为零」，即不存在无法用系统性暴露解释的超额收益。检验 CAPM 本质上是在跑一组回归并检验截距。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>会估计个股 beta、alpha 与 R²，并写出证券市场线</li>
+<li>用横截面回归检验「平均收益与 beta 线性相关」</li>
+<li>理解因子模型、有效市场假说与实证异象的关系</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>市场组合与两基金分离</td><td><a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory" target="_blank" rel="noopener">Modern portfolio theory</a> · <a href="https://en.wikipedia.org/wiki/Diversification_(finance)" target="_blank" rel="noopener">Diversification (finance)</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>beta 与系统性风险</td><td><a href="https://en.wikipedia.org/wiki/Beta_(finance)" target="_blank" rel="noopener">Beta (finance)</a> · <a href="https://en.wikipedia.org/wiki/Capital_asset_pricing_model" target="_blank" rel="noopener">Capital asset pricing model</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>证券市场线 SML</td><td><a href="https://en.wikipedia.org/wiki/Capital_asset_pricing_model" target="_blank" rel="noopener">Capital asset pricing model</a> · <a href="https://en.wikipedia.org/wiki/Beta_(finance)" target="_blank" rel="noopener">Beta (finance)</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>Jensen alpha</td><td><a href="https://en.wikipedia.org/wiki/Capital_asset_pricing_model" target="_blank" rel="noopener">Capital asset pricing model</a> · <a href="https://en.wikipedia.org/wiki/Beta_(finance)" target="_blank" rel="noopener">Beta (finance)</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>CAPM 时间序列回归</td><td><a href="https://en.wikipedia.org/wiki/Capital_asset_pricing_model" target="_blank" rel="noopener">Capital asset pricing model</a> · <a href="https://en.wikipedia.org/wiki/Beta_(finance)" target="_blank" rel="noopener">Beta (finance)</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>横截面检验</td><td><a href="https://en.wikipedia.org/wiki/Capital_asset_pricing_model" target="_blank" rel="noopener">Capital asset pricing model</a> · <a href="https://en.wikipedia.org/wiki/Beta_(finance)" target="_blank" rel="noopener">Beta (finance)</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>Fama-French 因子</td><td><a href="https://en.wikipedia.org/wiki/Fama%E2%80%93French_three-factor_model" target="_blank" rel="noopener">Fama–French three-factor model</a> · <a href="https://en.wikipedia.org/wiki/Factor_investing" target="_blank" rel="noopener">Factor investing</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>有效市场假说</td><td><a href="https://en.wikipedia.org/wiki/Efficient-market_hypothesis" target="_blank" rel="noopener">Efficient-market hypothesis</a> · <a href="https://en.wikipedia.org/wiki/Behavioral_finance" target="_blank" rel="noopener">Behavioral finance</a></td><td>正文已覆盖</td></tr>
+<tr><td>9</td><td>因子投资</td><td><a href="https://en.wikipedia.org/wiki/Fama%E2%80%93French_three-factor_model" target="_blank" rel="noopener">Fama–French three-factor model</a> · <a href="https://en.wikipedia.org/wiki/Factor_investing" target="_blank" rel="noopener">Factor investing</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s28-1"><h2><span class="sec-num">§28.1</span>从组合优化到市场均衡</h2>
+<p>若所有人都按 <a href='../27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> 持有同一切点组合，该组合就是<strong>市场组合</strong>。均衡条件给出：</p><p class="eq">E[r_i] − r_f = β_i·(E[r_m] − r_f) ,  β_i = Cov(r_i, r_m)/Var(r_m)</p><p>证券市场线（SML）说：期望超额收益只与 beta 线性相关，<strong>特有风险不被定价</strong>（因为它可分散）。这与 <a href='../../part2/12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a> 的「只内部化边际社会成本」在结构上很像：只给不可消除的部分定价。</p>
+<p>实证形式是时间序列回归 <code>r_i − r_f = α_i + β_i(r_m − r_f) + ε_i</code>；CAPM 预言所有 <code>α_i=0</code>。<code>α_i</code> 显著不为零即 Jensen's alpha，可能来自定价错误，也可能来自模型设定错误（<strong>联合检验问题</strong>）。</p>
+</section>
+<section id="s28-2"><h2><span class="sec-num">§28.2</span>横截面检验与因子扩展</h2>
+<p>两步法：先估每只股票的 β̂，再用平均超额收益对 β̂ 做横截面回归，斜率应约等于市场风险溢价。实证中斜率往往偏平、截距偏高，小市值与高账面市值比股票收益系统性偏高，于是有 Fama–French 三因子：</p><p class="eq">r_i − r_f = α + β_m MKT + β_s SMB + β_h HML + ε</p><p>后续又加入动量、盈利、投资等因子，形成「因子动物园」。这里要带着 <a href='../../part6/31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a> 的警觉：从大量候选因子里挑显著的，本身就是多重检验问题；样本外表现与经济学解释同样重要。</p>
+</section>
+<section id="s28-3"><h2><span class="sec-num">§28.3</span>有效市场与行为金融的张力</h2>
+<table><thead><tr><th style="width:26%">命题</th><th>含义</th><th>可检验推论</th></tr></thead><tbody>
+<tr><td>弱式有效</td><td>价格已含历史价格信息</td><td>收益不可由自身滞后预测</td></tr>
+<tr><td>半强式有效</td><td>价格已含公开信息</td><td>事件公告后无持续漂移（实际有 PEAD）</td></tr>
+<tr><td>行为金融</td><td>存在系统性认知偏差</td><td>动量、反转、处置效应、泡沫</td></tr>
+</tbody></table>
+<p>Grossman–Stiglitz 的洞见：若市场完全有效，收集信息就没有回报，于是没人收集信息，价格又不会反映信息。<strong>均衡只能是「近似有效」</strong>，留出刚好补偿信息成本的价格偏差。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>估计 beta/alpha、横截面检验与因子增量 R²</h3>
+<pre class="code" data-file="code/28-capm.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 28-capm.py | CAPM 时间序列与横截面回归（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+T = 240                      # 20 年月度
+RF_M, MU_M_M, SD_M_M = 0.03 / 12, 0.08 / 12, 0.16 / math.sqrt(12)
+N_ASSETS = 12
+BETAS = [0.4 + 0.12 * i for i in range(N_ASSETS)]
+ALPHAS = [0.0] * N_ASSETS
+IDIO_SD = 0.01
+
+def mean(v):
+    return statistics.fmean(v)
+
+def cov(a, b):
+    ma, mb = mean(a), mean(b)
+    return sum((a[i] - ma) * (b[i] - mb) for i in range(len(a))) / len(a)
+
+def ols1(xs, ys):
+    b = cov(xs, ys) / cov(xs, xs)
+    a = mean(ys) - b * mean(xs)
+    e = [ys[i] - a - b * xs[i] for i in range(len(xs))]
+    tss = sum((y - mean(ys)) ** 2 for y in ys)
+    r2 = 1 - sum(v * v for v in e) / tss
+    s2 = sum(v * v for v in e) / (len(xs) - 2)
+    se = math.sqrt(s2 / (cov(xs, xs) * len(xs)))
+    return a, b, se, r2
+
+# ---- DGP: 市场因子 + 三个因子暴露 ----
+rng = random.Random(7)
+mkt = [rng.gauss(MU_M_M, SD_M_M) for _ in range(T)]
+excess_m = [m - RF_M for m in mkt]
+smb = [rng.gauss(0.001, 0.02) for _ in range(T)]
+hml = [rng.gauss(0.001, 0.02) for _ in range(T)]
+series = []
+for beta, alpha in zip(BETAS, ALPHAS):
+    ri_excess = [alpha + beta * excess_m[t] +
+                 0.4 * smb[t] + 0.2 * hml[t] + rng.gauss(0, IDIO_SD)
+                 for t in range(T)]
+    series.append(ri_excess)
+# ---- 第一步：时间序列 CAPM 回归 ----
+est = [ols1(excess_m, s) for s in series]
+# ---- 第二步：横截面回归 mean(r_i) ~ beta_i ----
+xs = [e[1] for e in est]
+ys = [mean(s) for s in series]
+a_cs, b_cs, se_cs, r2_cs = ols1(xs, ys)
+# ---- 三因子回归的 R² 增量 ----
+def ols3(rows, y):
+    # 用标准库做 4x4 高斯-约当求逆
+    n = 4
+    xtx = [[0.0] * n for _ in range(n)]
+    xty = [0.0] * n
+    for row, yi in zip(rows, y):
+        for i in range(n):
+            xty[i] += row[i] * yi
+            for j in range(n):
+                xtx[i][j] += row[i] * row[j]
+    m = [list(xtx[i]) + [1.0 if i == j else 0.0 for j in range(n)]
+         for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(m[r][c]))
+        m[c], m[p] = m[p], m[c]
+        d = m[c][c]
+        for j in range(2 * n):
+            m[c][j] /= d
+        for r in range(n):
+            if r != c:
+                f = m[r][c]
+                if f:
+                    for j in range(2 * n):
+                        m[r][j] -= f * m[c][j]
+    inv = [row[n:] for row in m]
+    b = [sum(inv[i][j] * xty[j] for j in range(n)) for i in range(n)]
+    e = [yi - sum(b[k] * row[k] for k in range(n))
+         for row, yi in zip(rows, y)]
+    tss = sum((yi - mean(y)) ** 2 for yi in y)
+    return 1 - sum(v * v for v in e) / tss
+
+rows = [[1.0, excess_m[t], smb[t], hml[t]] for t in range(T)]
+r2_3f = ols3(rows, series[0])
+# ---- 数值验证：打印可手算核对的量 ----
+print("市场月超额收益: 样本=%.6f 理论=%.6f 年化≈%.2f%%" %
+      (mean(excess_m), MU_M_M - RF_M, 1200 * mean(excess_m)))
+for i in (0, 5, 11):
+    a, b, bse, r2 = est[i]
+    print("资产%02d beta_hat=%.4f (真 %.2f) beta_se=%.6f alpha_hat=%.6f R2=%.4f" %
+          (i + 1, b, BETAS[i], bse, a, r2))
+print("横截面斜率=%.6f (对照市场已实现超额收益 %.6f) 截距=%.6f R2=%.4f" %
+      (b_cs, mean(excess_m), a_cs, r2_cs))
+print("加入 SMB/HML 后资产1 R2: %.4f -&gt; %.4f" % (est[0][3], r2_3f))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>IDIO_SD</code> 改成 0.03，观察 beta 的 se 与 R² 如何变化；把 <code>T</code> 改成 60 看横截面斜率的噪声。　<strong>预期与判读：</strong>12 个资产的 β̂ 都接近各自真值（0.4～1.72），α̂ 在 0 附近；横截面斜率接近本次样本的市场已实现月超额收益（理论约 0.0042，20 年样本会有抽样波动）；加入 SMB/HML 后资产 1 的 R² 明显上升。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>IDIO_SD 越大 R² 越低、beta 越不精确；T 越小横截面斜率越不稳定；因子载荷系数决定 R² 增量。　文件位置：<code>part5/28-capm-factors/code/28-capm.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Capital_asset_pricing_model" target="_blank" rel="noopener">Capital asset pricing model</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>beta 与期望收益的线性关系</p>
+<span class="why"><strong>怎么用</strong>：CAPM 与证券市场线</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Capital_asset_pricing_model</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Fama%E2%80%93French_three-factor_model" target="_blank" rel="noopener">Fama–French three-factor model</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>规模与价值因子对 CAPM 的扩展</p>
+<span class="why"><strong>怎么用</strong>：三因子模型</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Fama%E2%80%93French_three-factor_model</code></p></div>
+<div class="repo-card">
+<h3><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Ken French Data Library</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>Fama-French 因子与组合收益，复现资产定价实证的标准数据</p>
+<span class="why"><strong>怎么用</strong>：Ken French 公开因子数据</span>
+<p style="margin:0"><code>https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Efficient-market_hypothesis" target="_blank" rel="noopener">Efficient-market hypothesis</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>价格是否反映全部可用信息</p>
+<span class="why"><strong>怎么用</strong>：有效市场假说</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Efficient-market_hypothesis</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把 alpha 显著直接解读为「基金经理能力」：它是相对某个因子模型的残差，模型错则 alpha 也错。</li>
+<li>用估计出的 β̂ 做横截面回归却忽略测量误差：会产生变量误差偏误（见 <a href='../../part4/23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a>）。</li>
+<li>把样本内显著的因子当成可交易收益：需考虑多重检验、交易成本与样本外表现。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>把 <code>smb/hml</code> 的载荷设为 0，观察三因子 R² 增量是否消失。</li>
+<li>用 <a href='../../part4/22-diagnostics/index.html'>第 22 章 · 诊断与修正：异方差、自相关与共线性</a> 的稳健标准误重算 alpha 的 t 值。</li>
+<li>用 Ken French 数据复现一次三因子回归，对照本章手写输出。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Capital asset pricing model</strong>（百科）：beta 与期望收益的线性关系<br><a href="https://en.wikipedia.org/wiki/Capital_asset_pricing_model" target="_blank" rel="noopener">Capital asset pricing model</a></li>
+<li><strong>Beta (finance)</strong>（百科）：资产对市场因子的暴露<br><a href="https://en.wikipedia.org/wiki/Beta_(finance)" target="_blank" rel="noopener">Beta (finance)</a></li>
+<li><strong>Fama–French three-factor model</strong>（百科）：规模与价值因子对 CAPM 的扩展<br><a href="https://en.wikipedia.org/wiki/Fama%E2%80%93French_three-factor_model" target="_blank" rel="noopener">Fama–French three-factor model</a></li>
+<li><strong>Ken French Data Library</strong>（数据）：Fama-French 因子与组合收益，复现资产定价实证的标准数据<br><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Ken French Data Library</a></li>
+<li><strong>Efficient-market hypothesis</strong>（百科）：价格是否反映全部可用信息<br><a href="https://en.wikipedia.org/wiki/Efficient-market_hypothesis" target="_blank" rel="noopener">Efficient-market hypothesis</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=CAPM%20empirical%20test%20Fama%20French%20factors" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=CAPM%20empirical%20test%20Fama%20French%20factors" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=CAPM%20empirical%20test%20Fama%20French%20factors" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a>　切点组合与市场组合</li>
+<li><a href='../../part6/31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a>　因子动物园与多重检验</li>
+<li><a href='../30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a>　因子与期权定价的共同基础</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

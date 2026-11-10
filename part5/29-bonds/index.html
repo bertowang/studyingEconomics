@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 29 章 · 债券、久期与期限结构：利率风险的一阶与二阶 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="29">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第五篇 · 投资学、资产定价与风险管理 · 第四阶段 · 不确定性与资产定价</span>
+<h1><span class="ch-num">第 29 章</span>债券、久期与期限结构：利率风险的一阶与二阶</h1>
+<p class="lede">债券价格是未来现金流的贴现值；久期是价格对收益率的一阶敏感度，凸性补上二阶项。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s4">定价 · 决策</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a> 的现值、<a href='../../part3/17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a> 的政策利率、<a href='../../part3/19-open-economy/index.html'>第 19 章 · 开放经济：国际收支、汇率与三元悖论</a> 的利差统一到一条收益率曲线；<a href='../30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a> 的无套利定价延续同一逻辑。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">久期是价格函数对利率的导数（一阶敏感度），凸性是二阶导数；用泰勒展开近似价格等价于用低阶多项式做局部近似，利率变动越大误差越明显。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能从即期利率曲线给附息债券定价</li>
+<li>会计算麦考利久期、修正久期与凸性，并用泰勒展开预测价格变化</li>
+<li>理解远期利率、期限结构形状与预期假说</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>现值定价</td><td><a href="https://en.wikipedia.org/wiki/Bond_duration" target="_blank" rel="noopener">Bond duration</a> · <a href="https://en.wikipedia.org/wiki/Yield_curve" target="_blank" rel="noopener">Yield curve</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>到期收益率 YTM</td><td><a href="https://en.wikipedia.org/wiki/Rate_of_return" target="_blank" rel="noopener">Rate of return</a> · <a href="https://en.wikipedia.org/wiki/Compound_interest" target="_blank" rel="noopener">Compound interest</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>麦考利久期</td><td><a href="https://en.wikipedia.org/wiki/Bond_duration" target="_blank" rel="noopener">Bond duration</a> · <a href="https://en.wikipedia.org/wiki/Yield_curve" target="_blank" rel="noopener">Yield curve</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>修正久期</td><td><a href="https://en.wikipedia.org/wiki/Bond_duration" target="_blank" rel="noopener">Bond duration</a> · <a href="https://en.wikipedia.org/wiki/Yield_curve" target="_blank" rel="noopener">Yield curve</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>凸性</td><td><a href="https://en.wikipedia.org/wiki/Bond_duration" target="_blank" rel="noopener">Bond duration</a> · <a href="https://en.wikipedia.org/wiki/Yield_curve" target="_blank" rel="noopener">Yield curve</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>价格近似与误差</td><td><a href="https://en.wikipedia.org/wiki/Bond_duration" target="_blank" rel="noopener">Bond duration</a> · <a href="https://en.wikipedia.org/wiki/Yield_curve" target="_blank" rel="noopener">Yield curve</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>即期利率与远期利率</td><td><a href="https://en.wikipedia.org/wiki/Fisher_hypothesis" target="_blank" rel="noopener">Fisher hypothesis</a> · <a href="https://en.wikipedia.org/wiki/Monetary_policy" target="_blank" rel="noopener">Monetary policy</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>期限结构形状</td><td><a href="https://en.wikipedia.org/wiki/Yield_curve" target="_blank" rel="noopener">Yield curve</a> · <a href="https://en.wikipedia.org/wiki/Bond_duration" target="_blank" rel="noopener">Bond duration</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s29-1"><h2><span class="sec-num">§29.1</span>定价与久期</h2>
+<p>附息债券价格 <code>P = Σ CF_t/(1+y)^t</code>。由 <code>dP/P = −D_mod·dy + ½C·dy²</code> 定义：</p><p class="eq">D_mac = Σ t·PV(CF_t)/P ;  D_mod = D_mac/(1+y) ;  C = Σ t(t+1)PV(CF_t)/[P(1+y)²]</p><p>久期也是「现金流的加权平均回收时间」，还是<a href='../../part0/01-math-tools/index.html'>第 01 章 · 约束最优化与比较静态：经济学的核心 API</a> 包络定理意义下的敏感度：<code>D_mod = −(1/P)·∂P/∂y</code>。零息债券的麦考利久期恰好等于期限；票息越高、期限越短，久期越短、利率风险越小。</p>
+</section>
+<section id="s29-2"><h2><span class="sec-num">§29.2</span>即期、远期与期限结构</h2>
+<p>即期利率 <code>s_t</code> 用于贴现第 t 期现金流；由无套利可推出隐含远期利率：</p><p class="eq">f(1,2) = (1+s₂)²/(1+s₁) − 1  ;  一般 f(t,t+1) = (1+s_{t+1})^{t+1}/(1+s_t)^t − 1</p><p><strong>预期假说</strong>认为长期利率是未来短期利率的平均（加期限溢价后为流动性偏好理论）；收益率曲线向上倾斜通常反映预期加息或正的期限溢价，倒挂常被视为衰退信号（实证关联，不是因果定律）。<a href='../../part3/17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a> 的政策利率通过短端传导到整条曲线。</p>
+</section>
+<section id="s29-3"><h2><span class="sec-num">§29.3</span>利率风险管理的边界</h2>
+<table><thead><tr><th style="width:26%">度量</th><th>回答什么</th><th>局限</th></tr></thead><tbody>
+<tr><td>久期</td><td>收益率平行移动 1bp 的价格变化</td><td>只适用小幅、平行移动</td></tr>
+<tr><td>凸性</td><td>修正二阶误差，解释「涨多跌少」</td><td>仍是局部近似</td></tr>
+<tr><td>关键利率久期</td><td>曲线非平行形变（陡峭化/扭曲）</td><td>需要分段曲线数据</td></tr>
+</tbody></table>
+<p>脚本会同时给出泰勒近似与精确重定价的误差，直观展示「一阶近似何时够用」。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>债券定价、久期/凸性与远期利率</h3>
+<pre class="code" data-file="code/29-bonds.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 29-bonds.py | 现金流贴现与利率敏感度（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+FACE, COUPON_RATE, MATURITY = 100.0, 0.05, 5
+YTM = 0.04
+SHIFT_BP, SHIFT_BIG = 0.0001, 0.01
+S1, S2 = 0.03, 0.04
+
+def price(y):
+    cfs = [FACE * COUPON_RATE] * MATURITY
+    cfs[-1] += FACE
+    return sum(cf / (1 + y) ** t for t, cf in enumerate(cfs, 1))
+
+p0 = price(YTM)
+cash = [FACE * COUPON_RATE] * MATURITY
+cash[-1] += FACE
+pv = [cf / (1 + YTM) ** t for t, cf in enumerate(cash, 1)]
+d_mac = sum(t * v for t, v in enumerate(pv, 1)) / p0
+d_mod = d_mac / (1 + YTM)
+convex = sum(t * (t + 1) * pv[t - 1] for t in range(1, MATURITY + 1)) / \
+         (p0 * (1 + YTM) ** 2)
+# ---- 泰勒近似 vs 精确重定价 ----
+def approx(dy):
+    return p0 * (1 - d_mod * dy + 0.5 * convex * dy ** 2)
+p_up = price(YTM + SHIFT_BIG)
+p_down = price(YTM - SHIFT_BIG)
+# ---- 远期利率与期限结构 ----
+f12 = (1 + S2) ** 2 / (1 + S1) - 1
+# ---- 数值验证：打印可手算核对的量 ----
+print("5 年期 5%% 票息、YTM=%.2f%% 价格=%.6f" % (100 * YTM, p0))
+print("麦考利久期=%.6f 修正久期=%.6f 凸性=%.6f" % (d_mac, d_mod, convex))
+print("+1bp: 久期预测 ΔP=%.6f 精确 ΔP=%.6f" %
+      (approx(SHIFT_BP) - p0, price(YTM + SHIFT_BP) - p0))
+print("+100bp: 一阶预测=%.6f 二阶预测=%.6f 精确=%.6f" %
+      (p0 * (1 - d_mod * SHIFT_BIG), approx(SHIFT_BIG), p_up))
+print("利率 +100bp 价格变化=%.4f, -100bp 价格变化=%.4f (不对称来自凸性)" %
+      (p_up - p0, p_down - p0))
+print("即期 s1=%.2f%% s2=%.2f%% =&gt; 隐含远期 f(1,2)=%.4f%%" %
+      (100 * S1, 100 * S2, 100 * f12))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>COUPON_RATE</code> 改成 0（零息债券），验证麦考利久期是否等于 5；把 <code>SHIFT_BIG</code> 改成 0.05 观察二阶近似误差。　<strong>预期与判读：</strong>5 年期 5% 票息、YTM=4% 时价格≈104.45；麦考利久期≈4.557、修正久期≈4.382、凸性≈24.48；+1bp 时久期预测与精确值几乎一致；+100bp 时一阶预测 99.87、二阶预测 100.003、精确 100.000；零息债券久期=期限。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>COUPON_RATE 越低久期越长；MATURITY 越长久期与凸性越大；SHIFT_BIG 越大越能看出凸性价值。　文件位置：<code>part5/29-bonds/code/29-bonds.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Bond_duration" target="_blank" rel="noopener">Bond duration</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>价格对利率的一阶敏感度</p>
+<span class="why"><strong>怎么用</strong>：久期与凸性</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Bond_duration</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Yield_curve" target="_blank" rel="noopener">Yield curve</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>不同期限利率的结构</p>
+<span class="why"><strong>怎么用</strong>：期限结构形状</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Yield_curve</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Present_value" target="_blank" rel="noopener">Present value</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>跨期选择的贴现基础</p>
+<span class="why"><strong>怎么用</strong>：贴现基础</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Present_value</code></p></div>
+<div class="repo-card">
+<h3><a href="https://www.federalreserve.gov/" target="_blank" rel="noopener">Federal Reserve</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>货币政策声明、利率与政策规则资料</p>
+<span class="why"><strong>怎么用</strong>：政策利率与曲线短端</span>
+<p style="margin:0"><code>https://www.federalreserve.gov/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把久期当成熟期限：只有零息债券两者才相等。</li>
+<li>用久期预测大幅利率变动：需加凸性或直接精确重定价。</li>
+<li>把倒挂曲线当确定性衰退信号：它是预期与期限溢价共同作用的结果。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>把 <code>MATURITY</code> 从 1 扫到 20，画出久期与凸性曲线。</li>
+<li>加入非平行移动（短端 +50bp、长端不变），说明久期为何失效。</li>
+<li>用 <a href='../../part3/17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a> 的费雪方程说明通胀预期如何进入名义曲线。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Bond duration</strong>（百科）：价格对利率的一阶敏感度<br><a href="https://en.wikipedia.org/wiki/Bond_duration" target="_blank" rel="noopener">Bond duration</a></li>
+<li><strong>Yield curve</strong>（百科）：不同期限利率的结构<br><a href="https://en.wikipedia.org/wiki/Yield_curve" target="_blank" rel="noopener">Yield curve</a></li>
+<li><strong>Present value</strong>（百科）：跨期选择的贴现基础<br><a href="https://en.wikipedia.org/wiki/Present_value" target="_blank" rel="noopener">Present value</a></li>
+<li><strong>Federal Reserve</strong>（数据）：货币政策声明、利率与政策规则资料<br><a href="https://www.federalreserve.gov/" target="_blank" rel="noopener">Federal Reserve</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=bond%20duration%20yield%20curve%20interest%20rate%20risk" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=bond%20duration%20yield%20curve%20interest%20rate%20risk" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=bond%20duration%20yield%20curve%20interest%20rate%20risk" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a>　现值与贴现</li>
+<li><a href='../../part3/17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a>　政策利率传导</li>
+<li><a href='../30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a>　无套利定价</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

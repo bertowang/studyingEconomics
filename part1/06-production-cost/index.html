@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 06 章 · 生产者理论、成本曲线与供给 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="06">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第一篇 · 原理与个体决策 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 06 章</span>生产者理论、成本曲线与供给</h1>
+<p class="lede">企业的技术与消费者的偏好是同一套最优化的对偶镜像：利润最大化给出供给，成本最小化给出条件要素需求。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">原理 · 个体</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>承接 <a href='../05-consumer-choice/index.html'>第 05 章 · 消费者理论：偏好、需求与希克斯分解</a> 的对偶结构，把效用换成产量、把支出最小化换成成本最小化，产出 <a href='../04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a> 里「给定」的供给曲线。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">生产函数是「吞吐模型」，成本函数是「给定 QoS 下的最小资源开销」；边际成本是新增一个请求带来的增量开销，最优并发量由「边际收益等于边际开销」决定。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能从生产函数推导边际产量、边际成本与要素需求</li>
+<li>说明短期供给曲线为什么是 MC 在 AVC 之上的一段</li>
+<li>会验证规模报酬与利润最大化条件 p·MP_L = w</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>生产函数与边际产量</td><td><a href="https://en.wikipedia.org/wiki/Marginalism" target="_blank" rel="noopener">Marginalism</a> · <a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>规模报酬</td><td><a href="https://en.wikipedia.org/wiki/Production_function" target="_blank" rel="noopener">Production function</a> · <a href="https://en.wikipedia.org/wiki/Cobb%E2%80%93Douglas_production_function" target="_blank" rel="noopener">Cobb-Douglas production function</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>成本最小化</td><td><a href="https://en.wikipedia.org/wiki/Marginal_cost" target="_blank" rel="noopener">Marginal cost</a> · <a href="https://en.wikipedia.org/wiki/Production_function" target="_blank" rel="noopener">Production function</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>边际成本与平均成本</td><td><a href="https://en.wikipedia.org/wiki/Marginalism" target="_blank" rel="noopener">Marginalism</a> · <a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>利润最大化与供给</td><td><a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a> · <a href="https://en.wikipedia.org/wiki/Marginal_cost" target="_blank" rel="noopener">Marginal cost</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>零利润条件</td><td><a href="https://en.wikipedia.org/wiki/Production_function" target="_blank" rel="noopener">Production function</a> · <a href="https://en.wikipedia.org/wiki/Marginal_cost" target="_blank" rel="noopener">Marginal cost</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s6-1"><h2><span class="sec-num">§6.1</span>技术与边际产量</h2>
+<p>设 <code>y = A·K^α·L^(1−α)</code>。短期 <code>K</code> 固定，劳动的边际产量递减：</p><p class="eq">MP_L = ∂y/∂L = (1−α)·A·K^α·L^(−α) ,  ∂MP_L/∂L &lt; 0</p><p>若所有投入同乘 <code>t</code>，产出乘 <code>t^(α+1−α)=t</code>，即<strong>规模报酬不变</strong>；指数之和大于 1 为递增、小于 1 为递减。这一条指数和直接决定 <a href='../../part3/18-growth/index.html'>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</a> 索洛模型能否有稳态，也决定长期平均成本是否 U 形。</p>
+</section>
+<section id="s6-2"><h2><span class="sec-num">§6.2</span>成本最小化与成本曲线</h2>
+<p>成本最小化 <code>min wL + rK  s.t. f(K,L) ≥ y</code> 的一阶条件是技术替代率等于要素价格比：</p><p class="eq">MP_L/MP_K = w/r  ;  MC(y) = ∂C(y)/∂y = w/MP_L  (短期 K 固定)</p><p>因为 MP_L 递减，MC 递增；MC 穿过 AVC 与 ATC 的最低点（「平均值被边际值拉动」的算术事实）。固定成本不影响 MC，因此<strong>短期产量决策与固定成本无关</strong>——这是容易被会计直觉带偏的一点。</p>
+</section>
+<section id="s6-3"><h2><span class="sec-num">§6.3</span>利润最大化与供给</h2>
+<p>价格接受型企业解 <code>max_L p·f(K,L) − wL − rK</code>，一阶条件：</p><p class="eq">p·MP_L = w    ⇔    p = MC(y)</p><p>所以<strong>短期供给曲线就是 MC 曲线在 AVC 最低点之上的部分</strong>；低于 AVC 时停业更划算。长期自由进入退出使价格压到 ATC 最低点，经济利润为零——与 <a href='../03-scarcity-ppf/index.html'>第 03 章 · 稀缺、机会成本与生产可能性边界</a> 的机会成本定义闭环。把个体供给横向加总，就得到 <a href='../04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a> 的市场供给。</p>
+<div class="card note"><p style="margin-bottom:0">研究生视角：利润函数 <code>π(p,w,r)=max py−C(y)</code> 对 <code>p</code> 求导即供给（霍特林引理），对 <code>w</code> 求导的负数是要素需求（谢泼德引理的对偶版本）。<a href='../../part5/29-bonds/index.html'>第 29 章 · 债券、久期与期限结构：利率风险的一阶与二阶</a> 久期、<a href='../05-consumer-choice/index.html'>第 05 章 · 消费者理论：偏好、需求与希克斯分解</a> 希克斯需求与此完全同构：<strong>值函数对价格的导数就是净需求</strong>。</p></div>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>生产、成本曲线与利润最大化的数值验证</h3>
+<pre class="code" data-file="code/06-cost.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 06-cost.py | 短期生产函数、MC=p 条件与规模报酬（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+A_PROD, K_FIXED = 2.0, 16.0     # y = A * sqrt(K) * sqrt(L)
+WAGE, FIXED_COST = 4.0, 20.0
+PRICE = 10.0
+GRID = 1000
+# ---- 模型 ----
+def output(l, k=K_FIXED):
+    return A_PROD * math.sqrt(k) * math.sqrt(l)
+
+def mp_l(l, k=K_FIXED):
+    return 0.5 * A_PROD * math.sqrt(k) / math.sqrt(l)
+
+def profit(l):
+    return PRICE * output(l) - WAGE * l - FIXED_COST
+
+best_l, best_pi = 0.0, profit(0.0)
+for i in range(1, GRID + 1):
+    l = 200.0 * i / GRID
+    if profit(l) &gt; best_pi:
+        best_l, best_pi = l, profit(l)
+# p*MP_L=w 的解析解: L = (p*A*sqrt(K)/(2w))^2
+analytic_l = (PRICE * A_PROD * math.sqrt(K_FIXED) / (2 * WAGE)) ** 2
+q = output(best_l)
+mc = WAGE / mp_l(best_l)
+ac = (WAGE * best_l + FIXED_COST) / q
+# ---- 数值验证：打印可手算核对的量 ----
+print("网格最优 L=%.4f 产量=%.4f 利润=%.4f" % (best_l, q, best_pi))
+print("解析解   L=%.4f (由 p*MP_L=w 解出)" % analytic_l)
+print("最优处 MC=%.4f (应=p=%.2f)  AC=%.4f" % (mc, PRICE, ac))
+print("MP_L(L=1)=%.4f, MP_L(L=100)=%.4f → 递减" % (mp_l(1.0), mp_l(100.0)))
+print("规模报酬: 投入翻倍 y 由 %.2f 到 %.2f (比值 %.2f)" %
+      (output(25.0, 16.0), output(50.0, 32.0), output(50.0, 32.0) / output(25.0, 16.0)))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>PRICE</code> 改成 5，观察最优 L 是否按 p² 缩小；把 <code>FIXED_COST</code> 改成 200，观察产量是否不变。　<strong>预期与判读：</strong>L*=100、y=80、利润=380；MC=10=p；AC=5.25；MP_L 从 4.0 降到 0.4；投入翻倍产量恰好翻倍（规模报酬不变）。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>PRICE 上升 → L* 按 p² 增长；FIXED_COST 只影响利润不影响产量；WAGE 上升压缩利润并提高 MC。　文件位置：<code>part1/06-production-cost/code/06-cost.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Production_function" target="_blank" rel="noopener">Production function</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>投入产出技术与规模报酬</p>
+<span class="why"><strong>怎么用</strong>：生产函数与规模报酬</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Production_function</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Marginal_cost" target="_blank" rel="noopener">Marginal cost</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>多生产一单位的增量成本</p>
+<span class="why"><strong>怎么用</strong>：MC 与供给的关系</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Marginal_cost</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Perfect_competition" target="_blank" rel="noopener">Perfect competition</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>价格接受者、零利润与效率</p>
+<span class="why"><strong>怎么用</strong>：价格接受与长期零利润</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Perfect_competition</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把固定成本算进边际决策：停业点由 AVC 决定，与已沉没的固定成本无关。</li>
+<li>把会计利润当经济利润：后者要扣除资本与自有劳动的机会成本。</li>
+<li>把规模报酬与边际报酬递减混为一谈：前者是所有投入一起变，后者是单一投入变、其他固定。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>在脚本里加入 <code>p</code> 从 2 到 14 的扫描，打印供给表并核对它等于 MC 反函数。</li>
+<li>令 <code>α+β=1.2</code>，说明长期平均成本为何递减，并联系 <a href='../../part2/10-monopoly/index.html'>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视</a> 的自然垄断。</li>
+<li>用霍特林引理说明 <code>∂π/∂p = y*</code>，并在脚本里用有限差分验证。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Production function</strong>（百科）：投入产出技术与规模报酬<br><a href="https://en.wikipedia.org/wiki/Production_function" target="_blank" rel="noopener">Production function</a></li>
+<li><strong>Marginal cost</strong>（百科）：多生产一单位的增量成本<br><a href="https://en.wikipedia.org/wiki/Marginal_cost" target="_blank" rel="noopener">Marginal cost</a></li>
+<li><strong>Perfect competition</strong>（百科）：价格接受者、零利润与效率<br><a href="https://en.wikipedia.org/wiki/Perfect_competition" target="_blank" rel="noopener">Perfect competition</a></li>
+<li><strong>Cobb-Douglas production function</strong>（百科）：最常用的可解析生产/效用函数<br><a href="https://en.wikipedia.org/wiki/Cobb%E2%80%93Douglas_production_function" target="_blank" rel="noopener">Cobb-Douglas production function</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=cost%20curves%20profit%20maximization%20supply" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=cost%20curves%20profit%20maximization%20supply" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=cost%20curves%20profit%20maximization%20supply" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../05-consumer-choice/index.html'>第 05 章 · 消费者理论：偏好、需求与希克斯分解</a>　消费者侧的对偶结构</li>
+<li><a href='../../part2/10-monopoly/index.html'>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视</a>　垄断定价与边际收益</li>
+<li><a href='../../part3/18-growth/index.html'>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</a>　总量生产函数与索洛稳态</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

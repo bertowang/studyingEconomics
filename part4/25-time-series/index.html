@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 25 章 · 时间序列：平稳性、单位根与伪回归 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="25">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第四篇 · 计量经济学与因果推断 · 第三阶段 · 数据与因果识别</span>
+<h1><span class="ch-num">第 25 章</span>时间序列：平稳性、单位根与伪回归</h1>
+<p class="lede">时间观测不独立：均值方差是否随时间漂移、序列之间是否共享趋势，决定回归推断是否有效。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s3">数据 · 因果</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../22-diagnostics/index.html'>第 22 章 · 诊断与修正：异方差、自相关与共线性</a> 的序列相关诊断升级成建模对象；<a href='../../part5/26-returns/index.html'>第 26 章 · 收益、复利与波动：把价格变成可建模的序列</a> 的收益序列、<a href='../../part3/18-growth/index.html'>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</a> 的增长收敛回归都依赖本章的平稳性判断。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">平稳序列像有界噪声，统计量收敛；随机游走像积分器，方差随时间线性增长，任何固定窗口的均值都没有稳定含义。两条独立随机游走都带趋势，回归会把共同趋势误读成关系。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能区分平稳 AR(1) 与随机游走，并计算理论方差与自相关</li>
+<li>用蒙特卡洛复现伪回归：两个独立随机 walk 也会「显著相关」</li>
+<li>理解差分、协整与误差修正模型的关系</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>平稳性</td><td><a href="https://en.wikipedia.org/wiki/Stationary_process" target="_blank" rel="noopener">Stationary process</a> · <a href="https://en.wikipedia.org/wiki/Unit_root" target="_blank" rel="noopener">Unit root</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>AR(1) 与自相关</td><td><a href="https://en.wikipedia.org/wiki/Autocorrelation" target="_blank" rel="noopener">Autocorrelation</a> · <a href="https://en.wikipedia.org/wiki/Stationary_process" target="_blank" rel="noopener">Stationary process</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>随机游走与单位根</td><td><a href="https://en.wikipedia.org/wiki/Unit_root" target="_blank" rel="noopener">Unit root</a> · <a href="https://en.wikipedia.org/wiki/Stationary_process" target="_blank" rel="noopener">Stationary process</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>伪回归</td><td><a href="https://en.wikipedia.org/wiki/Spurious_relationship" target="_blank" rel="noopener">Spurious relationship</a> · <a href="https://en.wikipedia.org/wiki/Cointegration" target="_blank" rel="noopener">Cointegration</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>差分与去趋势</td><td><a href="https://en.wikipedia.org/wiki/Stationary_process" target="_blank" rel="noopener">Stationary process</a> · <a href="https://en.wikipedia.org/wiki/Unit_root" target="_blank" rel="noopener">Unit root</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>协整</td><td><a href="https://en.wikipedia.org/wiki/Cointegration" target="_blank" rel="noopener">Cointegration</a> · <a href="https://en.wikipedia.org/wiki/Unit_root" target="_blank" rel="noopener">Unit root</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>误差修正模型</td><td><a href="https://en.wikipedia.org/wiki/Stationary_process" target="_blank" rel="noopener">Stationary process</a> · <a href="https://en.wikipedia.org/wiki/Unit_root" target="_blank" rel="noopener">Unit root</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>ADF 检验思想</td><td><a href="https://en.wikipedia.org/wiki/Stationary_process" target="_blank" rel="noopener">Stationary process</a> · <a href="https://en.wikipedia.org/wiki/Unit_root" target="_blank" rel="noopener">Unit root</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s25-1"><h2><span class="sec-num">§25.1</span>平稳、AR(1) 与单位根</h2>
+<p>AR(1)：<code>x_t = φx_{t−1} + ε_t</code>。当 <code>|φ|&lt;1</code> 时平稳，</p><p class="eq">E[x]=0 , Var(x)=σ²/(1−φ²) , ρ_k = φ^k  ;  φ=1 即随机游走，Var(x_t)=tσ²</p><p>单位根过程差分后平稳（I(1)→I(0)）；ADF 检验本质是检验差分方程里 <code>x_{t−1}</code> 的系数是否为 0，但其临界值非标准，不能直接套 t 分布。<strong>把趋势当成水平、或把水平当趋势</strong>，是宏观实证最常见的错误。</p>
+</section>
+<section id="s25-2"><h2><span class="sec-num">§25.2</span>伪回归：共同趋势制造的虚假显著</h2>
+<p>Granger–Newbold 的经典结果：两条<strong>相互独立</strong>的随机游走做回归，R² 与 t 值往往很大，且 t 值随样本量增大而发散，因为残差本身非平稳，通常的 t 检验前提被破坏。判断办法：</p><table><thead><tr><th style="width:28%">检查</th><th style="width:34%">期望结果</th><th style="width:38%">若不满足</th></tr></thead><tbody>
+<tr><td>残差是否平稳</td><td>ADF 拒绝单位根 / DW 不接近 0</td><td>可能是伪回归</td></tr>
+<tr><td>加趋势项后系数</td><td>仍稳定</td><td>系数由共同趋势驱动</td></tr>
+<tr><td>差分后再回归</td><td>关系应消失</td><td>说明原关系是伪的</td></tr>
+</tbody></table><p>脚本用数百次重复抽样把「假阳性率远超 5%」量化出来，比任何一句「相关不等于因果」都更有说服力。</p>
+</section>
+<section id="s25-3"><h2><span class="sec-num">§25.3</span>协整：非平稳但存在长期均衡</h2>
+<p>若 <code>y_t</code> 与 <code>x_t</code> 都是 I(1)，但存在 β 使 <code>y_t − βx_t</code> 平稳，则称二者<strong>协整</strong>。此时水平回归不是伪回归，且可用<strong>误差修正模型</strong>同时刻画长期均衡与短期调整：</p><p class="eq">Δy_t = α(y_{t−1} − βx_{t−1}) + γΔx_t + ε_t ,  α&lt;0 表示向均衡回调</p><p>这是 <a href='../../part3/19-open-economy/index.html'>第 19 章 · 开放经济：国际收支、汇率与三元悖论</a> 的 PPP、<a href='../../part3/17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a> 的利率期限关系与 <a href='../../part5/28-capm-factors/index.html'>第 28 章 · CAPM 与因子模型：什么风险该有补偿</a> 因子回归在实证中的标准处理流程：先判单整阶数 → 再判协整 → 最后定动态模型。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>AR(1)、随机游走、伪回归与协整残差</h3>
+<pre class="code" data-file="code/25-timeseries.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 25-timeseries.py | 平稳性与伪回归蒙特卡洛（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+T, REPS = 200, 400
+PHI = 0.8
+SIGMA = 1.0
+BETA_COINT = 2.0
+
+def mean(v):
+    return statistics.fmean(v)
+
+def lag1_corr(v):
+    a, b = v[:-1], v[1:]
+    ma, mb = mean(a), mean(b)
+    num = sum((a[i] - ma) * (b[i] - mb) for i in range(len(a)))
+    den = math.sqrt(sum((x - ma) ** 2 for x in a) * sum((x - mb) ** 2 for x in b))
+    return num / den
+
+def ols1(xs, ys):
+    mx, my = mean(xs), mean(ys)
+    sxx = sum((x - mx) ** 2 for x in xs)
+    b = sum((xs[i] - mx) * (ys[i] - my) for i in range(len(xs))) / sxx
+    a = my - b * mx
+    e = [ys[i] - a - b * xs[i] for i in range(len(xs))]
+    s2 = sum(v * v for v in e) / (len(xs) - 2)
+    se = math.sqrt(s2 / sxx)
+    tss = sum((y - my) ** 2 for y in ys)
+    r2 = 1 - sum(v * v for v in e) / tss
+    return b, b / se, r2, e
+
+def random_walk(rng, t):
+    v, out = 0.0, []
+    for _ in range(t):
+        v += rng.gauss(0, SIGMA)
+        out.append(v)
+    return out
+# ---- 平稳 AR(1) ----
+rng = random.Random(7)
+x, ar = 0.0, []
+for _ in range(10000):
+    x = PHI * x + rng.gauss(0, SIGMA)
+    ar.append(x)
+# ---- 伪回归蒙特卡洛 ----
+mc = random.Random(23)
+false_pos, r2_list = 0, []
+for _ in range(REPS):
+    xx, yy = random_walk(mc, T), random_walk(mc, T)
+    b, t, r2, e = ols1(xx, yy)
+    if abs(t) &gt; 1.96:
+        false_pos += 1
+    r2_list.append(r2)
+# ---- 协整：y = 2x + 平稳噪声 ----
+coint = random.Random(31)
+xc, yc = 0.0, []
+xc_path = []
+for _ in range(T):
+    xc += coint.gauss(0, SIGMA)
+    xc_path.append(xc)
+    yc.append(BETA_COINT * xc + coint.gauss(0, 0.5))
+_, _, _, ec = ols1(xc_path, yc)
+# ---- 数值验证：打印可手算核对的量 ----
+print("AR(1): 理论方差=%.4f 样本方差=%.4f" %
+      (SIGMA ** 2 / (1 - PHI ** 2), statistics.pvariance(ar)))
+print("AR(1): 理论 lag1 自相关=%.4f 样本=%.4f" % (PHI, lag1_corr(ar)))
+print("伪回归 %d 次(两条独立随机游走): |t|&gt;1.96 比例=%.4f 平均 R²=%.4f" %
+      (REPS, false_pos / REPS, mean(r2_list)))
+print("协整回归残差 lag1 自相关=%.4f (平稳残差应远小于 1)" % lag1_corr(ec))
+print("对照: 水平序列自相关≈%.4f" % lag1_corr(yc))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把回归改成对两条序列先做一阶差分再 OLS，观察伪回归的假阳性率是否回到 0.05 附近。　<strong>预期与判读：</strong>AR(1) 理论方差≈2.778、样本≈2.67，lag1 自相关≈0.79；400 次伪回归的 |t|>1.96 比例≈0.825、平均 R²≈0.225（两条序列其实完全独立）；协整回归残差 lag1 自相关≈−0.01，而原水平序列≈0.99。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>PHI 越接近 1，AR(1) 方差越大；T 越大伪回归假阳性越严重；REPS 控制蒙特卡洛精度。　文件位置：<code>part4/25-time-series/code/25-timeseries.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Stationary_process" target="_blank" rel="noopener">Stationary process</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>均值方差不随时间漂移</p>
+<span class="why"><strong>怎么用</strong>：平稳性的定义</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Stationary_process</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Unit_root" target="_blank" rel="noopener">Unit root</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>非平稳与随机游走</p>
+<span class="why"><strong>怎么用</strong>：单位根与检验</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Unit_root</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Spurious_relationship" target="_blank" rel="noopener">Spurious relationship</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>共同趋势造成的伪相关</p>
+<span class="why"><strong>怎么用</strong>：伪回归的经典结果</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Spurious_relationship</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Cointegration" target="_blank" rel="noopener">Cointegration</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>非平稳序列的长期均衡关系</p>
+<span class="why"><strong>怎么用</strong>：协整与误差修正</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Cointegration</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>对非平稳水平序列直接套 t 检验：残差非平稳时标准 t 分布失效。</li>
+<li>把高 R² 当成关系存在的证据：伪回归能给出很高 R²。</li>
+<li>见到两条序列同向就断言协整：需检验残差是否平稳。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>对两条随机游走先差分再回归，验证假阳性率回到约 0.05。</li>
+<li>实现 ADF 检验的回归部分，说明为什么临界值不能用标准 t 表。</li>
+<li>用 <a href='../../part3/19-open-economy/index.html'>第 19 章 · 开放经济：国际收支、汇率与三元悖论</a> 的 PPP 数据设计一个协整检验流程。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Stationary process</strong>（百科）：均值方差不随时间漂移<br><a href="https://en.wikipedia.org/wiki/Stationary_process" target="_blank" rel="noopener">Stationary process</a></li>
+<li><strong>Unit root</strong>（百科）：非平稳与随机游走<br><a href="https://en.wikipedia.org/wiki/Unit_root" target="_blank" rel="noopener">Unit root</a></li>
+<li><strong>ARMA model</strong>（百科）：自回归与移动平均的组合<br><a href="https://en.wikipedia.org/wiki/Autoregressive%E2%80%93moving-average_model" target="_blank" rel="noopener">ARMA model</a></li>
+<li><strong>Cointegration</strong>（百科）：非平稳序列的长期均衡关系<br><a href="https://en.wikipedia.org/wiki/Cointegration" target="_blank" rel="noopener">Cointegration</a></li>
+<li><strong>Spurious relationship</strong>（百科）：共同趋势造成的伪相关<br><a href="https://en.wikipedia.org/wiki/Spurious_relationship" target="_blank" rel="noopener">Spurious relationship</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=stationarity%20ARMA%20spurious%20regression%20cointegration" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=stationarity%20ARMA%20spurious%20regression%20cointegration" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=stationarity%20ARMA%20spurious%20regression%20cointegration" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part3/18-growth/index.html'>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</a>　增长收敛回归中的平稳性</li>
+<li><a href='../22-diagnostics/index.html'>第 22 章 · 诊断与修正：异方差、自相关与共线性</a>　序列相关诊断</li>
+<li><a href='../../part5/26-returns/index.html'>第 26 章 · 收益、复利与波动：把价格变成可建模的序列</a>　收益序列的平稳建模</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

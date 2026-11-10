@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 22 章 · 诊断与修正：异方差、自相关与共线性 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="22">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第四篇 · 计量经济学与因果推断 · 第三阶段 · 数据与因果识别</span>
+<h1><span class="ch-num">第 22 章</span>诊断与修正：异方差、自相关与共线性</h1>
+<p class="lede">OLS 的点估计在这些假设被破坏时往往仍无偏，但标准误失效；本章手写稳健标准误并用蒙特卡洛验证覆盖率。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s3">数据 · 因果</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>放松 <a href='../21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a> 的「同方差、无自相关、无共线性」；<a href='../23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a> 继续放松最关键的「外生性」。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">普通 se 假设每个样本的噪声水平相同；稳健 se 允许每个观测有自己的噪声尺度，相当于给每个残差单独加权再重估协方差矩阵，是「不对误差分布做强假设」的防御式实现。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>会推导并实现 White 稳健标准误（HC0）</li>
+<li>通过重复抽样比较普通 se 与稳健 se 的假阳性率</li>
+<li>用 DW 统计量与 VIF 诊断自相关和共线性</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>异方差的后果</td><td><a href="https://en.wikipedia.org/wiki/Variance" target="_blank" rel="noopener">Variance</a> · <a href="https://en.wikipedia.org/wiki/Expected_value" target="_blank" rel="noopener">Expected value</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>普通标准误为何失效</td><td><a href="https://en.wikipedia.org/wiki/Confidence_interval" target="_blank" rel="noopener">Confidence interval</a> · <a href="https://en.wikipedia.org/wiki/Heteroscedasticity-consistent_standard_errors" target="_blank" rel="noopener">Heteroscedasticity-consistent standard errors</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>White HC0 稳健标准误</td><td><a href="https://en.wikipedia.org/wiki/Confidence_interval" target="_blank" rel="noopener">Confidence interval</a> · <a href="https://en.wikipedia.org/wiki/Heteroscedasticity-consistent_standard_errors" target="_blank" rel="noopener">Heteroscedasticity-consistent standard errors</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>蒙特卡洛覆盖率</td><td><a href="https://en.wikipedia.org/wiki/Monte_Carlo_method" target="_blank" rel="noopener">Monte Carlo method</a> · <a href="https://en.wikipedia.org/wiki/Geometric_Brownian_motion" target="_blank" rel="noopener">Geometric Brownian motion</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>自相关与 DW 统计量</td><td><a href="https://en.wikipedia.org/wiki/Autocorrelation" target="_blank" rel="noopener">Autocorrelation</a> · <a href="https://en.wikipedia.org/wiki/Stationary_process" target="_blank" rel="noopener">Stationary process</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>多重共线性与 VIF</td><td><a href="https://en.wikipedia.org/wiki/Multicollinearity" target="_blank" rel="noopener">Multicollinearity</a> · <a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target="_blank" rel="noopener">Ordinary least squares</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>可行广义最小二乘思路</td><td><a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target="_blank" rel="noopener">Ordinary least squares</a> · <a href="https://www.statsmodels.org/stable/generated/statsmodels.regression.linear_model.OLS.html" target="_blank" rel="noopener">statsmodels OLS 文档</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s22-1"><h2><span class="sec-num">§22.1</span>异方差：点估计无偏，推断失真</h2>
+<p>若 <code>Var(u_i|X)=σ_i²</code> 非常数，<code>β̂</code> 仍无偏（只要 <code>E[u|X]=0</code>），但 <code>Var(β̂)</code> 不再是 <code>σ²(XᵀX)⁻¹</code>。一致估计量（以一元回归为例）：</p><p class="eq">Var_HC0(β̂₁) = Σ e_i²(x_i−x̄)² / [Σ(x_i−x̄)²]²   (White / Eicker–Huber–White)</p><p>矩阵形式是三明治 <code>(XᵀX)⁻¹ (Σ e_i² x_i x_iᵀ) (XᵀX)⁻¹</code>。小样本下 HC0 偏乐观，实际常用 HC1/HC3 做自由度修正。若已知异方差结构，FGLS/WLS 可以提高效率，但错误设定权重反而更糟。</p>
+</section>
+<section id="s22-2"><h2><span class="sec-num">§22.2</span>自相关与共线性的诊断量</h2>
+<p>时间序列残差若满足 AR(1) <code>e_t=ρe_{t−1}+v_t</code>，Durbin–Watson 统计量近似 <code>DW≈2(1−ρ)</code>：接近 2 表示无自相关，接近 0 表示强正相关。多重共线性用方差膨胀因子度量：</p><p class="eq">VIF_j = 1/(1−R_j²)  ;  se 膨胀倍数 = √VIF_j</p><p>共线性不是「模型错了」，而是<strong>数据里缺少识别该系数所需的变化</strong>：r=0.99 时 se 膨胀约 7 倍。解法是增加信息（更多样本、实验设计）或正则化/降维，而不是删掉「不显著」的变量了事。</p>
+</section>
+<section id="s22-3"><h2><span class="sec-num">§22.3</span>诊断不是猎巫</h2>
+<table><thead><tr><th style="width:28%">症状</th><th>可能原因</th><th>先做什么</th></tr></thead><tbody>
+<tr><td>残差漏斗形</td><td>异方差 / 函数形式错</td><td>画残差-拟合图；改用稳健 se</td></tr>
+<tr><td>DW 明显小于 2</td><td>遗漏时间趋势 / 序列相关</td><td>加趋势或滞后，见 <a href='../25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a></td></tr>
+<tr><td>系数符号反常且不显著</td><td>共线性 / 度量误差</td><td>看相关矩阵与 VIF</td></tr>
+</tbody></table>
+<p>重要边界：诊断检验本身也有多重检验问题（<a href='../../part6/31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a>），在报告结果前反复试 specification 会抬高假阳性率。预注册分析计划、报告全部设定，是更可靠的做法。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>异方差稳健标准误、DW 与 VIF</h3>
+<pre class="code" data-file="code/22-diagnostics.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 22-diagnostics.py | 手写 HC0 与诊断量（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+N, REPS = 200, 1000
+B0, B1 = 1.0, 2.0
+RHO_AR = 0.7
+
+def ols1(xs, ys):
+    mx, my = statistics.fmean(xs), statistics.fmean(ys)
+    dx = [x - mx for x in xs]
+    sxx = sum(v * v for v in dx)
+    sxy = sum(dx[i] * (ys[i] - my) for i in range(len(xs)))
+    b = sxy / sxx
+    a = my - b * mx
+    e = [ys[i] - a - b * xs[i] for i in range(len(xs))]
+    s2 = sum(v * v for v in e) / (len(xs) - 2)
+    se = math.sqrt(s2 / sxx)
+    se_rob = math.sqrt(sum(e[i] ** 2 * dx[i] ** 2 for i in range(len(xs))) / sxx ** 2)
+    return a, b, se, se_rob, e
+
+def one_sample(rng):
+    xs = [10.0 * i / N for i in range(N)]
+    # 异方差: 噪声标准差随 x 增大
+    ys = [B0 + B1 * x + rng.gauss(0, 0.5 + 0.3 * x) for x in xs]
+    return xs, ys
+
+rng = random.Random(7)
+xs, ys = one_sample(rng)
+a, b, se, se_rob, e = ols1(xs, ys)
+# ---- 蒙特卡洛：两种 se 的假阳性率 ----
+mc = random.Random(23)
+r_ordinary, r_robust = 0, 0
+for _ in range(REPS):
+    xx, yy = one_sample(mc)
+    _, bb, s1, s2, _ = ols1(xx, yy)
+    if abs((bb - B1) / s1) &gt; 1.96:
+        r_ordinary += 1
+    if abs((bb - B1) / s2) &gt; 1.96:
+        r_robust += 1
+# ---- AR(1) 残差与 DW ----
+ar_rng = random.Random(31)
+prev, errs = 0.0, []
+for _ in range(N):
+    prev = RHO_AR * prev + ar_rng.gauss(0, 1)
+    errs.append(prev)
+dw = sum((errs[i] - errs[i - 1]) ** 2 for i in range(1, N)) / sum(v * v for v in errs)
+# ---- 共线性：VIF 与 se 膨胀 ----
+vifs = [(r, 1 / (1 - r * r), math.sqrt(1 / (1 - r * r))) for r in (0.0, 0.9, 0.99)]
+# ---- 数值验证：打印可手算核对的量 ----
+print("单样本 beta1=%.6f (真实 %.2f) 普通 se=%.6f 稳健 se=%.6f" % (b, B1, se, se_rob))
+print("蒙特卡洛 %d 次 H0 假阳性率: 普通 se=%.4f 稳健 se=%.4f (名义 0.05)" %
+      (REPS, r_ordinary / REPS, r_robust / REPS))
+print("DW=%.4f ≈ 2(1-rho)=%.4f" % (dw, 2 * (1 - RHO_AR)))
+for r, vif, infl in vifs:
+    print("  相关系数 r=%.2f  VIF=%.2f  se 膨胀=%.2f 倍" % (r, vif, infl))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 DGP 里的 <code>0.3*x</code> 改成 0（同方差），观察普通 se 与稳健 se 是否接近、假阳性率是否都回到 0.05。　<strong>预期与判读：</strong>β̂₁≈2.02，普通 se≈0.056、稳健 se≈0.062；1000 次重复中普通 se 的假阳性率≈0.074，HC0 稳健 se≈0.063（明显改善但小样本仍偏高）；DW≈0.72，与 2(1−ρ)=0.6 同一量级；r=0.99 时 se 膨胀约 7.09 倍。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>RHO_AR 越接近 1，DW 越接近 0；N 变小会放大 HC0 的小样本偏差。　文件位置：<code>part4/22-diagnostics/code/22-diagnostics.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Heteroscedasticity" target="_blank" rel="noopener">Heteroscedasticity</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>误差方差非常数使标准误失效</p>
+<span class="why"><strong>怎么用</strong>：异方差的定义与后果</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Heteroscedasticity</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Heteroscedasticity-consistent_standard_errors" target="_blank" rel="noopener">Heteroscedasticity-consistent standard errors</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>不假设同方差的稳健推断</p>
+<span class="why"><strong>怎么用</strong>：HC0/HC1/HC3 系列</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Heteroscedasticity-consistent_standard_errors</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Autocorrelation" target="_blank" rel="noopener">Autocorrelation</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>序列相关与时间序列推断</p>
+<span class="why"><strong>怎么用</strong>：序列相关与 DW</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Autocorrelation</code></p></div>
+<div class="repo-card">
+<h3><a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></h3>
+<span class="tag">工具 · 参考资料</span>
+<p>OLS / IV / 面板 / 时间序列的成熟实现</p>
+<span class="why"><strong>怎么用</strong>：工业实现对照</span>
+<p style="margin:0"><code>https://www.statsmodels.org/stable/index.html</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>以为异方差使 β̂ 有偏：它破坏的是推断效率与标准误，不是无偏性。</li>
+<li>把稳健标准误当成万能药：存在内生性或聚类相关时仍不够。</li>
+<li>靠反复删变量解决共线性：这会引入设定搜索偏误，见 <a href='../../part6/31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a>。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>推导 HC1 = n/(n−k)·HC0 的自由度修正，并在脚本里实现。</li>
+<li>把误差改成聚类结构（同一组内相关），观察 HC0 是否仍失效。</li>
+<li>用 <a href='../21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a> 的矩阵版 OLS 实现完整三明治协方差矩阵。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Heteroscedasticity</strong>（百科）：误差方差非常数使标准误失效<br><a href="https://en.wikipedia.org/wiki/Heteroscedasticity" target="_blank" rel="noopener">Heteroscedasticity</a></li>
+<li><strong>Heteroscedasticity-consistent standard errors</strong>（百科）：不假设同方差的稳健推断<br><a href="https://en.wikipedia.org/wiki/Heteroscedasticity-consistent_standard_errors" target="_blank" rel="noopener">Heteroscedasticity-consistent standard errors</a></li>
+<li><strong>Autocorrelation</strong>（百科）：序列相关与时间序列推断<br><a href="https://en.wikipedia.org/wiki/Autocorrelation" target="_blank" rel="noopener">Autocorrelation</a></li>
+<li><strong>Multicollinearity</strong>（百科）：解释变量高度相关导致估计不稳<br><a href="https://en.wikipedia.org/wiki/Multicollinearity" target="_blank" rel="noopener">Multicollinearity</a></li>
+<li><strong>statsmodels</strong>（工具）：OLS / IV / 面板 / 时间序列的成熟实现<br><a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=heteroskedasticity%20robust%20standard%20errors%20diagnostics" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=heteroskedasticity%20robust%20standard%20errors%20diagnostics" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=heteroskedasticity%20robust%20standard%20errors%20diagnostics" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a>　OLS 与经典假设</li>
+<li><a href='../23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a>　内生性：连无偏性都不保</li>
+<li><a href='../../part6/31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a>　设定搜索与多重检验</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

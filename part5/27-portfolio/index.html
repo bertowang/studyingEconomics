@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 27 章 · 均值-方差组合：分散化与有效前沿 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="27">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第五篇 · 投资学、资产定价与风险管理 · 第四阶段 · 不确定性与资产定价</span>
+<h1><span class="ch-num">第 27 章</span>均值-方差组合：分散化与有效前沿</h1>
+<p class="lede">把 <a href='../../part0/01-math-tools/index.html'>第 01 章 · 约束最优化与比较静态：经济学的核心 API</a> 的约束最优化用于资产权重：给定风险求最高期望收益，或给定收益求最低方差。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s4">定价 · 决策</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../../part0/01-math-tools/index.html'>第 01 章 · 约束最优化与比较静态：经济学的核心 API</a> 的 FOC、<a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a> 的凹效用与 <a href='../26-returns/index.html'>第 26 章 · 收益、复利与波动：把价格变成可建模的序列</a> 的收益分布接成第一个定价决策模型；<a href='../28-capm-factors/index.html'>第 28 章 · CAPM 与因子模型：什么风险该有补偿</a> 追问「风险为何应该被补偿」。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">组合优化是一个二次型目标函数加线性约束：方差矩阵是协方差，权重是决策变量；低相关资产相当于「 diversify 依赖」，降低共同失效的概率。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能计算两资产组合的期望收益与方差，并求最小方差权重</li>
+<li>会用网格搜索求含无风险资产时的最大夏普组合</li>
+<li>解释分散化为何在相关系数小于 1 时有效、以及系统性风险不可分散</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>组合收益与方差</td><td><a href="https://en.wikipedia.org/wiki/Variance" target="_blank" rel="noopener">Variance</a> · <a href="https://en.wikipedia.org/wiki/Expected_value" target="_blank" rel="noopener">Expected value</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>相关系数与分散化</td><td><a href="https://en.wikipedia.org/wiki/Diversification_(finance)" target="_blank" rel="noopener">Diversification (finance)</a> · <a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory" target="_blank" rel="noopener">Modern portfolio theory</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>最小方差组合</td><td><a href="https://en.wikipedia.org/wiki/Variance" target="_blank" rel="noopener">Variance</a> · <a href="https://en.wikipedia.org/wiki/Expected_value" target="_blank" rel="noopener">Expected value</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>有效前沿</td><td><a href="https://en.wikipedia.org/wiki/Efficient_frontier" target="_blank" rel="noopener">Efficient frontier</a> · <a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory" target="_blank" rel="noopener">Modern portfolio theory</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>夏普比率</td><td><a href="https://en.wikipedia.org/wiki/Sharpe_ratio" target="_blank" rel="noopener">Sharpe ratio</a> · <a href="https://en.wikipedia.org/wiki/Efficient_frontier" target="_blank" rel="noopener">Efficient frontier</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>切点组合与两基金分离</td><td><a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory" target="_blank" rel="noopener">Modern portfolio theory</a> · <a href="https://en.wikipedia.org/wiki/Diversification_(finance)" target="_blank" rel="noopener">Diversification (finance)</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>系统性风险</td><td><a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory" target="_blank" rel="noopener">Modern portfolio theory</a> · <a href="https://en.wikipedia.org/wiki/Efficient_frontier" target="_blank" rel="noopener">Efficient frontier</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>均值-方差与期望效用</td><td><a href="https://en.wikipedia.org/wiki/Utility" target="_blank" rel="noopener">Utility</a> · <a href="https://en.wikipedia.org/wiki/Indifference_curve" target="_blank" rel="noopener">Indifference curve</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s27-1"><h2><span class="sec-num">§27.1</span>组合方差：协方差才是关键</h2>
+<p>两资产权重 <code>w</code> 与 <code>1−w</code>：</p><p class="eq">μ_p = wμ₁+(1−w)μ₂ ;  σ_p² = w²σ₁²+(1−w)²σ₂²+2w(1−w)ρσ₁σ₂</p><p>令导数为零得最小方差权重 <code>w* = (σ₂²−ρσ₁σ₂)/(σ₁²+σ₂²−2ρσ₁σ₂)</code>。只要 <code>ρ&lt;1</code>，最小方差组合的风险就低于两种资产各自的风险；<code>ρ=−1</code> 时理论上可构造零方差组合。分散化收益来自<strong>协方差项</strong>，不是「资产数量多」。</p>
+</section>
+<section id="s27-2"><h2><span class="sec-num">§27.2</span>有效前沿与切点组合</h2>
+<p>把 <code>(σ_p, μ_p)</code> 对所有权重连成曲线，其上「给定风险收益最高」的半支是<strong>有效前沿</strong>。加入无风险利率 <code>r_f</code> 后，最大化夏普比率：</p><p class="eq">Sharpe = (μ_p − r_f)/σ_p  ;  最优解 = 从 r_f 出发与前沿相切的切点组合</p><p><strong>两基金分离定理</strong>：所有投资者的风险资产部分都持有同一个切点组合，差别只在「无风险资产 + 切点组合」的配比，由风险偏好决定。这是 <a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a> 期望效用与 <a href='../../part1/05-consumer-choice/index.html'>第 05 章 · 消费者理论：偏好、需求与希克斯分解</a> 对偶结构在金融里的对应：偏好只影响一个标量。</p>
+</section>
+<section id="s27-3"><h2><span class="sec-num">§27.3</span>模型边界</h2>
+<table><thead><tr><th style="width:28%">假设</th><th>现实问题</th><th>改进方向</th></tr></thead><tbody>
+<tr><td>收益正态 / 效用二次</td><td>厚尾、偏度、下行风险</td><td>CVaR、期望效用数值解</td></tr>
+<tr><td>μ、Σ 已知</td><td>期望收益估计误差极大，权重对输入敏感</td><td>收缩估计、Black-Litterman、最小方差/风险平价</td></tr>
+<tr><td>单期、无摩擦</td><td>交易成本、税负、约束</td><td>多期与带约束优化</td></tr>
+</tbody></table>
+<p>实践中「估计误差比模型误差更致命」：<a href='../../part4/21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a> 的标准误在这里被放大成权重的不稳定，因此工业界常放弃估计 μ、只用协方差做最小方差或风险平价。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>最小方差、有效前沿与最大夏普组合</h3>
+<pre class="code" data-file="code/27-portfolio.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 27-portfolio.py | 两资产组合与切点组合（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+MU1, MU2 = 0.08, 0.12
+S1, S2, RHO = 0.15, 0.25, 0.30
+RF = 0.03
+GRID = 1000
+
+def stats(w):
+    mu = w * MU1 + (1 - w) * MU2
+    var = (w * w * S1 ** 2 + (1 - w) ** 2 * S2 ** 2 +
+           2 * w * (1 - w) * RHO * S1 * S2)
+    return mu, math.sqrt(var)
+
+w_min = (S2 ** 2 - RHO * S1 * S2) / (S1 ** 2 + S2 ** 2 - 2 * RHO * S1 * S2)
+mu_min, sd_min = stats(w_min)
+best_w, best_sharpe = 0.0, -1e9
+for i in range(GRID + 1):
+    w = -0.5 + 1.5 * i / GRID      # 允许少量卖空以看清前沿形状
+    mu, sd = stats(w)
+    sh = (mu - RF) / sd
+    if sh &gt; best_sharpe:
+        best_w, best_sharpe = w, sh
+mu_t, sd_t = stats(best_w)
+# ---- ρ=1 时无分散化收益的对照 ----
+cov = RHO * S1 * S2
+sd_equal = math.sqrt(0.25 * S1 ** 2 + 0.25 * S2 ** 2 + 0.5 * cov)
+sd_equal_rho1 = math.sqrt(0.25 * S1 ** 2 + 0.25 * S2 ** 2 + 0.5 * S1 * S2)
+# ---- 数值验证：打印可手算核对的量 ----
+print("资产1: mu=%.2f sd=%.2f  资产2: mu=%.2f sd=%.2f  rho=%.2f" %
+      (MU1, S1, MU2, S2, RHO))
+print("最小方差权重 w*=%.6f 组合 sd=%.6f (低于两资产)" % (w_min, sd_min))
+print("最大夏普权重 w=%.6f 夏普=%.6f mu=%.6f sd=%.6f" %
+      (best_w, best_sharpe, mu_t, sd_t))
+print("等权组合 sd=%.6f ; 若 rho=1 则 sd=%.6f (无分散化收益)" %
+      (sd_equal, sd_equal_rho1))
+print("切点组合超预期收益/风险 = %.6f = 夏普比率" % ((mu_t - RF) / sd_t))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>RHO</code> 改成 −0.5 或 1.0，观察最小方差权重与等权组合风险如何变化。　<strong>预期与判读：</strong>ρ=0.3 时最小方差权重=0.82、组合波动≈0.1431（低于资产 1 的 0.15）；最大夏普权重≈0.5905、夏普≈0.4306；等权组合波动≈0.1639，ρ=1 时为 0.20，无分散化收益。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>RHO 下降降低组合风险；MU2 上升把切点组合推向资产 2；RF 上升改变切点位置。　文件位置：<code>part5/27-portfolio/code/27-portfolio.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory" target="_blank" rel="noopener">Modern portfolio theory</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>均值-方差框架与分散化</p>
+<span class="why"><strong>怎么用</strong>：均值-方差框架</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Modern_portfolio_theory</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Efficient_frontier" target="_blank" rel="noopener">Efficient frontier</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>给定风险下最高期望收益的组合集合</p>
+<span class="why"><strong>怎么用</strong>：有效前沿与两基金分离</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Efficient_frontier</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Sharpe_ratio" target="_blank" rel="noopener">Sharpe ratio</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>单位总风险的超额收益</p>
+<span class="why"><strong>怎么用</strong>：夏普比率定义</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Sharpe_ratio</code></p></div>
+<div class="repo-card">
+<h3><a href="https://numpy.org/doc/stable/" target="_blank" rel="noopener">NumPy</a></h3>
+<span class="tag">工具 · 参考资料</span>
+<p>向量化与线性代数；本书手写实现的工业版</p>
+<span class="why"><strong>怎么用</strong>：工业版矩阵运算</span>
+<p style="margin:0"><code>https://numpy.org/doc/stable/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>用资产数量衡量分散化：真正起作用的是相关性与协方差。</li>
+<li>把估计出的期望收益当已知参数：μ 的估计误差会主导权重。</li>
+<li>把夏普比率当唯一目标：它忽略偏度、厚尾与流动性风险。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>解析推导最大夏普权重并和网格解对比（提示：对 <code>(μ_p−r_f)/σ_p</code> 求导）。</li>
+<li>把 <code>RHO</code> 从 −1 扫到 1，画最小方差组合波动曲线。</li>
+<li>用 <a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a> 的 <code>E[r]−(A/2)σ²</code> 重解切点组合，说明风险厌恶系数 A 落在哪里。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Modern portfolio theory</strong>（百科）：均值-方差框架与分散化<br><a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory" target="_blank" rel="noopener">Modern portfolio theory</a></li>
+<li><strong>Efficient frontier</strong>（百科）：给定风险下最高期望收益的组合集合<br><a href="https://en.wikipedia.org/wiki/Efficient_frontier" target="_blank" rel="noopener">Efficient frontier</a></li>
+<li><strong>Sharpe ratio</strong>（百科）：单位总风险的超额收益<br><a href="https://en.wikipedia.org/wiki/Sharpe_ratio" target="_blank" rel="noopener">Sharpe ratio</a></li>
+<li><strong>Diversification (finance)</strong>（百科）：相关性低于 1 时可降低组合波动<br><a href="https://en.wikipedia.org/wiki/Diversification_(finance)" target="_blank" rel="noopener">Diversification (finance)</a></li>
+<li><strong>NumPy</strong>（工具）：向量化与线性代数；本书手写实现的工业版<br><a href="https://numpy.org/doc/stable/" target="_blank" rel="noopener">NumPy</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=mean%20variance%20efficient%20frontier%20portfolio%20optimization" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=mean%20variance%20efficient%20frontier%20portfolio%20optimization" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=mean%20variance%20efficient%20frontier%20portfolio%20optimization" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a>　期望效用与风险厌恶</li>
+<li><a href='../26-returns/index.html'>第 26 章 · 收益、复利与波动：把价格变成可建模的序列</a>　收益与波动输入</li>
+<li><a href='../28-capm-factors/index.html'>第 28 章 · CAPM 与因子模型：什么风险该有补偿</a>　CAPM 与因子</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

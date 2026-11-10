@@ -1,0 +1,7 @@
+# 生成器缓存与运行产物
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+*.tmp
+verify-out/

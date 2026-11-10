@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 26 章 · 收益、复利与波动：把价格变成可建模的序列 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="26">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第五篇 · 投资学、资产定价与风险管理 · 第四阶段 · 不确定性与资产定价</span>
+<h1><span class="ch-num">第 26 章</span>收益、复利与波动：把价格变成可建模的序列</h1>
+<p class="lede">资产价格是 <a href='../../part4/25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a> 的随机游走，收益才近似平稳；对数收益可跨期相加，是建模与计量的标准输入。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s4">定价 · 决策</span>
+<span>建议 2 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../../part0/02-probability-simulation/index.html'>第 02 章 · 概率、统计与模拟：从分布到证据</a> 的分布、<a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a> 的贴现与 <a href='../../part4/25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a> 的随机游走合流；<a href='../27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a>～<a href='../30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a> 都把收益序列当作输入。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">价格像累加器（积分），收益像增量（差分）；对数收益把乘法累积变成加法累积，等价于把乘性过程取对数变成加性过程，便于做统计。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>会计算简单收益、对数收益、年化收益与年化波动</li>
+<li>解释算术平均与几何平均的差别（波动拖累）</li>
+<li>能用固定种子模拟几何布朗运动并核对复利恒等式</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>简单收益与对数收益</td><td><a href="https://en.wikipedia.org/wiki/Rate_of_return" target="_blank" rel="noopener">Rate of return</a> · <a href="https://en.wikipedia.org/wiki/Log-normal_distribution" target="_blank" rel="noopener">Log-normal distribution</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>复利与年化</td><td><a href="https://en.wikipedia.org/wiki/Compound_interest" target="_blank" rel="noopener">Compound interest</a> · <a href="https://en.wikipedia.org/wiki/Rate_of_return" target="_blank" rel="noopener">Rate of return</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>算术平均与几何平均</td><td><a href="https://en.wikipedia.org/wiki/Compound_interest" target="_blank" rel="noopener">Compound interest</a> · <a href="https://en.wikipedia.org/wiki/Rate_of_return" target="_blank" rel="noopener">Rate of return</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>波动拖累</td><td><a href="https://en.wikipedia.org/wiki/Compound_interest" target="_blank" rel="noopener">Compound interest</a> · <a href="https://en.wikipedia.org/wiki/Rate_of_return" target="_blank" rel="noopener">Rate of return</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>几何布朗运动</td><td><a href="https://en.wikipedia.org/wiki/Geometric_Brownian_motion" target="_blank" rel="noopener">Geometric Brownian motion</a> · <a href="https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model" target="_blank" rel="noopener">Black–Scholes model</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>对数正态分布</td><td><a href="https://en.wikipedia.org/wiki/Log-normal_distribution" target="_blank" rel="noopener">Log-normal distribution</a> · <a href="https://en.wikipedia.org/wiki/Geometric_Brownian_motion" target="_blank" rel="noopener">Geometric Brownian motion</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>最大回撤</td><td><a href="https://en.wikipedia.org/wiki/Compound_interest" target="_blank" rel="noopener">Compound interest</a> · <a href="https://en.wikipedia.org/wiki/Rate_of_return" target="_blank" rel="noopener">Rate of return</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>收益的平稳性</td><td><a href="https://en.wikipedia.org/wiki/Stationary_process" target="_blank" rel="noopener">Stationary process</a> · <a href="https://en.wikipedia.org/wiki/Unit_root" target="_blank" rel="noopener">Unit root</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s26-1"><h2><span class="sec-num">§26.1</span>三种收益与两个恒等式</h2>
+<p>简单收益 <code>R_t = P_t/P_{t−1} − 1</code>，对数收益 <code>r_t = ln(P_t/P_{t−1}) = ln(1+R_t)</code>。多期总收益：</p><p class="eq">1 + R_total = Π(1+R_t) ;  r_total = Σ r_t = ln(1+R_total)</p><p>简单收益可跨资产加总（组合收益是加权平均），对数收益可跨时间加总。<strong>两者不能混用</strong>：把对数收益当权重算组合收益是常见 bug。年化时 <code>μ_ann = 12·μ_month</code>、<code>σ_ann = √12·σ_month</code>（方差可加、标准差不可加）。</p>
+</section>
+<section id="s26-2"><h2><span class="sec-num">§26.2</span>波动拖累</h2>
+<p>对数效用或连续复利下，长期增长率是<strong>几何平均</strong>而非算术平均：</p><p class="eq">g = E[r] − ½σ²   （GBM 下精确成立，一般情形下为二阶近似）</p><p>因此「平均收益 10%、波动 30%」的资产长期增长率不是 10%，而约 5.5%。<a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a> 的确定性等价、<a href='../27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> 的均值-方差目标函数都在这里得到同一个结论：<strong>波动本身要付出复利代价</strong>。</p>
+</section>
+<section id="s26-3"><h2><span class="sec-num">§26.3</span>几何布朗运动与路径模拟</h2>
+<p>标准价格模型 <code>dS = μS dt + σS dW</code> 的离散解：</p><p class="eq">S_{t+Δt} = S_t·exp[(μ − ½σ²)Δt + σ√Δt·Z] ,  Z~N(0,1)</p><p><code>S_T</code> 服从对数正态分布，价格水平是 I(1) 而收益近似 I(0)——这正是 <a href='../../part4/25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a> 的结论。脚本会验证「终点价格 = 初始价 × exp(对数收益之和)」，并用蒙特卡洛均值与解析漂移对照。真实市场还有厚尾、波动聚集与跳跃，GBM 是<strong>基准模型而非事实</strong>。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>复利、波动拖累与 GBM 路径模拟</h3>
+<pre class="code" data-file="code/26-returns.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 26-returns.py | 收益定义与几何布朗运动（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+S0, MU, SIGMA = 100.0, 0.08, 0.20
+DT, STEPS = 1.0 / 12, 240       # 20 年月度
+N_PATHS = 4000
+# ---- 单条路径 ----
+rng = random.Random(7)
+prices, logrets, simple = [S0], [], []
+s = S0
+for _ in range(STEPS):
+    z = rng.gauss(0, 1)
+    r = (MU - 0.5 * SIGMA ** 2) * DT + SIGMA * math.sqrt(DT) * z
+    s *= math.exp(r)
+    prices.append(s)
+    logrets.append(r)
+    simple.append(math.exp(r) - 1)
+mean_r = statistics.fmean(logrets)
+mean_simple = statistics.fmean(simple)
+vol_month = statistics.pstdev(logrets)
+total_log = sum(logrets)
+# ---- 蒙特卡洛：终点价格期望 E[S_T] = S0*exp(mu*T) ----
+mc = random.Random(19)
+terminals = []
+for _ in range(N_PATHS):
+    st = S0 * math.exp((MU - 0.5 * SIGMA ** 2) * (STEPS * DT) +
+                       SIGMA * math.sqrt(STEPS * DT) * mc.gauss(0, 1))
+    terminals.append(st)
+# ---- 最大回撤 ----
+peak, mdd = prices[0], 0.0
+for p in prices:
+    peak = max(peak, p)
+    mdd = max(mdd, (peak - p) / peak)
+# ---- 数值验证：打印可手算核对的量 ----
+print("终点价格=%.4f  S0*exp(sum r)=%.4f (恒等式)" %
+      (prices[-1], S0 * math.exp(total_log)))
+print("月对数收益均值=%.6f 简单收益均值=%.6f 差≈sigma²*dt/2=%.6f" %
+      (mean_r, mean_simple, 0.5 * SIGMA ** 2 * DT))
+print("年化对数收益=%.4f%% 年化波动=%.4f%% (目标 %.2f%%)" %
+      (100 * mean_r / DT, 100 * vol_month / math.sqrt(DT), 100 * SIGMA))
+print("长期增长率 E[r]-0.5sigma²=%.4f%% (算术漂移 %.2f%%)" %
+      (100 * (MU - 0.5 * SIGMA ** 2), 100 * MU))
+print("蒙特卡洛 E[S_T]=%.4f 解析=%.4f" %
+      (statistics.fmean(terminals), S0 * math.exp(MU * STEPS * DT)))
+print("单路径最大回撤=%.2f%%" % (100 * mdd))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>SIGMA</code> 改成 0.4，观察长期增长率下降与最大回撤上升；把 <code>STEPS</code> 改成 12 看年化估计的噪声。　<strong>预期与判读：</strong>终点价格与 S0·exp(Σr) 完全一致；简单收益均值比对数收益均值高约 σ²Δt/2；年化波动≈20%；长期增长率≈6% 而算术漂移 8%；蒙特卡洛 E[S_T] 接近 S0·e^(μT)。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>SIGMA 上升同时压低长期增长率、放大回撤；N_PATHS 控制蒙特卡洛误差；DT 改变年化换算系数。　文件位置：<code>part5/26-returns/code/26-returns.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Rate_of_return" target="_blank" rel="noopener">Rate of return</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>简单收益、对数收益与年化</p>
+<span class="why"><strong>怎么用</strong>：收益定义与年化</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Rate_of_return</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Log-normal_distribution" target="_blank" rel="noopener">Log-normal distribution</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>资产价格建模的常用分布</p>
+<span class="why"><strong>怎么用</strong>：对数正态分布</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Log-normal_distribution</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Compound_interest" target="_blank" rel="noopener">Compound interest</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>复利与长期增长的非线性</p>
+<span class="why"><strong>怎么用</strong>：复利与长期增长</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Compound_interest</code></p></div>
+<div class="repo-card">
+<h3><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>美联储圣路易斯分行的宏观与金融时间序列，免费可下载</p>
+<span class="why"><strong>怎么用</strong>：用真实指数序列核对</span>
+<p style="margin:0"><code>https://fred.stlouisfed.org/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把对数收益当简单收益做组合加权：跨时间可加与跨资产可加是两种不同性质。</li>
+<li>把算术平均当长期增长率：忽略波动拖累会系统性高估终值。</li>
+<li>把 GBM 当真实市场：厚尾、波动聚集与跳跃都不在模型里。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>推导 <code>Var(R_total)</code> 与期数的关系，说明为什么年化波动用 √12。</li>
+<li>在脚本里把收益改成 t 分布（用 <code>random.gauss</code> 混合方差），观察回撤分布的变化。</li>
+<li>用 <a href='../../part4/25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a> 的 ADF 思路检验价格与收益的平稳性差异。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Compound interest</strong>（百科）：复利与长期增长的非线性<br><a href="https://en.wikipedia.org/wiki/Compound_interest" target="_blank" rel="noopener">Compound interest</a></li>
+<li><strong>Rate of return</strong>（百科）：简单收益、对数收益与年化<br><a href="https://en.wikipedia.org/wiki/Rate_of_return" target="_blank" rel="noopener">Rate of return</a></li>
+<li><strong>Log-normal distribution</strong>（百科）：资产价格建模的常用分布<br><a href="https://en.wikipedia.org/wiki/Log-normal_distribution" target="_blank" rel="noopener">Log-normal distribution</a></li>
+<li><strong>FRED 经济数据</strong>（数据）：美联储圣路易斯分行的宏观与金融时间序列，免费可下载<br><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=log%20returns%20compounding%20annualized%20volatility" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=log%20returns%20compounding%20annualized%20volatility" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=log%20returns%20compounding%20annualized%20volatility" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a>　贴现与确定性等价</li>
+<li><a href='../27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a>　组合方差与分散化</li>
+<li><a href='../30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a>　GBM 与期权定价</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

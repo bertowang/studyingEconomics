@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 14 章 · 一般均衡与加总：微观部分的收口 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="14">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第二篇 · 市场结构、策略与失灵 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 14 章</span>一般均衡与加总：微观部分的收口</h1>
+<p class="lede">把所有市场同时出清写成一个价格向量的不动点问题；瓦尔拉斯法则说明只需解 n−1 个方程，但加总会带来合成谬误。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">市场 · 策略</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../../part1/05-consumer-choice/index.html'>第 05 章 · 消费者理论：偏好、需求与希克斯分解</a> 的个体需求、<a href='../../part1/07-trade/index.html'>第 07 章 · 比较优势、专业化与贸易收益</a> 的两国交换合成一个联立系统，收口第一阶段；<a href='../../part3/15-national-accounts/index.html'>第 15 章 · 国民账户与价格指数：如何度量总量</a> 从这里接过「加总」这个新问题进入宏观。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">一般均衡是求一个全局价格向量使所有市场的 excess_demand 同时为零；瓦尔拉斯法则说明这些方程有一个恒等依赖，因此自由度少一维，可以固定一个计价物（numeraire）。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能写出纯交换经济的需求与超额需求函数</li>
+<li>用二分法求均衡相对价格并验证两个市场同时出清</li>
+<li>解释瓦尔拉斯法则与合成谬误，说明微观到宏观为何需要额外假设</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>纯交换经济与禀赋</td><td><a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a> · <a href="https://en.wikipedia.org/wiki/Walras%27_law" target="_blank" rel="noopener">Walras&#x27; law</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>预算约束与需求</td><td><a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a> · <a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>超额需求函数</td><td><a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a> · <a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>相对价格与计价物</td><td><a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a> · <a href="https://en.wikipedia.org/wiki/Walras%27_law" target="_blank" rel="noopener">Walras&#x27; law</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>均衡价格不动点</td><td><a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a> · <a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>瓦尔拉斯法则</td><td><a href="https://en.wikipedia.org/wiki/Walras%27_law" target="_blank" rel="noopener">Walras&#x27; law</a> · <a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>福利第二定理</td><td><a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a> · <a href="https://en.wikipedia.org/wiki/Walras%27_law" target="_blank" rel="noopener">Walras&#x27; law</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>合成谬误</td><td><a href="https://en.wikipedia.org/wiki/Fallacy_of_composition" target="_blank" rel="noopener">Fallacy of composition</a> · <a href="https://en.wikipedia.org/wiki/IS%E2%80%93LM_model" target="_blank" rel="noopener">IS–LM model</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s14-1"><h2><span class="sec-num">§14.1</span>从个体需求到市场超额需求</h2>
+<p>两人两商品纯交换经济：消费者 i 有禀赋 <code>ω_i</code>、Cobb-Douglas 份额 <code>α_i</code>，收入 <code>m_i = p·ω_i</code>，需求 <code>x_i1 = α_i m_i/p₁</code>、<code>x_i2 = (1−α_i)m_i/p₂</code>。市场 j 的超额需求：</p><p class="eq">z_j(p) = Σ_i x_ij(p) − Σ_i ω_ij ;  z(p*)=0 为竞争均衡</p><p>因为需求对价格零次齐次（所有价格同乘不改变预算与需求），只有<strong>相对价格</strong>有意义；固定 <code>p₁=1</code>，用一维搜索解 <code>z₁(r)=0</code>（<code>r=p₂/p₁</code>）即可。</p>
+</section>
+<section id="s14-2"><h2><span class="sec-num">§14.2</span>瓦尔拉斯法则与数值求解</h2>
+<p>每个消费者的预算约束恒成立，加总得到</p><p class="eq">p₁z₁(p) + p₂z₂(p) ≡ 0   对任意价格向量成立</p><p>所以若 <code>z₁=0</code>，必有 <code>z₂=0</code>；只需解 n−1 个市场。数值上可以用二分法或 tâtonnement（超额需求为正就抬价），后者的收敛性并非自动保证——Sonnenschein–Mantel–Debreu 定理说明，加总超额需求除了连续性、零次齐次与瓦尔拉斯法则外几乎不继承个体理性带来的良好性质。<strong>这是「代表性个体」假设必须额外论证的原因。</strong></p>
+</section>
+<section id="s14-3"><h2><span class="sec-num">§14.3</span>加总陷阱：合成谬误</h2>
+<table><thead><tr><th style="width:26%">微观结论</th><th>直接加总会怎样</th><th>宏观需要的修正</th></tr></thead><tbody>
+<tr><td>个体多储蓄更富裕</td><td>全体同时多储蓄 → 总需求下降、收入下降</td><td>储蓄悖论，见 <a href='../../part3/16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a> 乘数</td></tr>
+<tr><td>单个企业降价抢份额</td><td>所有企业降价 → 价格水平下降而非份额变化</td><td>区分相对价格与价格水平，<a href='../../part3/17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a></td></tr>
+<tr><td>个体卖资产换现金</td><td>所有人同时抛售 → 资产价格下跌</td><td>一般均衡的价格反馈，<a href='../../part5/30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a></td></tr>
+</tbody></table>
+<p>因此宏观不是微观公式的简单求和，而是<strong>在加总约束下重新求一个联立均衡</strong>。第二篇到此结束；第三篇开始处理时间、货币与总量核算。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>两市场一般均衡：超额需求、二分法与瓦尔拉斯法则</h3>
+<pre class="code" data-file="code/14-ge.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 14-ge.py | 纯交换经济的均衡相对价格（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+ALPHA_A, ALPHA_B = 0.4, 0.7       # A 禀赋 (1,0)，B 禀赋 (0,1)
+LO, HI, ITERS = 0.05, 5.0, 100
+# ---- 超额需求：p1=1, r=p2/p1 ----
+def demands(r):
+    ma, mb = 1.0, r
+    xa1, xa2 = ALPHA_A * ma / 1.0, (1 - ALPHA_A) * ma / r
+    xb1, xb2 = ALPHA_B * mb / 1.0, (1 - ALPHA_B) * mb / r
+    return xa1 + xb1 - 1.0, xa2 + xb2 - 1.0
+
+def z1(r):
+    return demands(r)[0]
+# ---- 二分法求 z1=0 ----
+lo, hi = LO, HI
+for _ in range(ITERS):
+    mid = (lo + hi) / 2
+    if z1(mid) &gt; 0:
+        hi = mid
+    else:
+        lo = mid
+r = (lo + hi) / 2
+z_1, z_2 = demands(r)
+# ---- 瓦尔拉斯法则：在非均衡价格处也恒成立 ----
+test_r = 0.5
+w1, w2 = demands(test_r)
+walras = 1.0 * w1 + test_r * w2
+# ---- 福利：贸易是否让双方都改善 ----
+ua_before = 0.0                     # A 初始只有商品 1，x2=0
+ma, mb = 1.0, r
+xa1, xa2 = ALPHA_A * ma, (1 - ALPHA_A) * ma / r
+xb1, xb2 = ALPHA_B * mb, (1 - ALPHA_B) * mb / r
+ua_after = (xa1 ** ALPHA_A) * (xa2 ** (1 - ALPHA_A))
+ub_after = (xb1 ** ALPHA_B) * (xb2 ** (1 - ALPHA_B))
+# ---- 数值验证：打印可手算核对的量 ----
+print("均衡相对价格 r=p2/p1=%.8f (解析解 6/7=%.8f)" % (r, 6 / 7))
+print("均衡超额需求 z1=%.2e z2=%.2e (应为 0)" % (z_1, z_2))
+print("A 消费=(%.6f, %.6f)  B 消费=(%.6f, %.6f)" % (xa1, xa2, xb1, xb2))
+print("市场1总量=%.6f 市场2总量=%.6f (禀赋均为 1)" % (xa1 + xb1, xa2 + xb2))
+print("瓦尔拉斯法则在 r=0.5 时 p·z=%.2e (恒为 0)" % walras)
+print("贸易后效用 A=%.6f (贸易前 0) B=%.6f (贸易前 0)" % (ua_after, ub_after))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>ALPHA_A</code>、<code>ALPHA_B</code> 改成相等的值，观察均衡相对价格是否变为 1。　<strong>预期与判读：</strong>均衡 r=6/7≈0.85714286；两市场超额需求均为 0；A 消费 (0.4,0.7)、B 消费 (0.6,0.3)；在非均衡价 r=0.5 处 p·z 仍为 0；贸易使双方效用从 0 变为正。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>两个 α 越接近，均衡相对价格越接近 1；α_A 上升提高 A 对商品 1 的需求、压低 r。　文件位置：<code>part2/14-general-equilibrium/code/14-ge.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>所有市场同时出清的联立系统</p>
+<span class="why"><strong>怎么用</strong>：一般均衡存在性与福利定理</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/General_equilibrium_theory</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Walras%27_law" target="_blank" rel="noopener">Walras&#x27; law</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>超额需求总和恒为零，价格只需解 n−1 个方程</p>
+<span class="why"><strong>怎么用</strong>：瓦尔拉斯法则</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Walras%27_law</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Fallacy_of_composition" target="_blank" rel="noopener">Fallacy of composition</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>个体成立不等于总量成立（微观到宏观的陷阱）</p>
+<span class="why"><strong>怎么用</strong>：合成谬误与加总问题</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Fallacy_of_composition</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把绝对价格水平当可求解变量：纯交换经济里只有相对价格可定，需固定计价物。</li>
+<li>以为 z₁=0 之后还要单独验证 z₂=0：由瓦尔拉斯法则自动成立（但数值误差需检查）。</li>
+<li>把代表性个体当成不需要论证的简化：加总超额需求的性质并不自动继承个体理性。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>加入第三个消费者，说明为什么仍只需解一个相对价格。</li>
+<li>用 tâtonnement 迭代 <code>r ← r − η·z₁(r)</code>，找出能收敛的 η 区间。</li>
+<li>用 <a href='../../part3/16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a> 的储蓄悖论再举一个合成谬误的例子。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>General equilibrium theory</strong>（百科）：所有市场同时出清的联立系统<br><a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a></li>
+<li><strong>Walras&#x27; law</strong>（百科）：超额需求总和恒为零，价格只需解 n−1 个方程<br><a href="https://en.wikipedia.org/wiki/Walras%27_law" target="_blank" rel="noopener">Walras&#x27; law</a></li>
+<li><strong>Fundamental theorems of welfare economics</strong>（百科）：竞争均衡与帕累托效率的两条定理<br><a href="https://en.wikipedia.org/wiki/Fundamental_theorems_of_welfare_economics" target="_blank" rel="noopener">Fundamental theorems of welfare economics</a></li>
+<li><strong>Fallacy of composition</strong>（百科）：个体成立不等于总量成立（微观到宏观的陷阱）<br><a href="https://en.wikipedia.org/wiki/Fallacy_of_composition" target="_blank" rel="noopener">Fallacy of composition</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=general%20equilibrium%20Walras%20law%20computable%20equilibrium" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=general%20equilibrium%20Walras%20law%20computable%20equilibrium" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=general%20equilibrium%20Walras%20law%20computable%20equilibrium" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part1/07-trade/index.html'>第 07 章 · 比较优势、专业化与贸易收益</a>　两国两商品的贸易均衡</li>
+<li><a href='../../part3/15-national-accounts/index.html'>第 15 章 · 国民账户与价格指数：如何度量总量</a>　国民账户与加总</li>
+<li><a href='../../part3/16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a>　储蓄悖论与乘数</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

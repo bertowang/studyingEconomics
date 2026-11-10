@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 15 章 · 国民账户与价格指数：如何度量总量 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="15">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第三篇 · 宏观、货币与增长 · 第二阶段 · 总量、货币与增长</span>
+<h1><span class="ch-num">第 15 章</span>国民账户与价格指数：如何度量总量</h1>
+<p class="lede">宏观的第一件事是把无数微观交易压成几个可加总、且相互钩稽的数字；三套核算恒等式是后面所有模型的坐标系。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s2">总量 · 增长</span>
+<span>建议 2 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>承接 <a href='../../part2/14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a> 的加总问题：一般均衡给出「所有市场同时出清」，国民账户给出「这些交易如何记账」。<a href='../16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a> 在这个坐标系里研究短期波动。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">三套核算方法是对同一份交易日志的三种 group-by：按买方、按收款方、按增加值分组，总和必须相等；名义与实际的区别是「按当期价格还是按固定基准价格聚合」。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能用支出法、收入法、生产法三种方式算出同一个 GDP</li>
+<li>会计算名义 GDP、实际 GDP、GDP 平减指数与 CPI 并说明差别</li>
+<li>理解替代偏差与链式加权，知道增长率该怎么读</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>GDP 与国民账户恒等式</td><td><a href="https://en.wikipedia.org/wiki/Gross_domestic_product" target="_blank" rel="noopener">Gross domestic product</a> · <a href="https://en.wikipedia.org/wiki/National_accounts" target="_blank" rel="noopener">National accounts</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>支出法/收入法/生产法</td><td><a href="https://en.wikipedia.org/wiki/Gross_domestic_product" target="_blank" rel="noopener">Gross domestic product</a> · <a href="https://en.wikipedia.org/wiki/National_accounts" target="_blank" rel="noopener">National accounts</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>名义与实际</td><td><a href="https://en.wikipedia.org/wiki/Gross_domestic_product" target="_blank" rel="noopener">Gross domestic product</a> · <a href="https://en.wikipedia.org/wiki/National_accounts" target="_blank" rel="noopener">National accounts</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>GDP 平减指数</td><td><a href="https://en.wikipedia.org/wiki/Gross_domestic_product" target="_blank" rel="noopener">Gross domestic product</a> · <a href="https://en.wikipedia.org/wiki/National_accounts" target="_blank" rel="noopener">National accounts</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>CPI 与拉氏指数</td><td><a href="https://en.wikipedia.org/wiki/Consumer_price_index" target="_blank" rel="noopener">Consumer price index</a> · <a href="https://en.wikipedia.org/wiki/Inflation" target="_blank" rel="noopener">Inflation</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>帕氏指数与费雪指数</td><td><a href="https://en.wikipedia.org/wiki/Fisher_hypothesis" target="_blank" rel="noopener">Fisher hypothesis</a> · <a href="https://en.wikipedia.org/wiki/Inflation" target="_blank" rel="noopener">Inflation</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>替代偏差</td><td><a href="https://en.wikipedia.org/wiki/Gross_domestic_product" target="_blank" rel="noopener">Gross domestic product</a> · <a href="https://en.wikipedia.org/wiki/National_accounts" target="_blank" rel="noopener">National accounts</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>存量与流量</td><td><a href="https://en.wikipedia.org/wiki/Gross_domestic_product" target="_blank" rel="noopener">Gross domestic product</a> · <a href="https://en.wikipedia.org/wiki/National_accounts" target="_blank" rel="noopener">National accounts</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s15-1"><h2><span class="sec-num">§15.1</span>三套恒等式</h2>
+<p>GDP 是一国境内一定时期生产的最终产品市场价值。三种算法从不同角度切入：</p><p class="eq">支出法: Y = C + I + G + NX</p><p class="eq">收入法: Y = 工资 + 利息 + 租金 + 利润 + 折旧 + 间接税净额</p><p class="eq">生产法: Y = Σ 各部门增加值 = Σ(产值 − 中间投入)</p><p>三者理论上恒等，因为<strong>每一笔支出都是另一方的收入</strong>；实际统计里出现的差额叫统计误差。由此可推出储蓄-投资恒等式：</p><p class="eq">S = Y − C − G = I + NX   ⇒   NX = S − I   (<a href='../19-open-economy/index.html'>第 19 章 · 开放经济：国际收支、汇率与三元悖论</a> 开放经济的起点)</p><p>恒等式不是行为方程：它永远成立，而「S 随利率上升」是需要另加假设的行为关系。混淆两者会让后面的模型推导全盘错位。</p>
+</section>
+<section id="s15-2"><h2><span class="sec-num">§15.2</span>名义、实际与价格指数</h2>
+<p>名义 GDP 用当期价格，实际 GDP 用基期价格。两者之比是 <strong>GDP 平减指数</strong>（帕氏形式）：</p><p class="eq">平减指数 = Σp_t q_t / Σp_0 q_t  ;  实际增长率 ≈ 名义增长率 − 通胀率</p><p>CPI 用<strong>固定基期篮子</strong>（拉氏形式）：<code>CPI = Σp_t q_0 / Σp_0 q_0</code>。篮子固定意味着消费者不会用变便宜的商品替代变贵的商品，因此 CPI 系统性<strong>高估</strong>生活成本涨幅（替代偏差）；此外还有新品引入偏差与质量变化偏差。</p>
+<p>费雪理想指数取拉氏与帕氏的几何平均；链式加权则逐年更换基期再连乘，避免长期比较时基期过旧。这是各国统计机构的标准做法。</p>
+</section>
+<section id="s15-3"><h2><span class="sec-num">§15.3</span>读宏观数据时的三个坑</h2>
+<table><thead><tr><th style="width:26%">坑</th><th>说明</th><th>正确做法</th></tr></thead><tbody>
+<tr><td>存量与流量混用</td><td>债务是存量、赤字是流量；财富与收入不可直接比</td><td>先统一单位与时期</td></tr>
+<tr><td>人均与总量</td><td>总量增长可能只来自人口增长</td><td>用人均实际 GDP 讨论生活水平</td></tr>
+<tr><td>名义当实际</td><td>高通胀期名义工资上涨不等于购买力上涨</td><td>用 CPI 或平减指数折算</td></tr>
+</tbody></table>
+<p>本章扩展学习里给出 FRED、BEA、BLS、World Bank 等官方数据源。做实证前先把「单位、频率、季节调整、基期」四项写进数据字典，这一步省掉的调试时间最多。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>三种核算口径与四种价格指数</h3>
+<pre class="code" data-file="code/15-accounts.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 15-accounts.py | 国民账户与价格指数（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+P0, Q0 = (1.0, 2.0), (100.0, 50.0)      # 基期价格与数量（两种商品）
+P1, Q1 = (1.2, 2.1), (130.0, 60.0)      # 当期
+C_SPEND, I_SPEND, G_SPEND = 156.0, 60.0, 40.0
+WAGE, PROFIT, DEPREC, TAX = 180.0, 60.0, 20.0, 22.0
+# ---- 支出法 / 收入法 ----
+nominal0 = sum(p * q for p, q in zip(P0, Q0))
+nominal1 = sum(p * q for p, q in zip(P1, Q1))
+real1 = sum(p * q for p, q in zip(P0, Q1))
+nx = nominal1 - C_SPEND - I_SPEND - G_SPEND
+income = WAGE + PROFIT + DEPREC + TAX
+value_added = sum(p * q for p, q in zip(P1, Q1)) - 0.0   # 无中间投入
+# ---- 价格指数 ----
+deflator = nominal1 / real1
+laspeyres = sum(p * q for p, q in zip(P1, Q0)) / nominal0
+paasche = nominal1 / real1
+fisher = math.sqrt(laspeyres * paasche)
+real_growth = real1 / nominal0 - 1
+nominal_growth = nominal1 / nominal0 - 1
+# ---- 数值验证：打印可手算核对的量 ----
+print("基期名义 GDP=%.2f 当期名义 GDP=%.2f" % (nominal0, nominal1))
+print("支出法 C+I+G+NX=%.2f+%.2f+%.2f+%.2f=%.2f" %
+      (C_SPEND, I_SPEND, G_SPEND, nx, C_SPEND + I_SPEND + G_SPEND + nx))
+print("收入法 工资+利润+折旧+税=%.2f  生产法增加值=%.2f" % (income, value_added))
+print("实际 GDP(基期价)=%.2f 实际增长=%.2f%% 名义增长=%.2f%%" %
+      (real1, 100 * real_growth, 100 * nominal_growth))
+print("平减指数=%.4f  CPI(拉氏)=%.4f  帕氏=%.4f  费雪=%.4f" %
+      (deflator, laspeyres, paasche, fisher))
+print("拉氏−帕氏=%.4f (本例为负：数量结构移向涨价更多的商品)" % (laspeyres - paasche))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>Q1</code> 改成 (100, 50)（产量不变），观察名义增长是否全部来自价格。　<strong>预期与判读：</strong>基期 200、当期名义 282；三套口径都等于 282；实际 GDP 250、实际增长 25%、名义增长 41%；平减指数 1.128、CPI 1.125、费雪≈1.1265。本例数量结构向涨价更多的商品移动，因此拉氏指数反而略低；若消费者转向相对便宜的商品，才会出现教科书里 CPI 高于平减指数的替代偏差。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>P1 改变量价拆分；Q1 的结构决定拉氏与帕氏谁更大；加入中间投入可验证生产法恒等式。　文件位置：<code>part3/15-national-accounts/code/15-accounts.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Gross_domestic_product" target="_blank" rel="noopener">Gross domestic product</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>国民核算的核心总量</p>
+<span class="why"><strong>怎么用</strong>：GDP 定义与边界案例</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Gross_domestic_product</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/National_accounts" target="_blank" rel="noopener">National accounts</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>支出法/收入法/生产法三套恒等式</p>
+<span class="why"><strong>怎么用</strong>：三套恒等式</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/National_accounts</code></p></div>
+<div class="repo-card">
+<h3><a href="https://www.bea.gov/" target="_blank" rel="noopener">U.S. Bureau of Economic Analysis</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>GDP 与国民账户的官方来源</p>
+<span class="why"><strong>怎么用</strong>：官方国民账户数据</span>
+<p style="margin:0"><code>https://www.bea.gov/</code></p></div>
+<div class="repo-card">
+<h3><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>美联储圣路易斯分行的宏观与金融时间序列，免费可下载</p>
+<span class="why"><strong>怎么用</strong>：下载真实时间序列做对照</span>
+<p style="margin:0"><code>https://fred.stlouisfed.org/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把恒等式当行为方程：<code>S=I+NX</code> 恒成立，不说明利率如何影响储蓄。</li>
+<li>把 CPI 当平减指数：篮子不同、覆盖范围不同（CPI 含进口、不含投资品）。</li>
+<li>把名义增长当实际增长：高通胀期两者可以差出一个数量级。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>加入 30 单位中间投入，重新用生产法计算增加值并核对恒等式。</li>
+<li>构造一个「便宜商品被大量替代」的例子，使 CPI 明显高于平减指数。</li>
+<li>用 FRED 下载名义与实际 GDP，验证脚本里的近似式 <code>实际增长≈名义增长−通胀</code> 的误差量级。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Gross domestic product</strong>（百科）：国民核算的核心总量<br><a href="https://en.wikipedia.org/wiki/Gross_domestic_product" target="_blank" rel="noopener">Gross domestic product</a></li>
+<li><strong>National accounts</strong>（百科）：支出法/收入法/生产法三套恒等式<br><a href="https://en.wikipedia.org/wiki/National_accounts" target="_blank" rel="noopener">National accounts</a></li>
+<li><strong>Consumer price index</strong>（百科）：价格指数编制与替代偏差<br><a href="https://en.wikipedia.org/wiki/Consumer_price_index" target="_blank" rel="noopener">Consumer price index</a></li>
+<li><strong>Unemployment</strong>（百科）：失业率度量与结构性/摩擦性失业<br><a href="https://en.wikipedia.org/wiki/Unemployment" target="_blank" rel="noopener">Unemployment</a></li>
+<li><strong>U.S. Bureau of Economic Analysis</strong>（数据）：GDP 与国民账户的官方来源<br><a href="https://www.bea.gov/" target="_blank" rel="noopener">U.S. Bureau of Economic Analysis</a></li>
+<li><strong>U.S. Bureau of Labor Statistics</strong>（数据）：CPI、失业率与工资数据<br><a href="https://www.bls.gov/" target="_blank" rel="noopener">U.S. Bureau of Labor Statistics</a></li>
+<li><strong>FRED 经济数据</strong>（数据）：美联储圣路易斯分行的宏观与金融时间序列，免费可下载<br><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=national%20accounts%20GDP%20CPI%20unemployment" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=national%20accounts%20GDP%20CPI%20unemployment" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=national%20accounts%20GDP%20CPI%20unemployment" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a>　用 Y 的分解研究短期波动</li>
+<li><a href='../17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a>　通胀与价格水平</li>
+<li><a href='../19-open-economy/index.html'>第 19 章 · 开放经济：国际收支、汇率与三元悖论</a>　NX = S − I 的开放经济推论</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

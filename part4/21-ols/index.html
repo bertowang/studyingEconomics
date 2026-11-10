@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="21">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第四篇 · 计量经济学与因果推断 · 第三阶段 · 数据与因果识别</span>
+<h1><span class="ch-num">第 21 章</span>最小二乘：手写 OLS、标准误与高斯-马尔可夫</h1>
+<p class="lede">把 <code>(XᵀX)⁻¹Xᵀy</code> 完全展开成可读的循环，看清无偏性究竟依赖哪些假设，以及标准误从哪来。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s3">数据 · 因果</span>
+<span>建议 4 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a> 的识别问题先放在「D 与误差无关」的理想条件下，得到最基础的估计量；<a href='../22-diagnostics/index.html'>第 22 章 · 诊断与修正：异方差、自相关与共线性</a>、<a href='../23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a> 逐条放松假设。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">OLS 是把 y 正交投影到 X 的列空间：<code>β̂ = (XᵀX)⁻¹Xᵀy</code> 就是正规方程的解；标准误来自残差方差乘以 <code>(XᵀX)⁻¹</code> 的对角元——数据越「各方向都有变化」，矩阵越良态，估计越稳。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能用标准库实现多元 OLS 与矩阵求逆，输出 β̂、标准误、t 值与 R²</li>
+<li>说明 OLS 无偏所需的假设，并用蒙特卡洛验证抽样分布</li>
+<li>解释 R² 与因果解释力无关、共线性如何放大标准误</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>条件期望函数</td><td><a href="https://en.wikipedia.org/wiki/Expected_value" target="_blank" rel="noopener">Expected value</a> · <a href="https://en.wikipedia.org/wiki/Variance" target="_blank" rel="noopener">Variance</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>最小二乘目标</td><td><a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target="_blank" rel="noopener">Ordinary least squares</a> · <a href="https://www.statsmodels.org/stable/generated/statsmodels.regression.linear_model.OLS.html" target="_blank" rel="noopener">statsmodels OLS 文档</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>正规方程与矩阵求逆</td><td><a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target="_blank" rel="noopener">Ordinary least squares</a> · <a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem" target="_blank" rel="noopener">Gauss–Markov theorem</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>高斯-马尔可夫定理</td><td><a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target="_blank" rel="noopener">Ordinary least squares</a> · <a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem" target="_blank" rel="noopener">Gauss–Markov theorem</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>残差与方差估计</td><td><a href="https://en.wikipedia.org/wiki/Variance" target="_blank" rel="noopener">Variance</a> · <a href="https://en.wikipedia.org/wiki/Expected_value" target="_blank" rel="noopener">Expected value</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>标准误与 t 检验</td><td><a href="https://en.wikipedia.org/wiki/Confidence_interval" target="_blank" rel="noopener">Confidence interval</a> · <a href="https://en.wikipedia.org/wiki/Heteroscedasticity-consistent_standard_errors" target="_blank" rel="noopener">Heteroscedasticity-consistent standard errors</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>R² 的误用</td><td><a href="https://en.wikipedia.org/wiki/Coefficient_of_determination" target="_blank" rel="noopener">Coefficient of determination</a> · <a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target="_blank" rel="noopener">Ordinary least squares</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>蒙特卡洛抽样分布</td><td><a href="https://en.wikipedia.org/wiki/Monte_Carlo_method" target="_blank" rel="noopener">Monte Carlo method</a> · <a href="https://en.wikipedia.org/wiki/Geometric_Brownian_motion" target="_blank" rel="noopener">Geometric Brownian motion</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s21-1"><h2><span class="sec-num">§21.1</span>投影与正规方程</h2>
+<p>最小化 <code>SSR(β)=Σ(y_i−x_i'β)²</code>，令梯度为零得正规方程 <code>X'X·β̂ = X'y</code>：</p><p class="eq">β̂ = (XᵀX)⁻¹Xᵀy  ;  残差 e = y − Xβ̂ 满足 Xᵀe = 0（正交性）</p><p>若 <code>E[u|X]=0</code>（外生性），则 <code>E[β̂|X]=β</code>；在同方差且无自相关时 <code>Var(β̂|X)=σ²(XᵀX)⁻¹</code>，<strong>高斯-马尔可夫定理</strong>说它是线性无偏估计量中方差最小的（BLUE）。注意无偏性不依赖正态假设，正态只用于小样本精确推断。</p>
+</section>
+<section id="s21-2"><h2><span class="sec-num">§21.2</span>标准误、t 值与 R²</h2>
+<p>用 <code>s² = e'e/(n−k)</code> 估计 σ²，标准误 <code>se(β̂_j)=√(s²·[(XᵀX)⁻¹]_{jj})</code>，<code>t=(β̂_j−β_{j,0})/se</code> 在 <code>H₀</code> 下近似 t(n−k)。R² 衡量样本内拟合：</p><p class="eq">R² = 1 − RSS/TSS ;  加变量永远不会降低 R²（调整 R² 才惩罚自由度）</p><p><strong>R² 高不代表模型可用于因果解释</strong>：<a href='../25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a> 的伪回归能给出很高的 R²；反过来 <a href='../20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a> 里随机实验的 R² 可能很低但 ATE 估计完全可信。判断因果靠识别假设，不靠拟合优度。</p>
+</section>
+<section id="s21-3"><h2><span class="sec-num">§21.3</span>手写的价值与边界</h2>
+<table><thead><tr><th style="width:30%">脚本里手写</th><th>工业实现</th><th>为什么先手写</th></tr></thead><tbody>
+<tr><td>高斯-约当求逆</td><td><code>numpy.linalg</code> / LAPACK</td><td>看清奇异与近共线性如何发生</td></tr>
+<tr><td>XᵀX 累加循环</td><td>向量化矩阵乘</td><td>理解正规方程每一项的含义</td></tr>
+<tr><td>t 值与 R²</td><td><code>statsmodels.OLS.fit().summary()</code></td><td>知道输出每一列对应哪个公式</td></tr>
+</tbody></table>
+<p>现实数据请直接换成 <code>statsmodels</code>：数值稳定性（QR 分解）、缺失值、稳健标准误、面板与时间序列都更可靠。附录 A.5 给出对照表。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>手写矩阵求逆、OLS 全量输出与蒙特卡洛</h3>
+<pre class="code" data-file="code/21-ols.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 21-ols.py | 从零实现多元 OLS：beta / se / t / R2（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+N, REPS = 400, 500
+BETA = [1.0, 2.0, -1.5]       # 截距, x1, x2 的真实系数
+NOISE_SD = 1.0
+
+def inverse(a):
+    n = len(a)
+    m = [list(a[i]) + [1.0 if i == j else 0.0 for j in range(n)]
+          for i in range(n)]
+    for col in range(n):
+        piv = max(range(col, n), key=lambda r: abs(m[r][col]))
+        m[col], m[piv] = m[piv], m[col]
+        p = m[col][col]
+        for j in range(2 * n):
+            m[col][j] /= p
+        for r in range(n):
+            if r != col:
+                f = m[r][col]
+                if f:
+                    for j in range(2 * n):
+                        m[r][j] -= f * m[col][j]
+    return [row[n:] for row in m]
+
+def ols(rows, ys):
+    xtx = [[0.0] * 3 for _ in range(3)]
+    xty = [0.0] * 3
+    for row, y in zip(rows, ys):
+        for i in range(3):
+            xty[i] += row[i] * y
+            for j in range(3):
+                xtx[i][j] += row[i] * row[j]
+    inv = inverse(xtx)
+    beta = [sum(inv[i][j] * xty[j] for j in range(3)) for i in range(3)]
+    resid = [y - sum(b * x for b, x in zip(beta, row))
+             for row, y in zip(rows, ys)]
+    k = 3
+    s2 = sum(r * r for r in resid) / (len(ys) - k)
+    se = [math.sqrt(s2 * inv[i][i]) for i in range(3)]
+    my = statistics.fmean(ys)
+    tss = sum((y - my) ** 2 for y in ys)
+    rss = sum(r * r for r in resid)
+    return beta, se, 1 - rss / tss
+
+def sample(seed_rng):
+    rows, ys = [], []
+    for _ in range(N):
+        x1 = seed_rng.uniform(0, 10)
+        x2 = 0.5 * x1 + seed_rng.gauss(0, 1)
+        u = seed_rng.gauss(0, NOISE_SD)
+        rows.append([1.0, x1, x2])
+        ys.append(BETA[0] + BETA[1] * x1 + BETA[2] * x2 + u)
+    return rows, ys
+
+rng = random.Random(7)
+rows, ys = sample(rng)
+beta, se, r2 = ols(rows, ys)
+# ---- 蒙特卡洛：验证无偏与标准误 ----
+mc_rng = random.Random(11)
+b1s, t1s = [], []
+for _ in range(REPS):
+    rr, yy = sample(mc_rng)
+    b, s, _ = ols(rr, yy)
+    b1s.append(b[1])
+    t1s.append((b[1] - BETA[1]) / s[1])
+# ---- 数值验证：打印可手算核对的量 ----
+print("真实 beta =", BETA)
+print("估计 beta = [%.6f, %.6f, %.6f]" % tuple(beta))
+print("标准误   = [%.6f, %.6f, %.6f]" % tuple(se))
+print("t 值(H0:beta=0) = [%.3f, %.3f, %.3f]" %
+      tuple(beta[i] / se[i] for i in range(3)))
+print("R²=%.4f  残差均值=%.6f (应近 0)" %
+      (r2, statistics.fmean([y - sum(b * x for b, x in zip(beta, row))
+                            for row, y in zip(rows, ys)])))
+print("蒙特卡洛 %d 次: beta1 均值=%.6f 标准差=%.6f 单次 se=%.6f" %
+      (REPS, statistics.fmean(b1s), statistics.pstdev(b1s), se[1]))
+print("|t|&gt;1.96 比例=%.4f (名义 0.05)" %
+      (sum(1 for t in t1s if abs(t) &gt; 1.96) / REPS))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>NOISE_SD</code> 改成 3，观察标准误与 t 值是否按 σ 放大；把 <code>N</code> 改成 100 看 se 是否约翻倍。　<strong>预期与判读：</strong>β̂≈(1.14, 2.01, −1.56)，与真值 (1, 2, −1.5) 在标准误范围内一致，残差均值≈0，R²≈0.94；500 次重复中 β̂₁ 均值≈2.000、标准差≈0.029 与单次 se≈0.030 接近，|t|>1.96 的比例≈0.034（有限样本略低于名义 0.05）。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>NOISE_SD 越大 se 越大；N 越大 se 按 1/√N 缩小；x2 与 x1 相关性越高，se 膨胀越明显。　文件位置：<code>part4/21-ols/code/21-ols.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target="_blank" rel="noopener">Ordinary least squares</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>最小化残差平方和的线性估计</p>
+<span class="why"><strong>怎么用</strong>：最小二乘的推导与几何</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Ordinary_least_squares</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem" target="_blank" rel="noopener">Gauss–Markov theorem</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>经典假设下 OLS 为 BLUE</p>
+<span class="why"><strong>怎么用</strong>：BLUE 的假设清单</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem</code></p></div>
+<div class="repo-card">
+<h3><a href="https://www.statsmodels.org/stable/generated/statsmodels.regression.linear_model.OLS.html" target="_blank" rel="noopener">statsmodels OLS 文档</a></h3>
+<span class="tag">工具 · 参考资料</span>
+<p>对照本书手写 OLS 的输出与检验</p>
+<span class="why"><strong>怎么用</strong>：对照工业实现的输出</span>
+<p style="margin:0"><code>https://www.statsmodels.org/stable/generated/statsmodels.regression.linear_model.OLS.html</code></p></div>
+<div class="repo-card">
+<h3><a href="https://docs.python.org/3/" target="_blank" rel="noopener">Python 官方文档</a></h3>
+<span class="tag">工具 · 参考资料</span>
+<p>语言与标准库权威参考</p>
+<span class="why"><strong>怎么用</strong>：标准库语法参考</span>
+<p style="margin:0"><code>https://docs.python.org/3/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把 R² 当作因果可信度：伪回归、遗漏变量都可能给出高 R²。</li>
+<li>把无偏性当成「一次估计必然接近真值」：无偏是重复抽样性质，见 <a href='../../part0/02-probability-simulation/index.html'>第 02 章 · 概率、统计与模拟：从分布到证据</a>。</li>
+<li>忽略近共线性：XᵀX 接近奇异时求逆数值不稳、标准误暴涨。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>把 <code>x2</code> 的相关系数提到 0.99，观察 se₂ 与 t 值如何变化。</li>
+<li>在 DGP 里加入异方差，观察本章普通 se 是否还准确（预告 <a href='../22-diagnostics/index.html'>第 22 章 · 诊断与修正：异方差、自相关与共线性</a>）。</li>
+<li>用 <code>statsmodels</code> 跑同一份数据，逐项对照 β̂、se、t、R²。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Ordinary least squares</strong>（百科）：最小化残差平方和的线性估计<br><a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target="_blank" rel="noopener">Ordinary least squares</a></li>
+<li><strong>Gauss–Markov theorem</strong>（百科）：经典假设下 OLS 为 BLUE<br><a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem" target="_blank" rel="noopener">Gauss–Markov theorem</a></li>
+<li><strong>statsmodels OLS 文档</strong>（工具）：对照本书手写 OLS 的输出与检验<br><a href="https://www.statsmodels.org/stable/generated/statsmodels.regression.linear_model.OLS.html" target="_blank" rel="noopener">statsmodels OLS 文档</a></li>
+<li><strong>Coefficient of determination</strong>（百科）：拟合优度及其误导性<br><a href="https://en.wikipedia.org/wiki/Coefficient_of_determination" target="_blank" rel="noopener">Coefficient of determination</a></li>
+<li><strong>Python 官方文档</strong>（工具）：语言与标准库权威参考<br><a href="https://docs.python.org/3/" target="_blank" rel="noopener">Python 官方文档</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=OLS%20from%20scratch%20standard%20errors%20Gauss%20Markov" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=OLS%20from%20scratch%20standard%20errors%20Gauss%20Markov" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=OLS%20from%20scratch%20standard%20errors%20Gauss%20Markov" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a>　识别先于估计</li>
+<li><a href='../22-diagnostics/index.html'>第 22 章 · 诊断与修正：异方差、自相关与共线性</a>　异方差与稳健标准误</li>
+<li><a href='../23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a>　内生性与 IV</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

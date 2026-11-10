@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="17">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第三篇 · 宏观、货币与增长 · 第二阶段 · 总量、货币与增长</span>
+<h1><span class="ch-num">第 17 章</span>货币政策、通胀与利率：费雪方程与泰勒规则</h1>
+<p class="lede">名义利率、实际利率与预期通胀由费雪方程相连；央行用一个可写的反应函数把通胀与产出缺口反馈到政策利率。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s2">总量 · 增长</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a> 的 LM 曲线替换成内生政策规则，把 <a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a> 的贴现率与 <a href='../../part5/29-bonds/index.html'>第 29 章 · 债券、久期与期限结构：利率风险的一阶与二阶</a> 的债券利率统一到同一个 r。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">央行是一个反馈控制器：输入是通胀缺口与产出缺口，输出是政策利率；泰勒原理要求控制器对通胀的增益大于 1，否则闭环不稳定。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>会用费雪方程区分名义与实际利率</li>
+<li>能写出泰勒规则并计算给定通胀/产出缺口下的政策利率</li>
+<li>会跑一个小型动态模拟，解释加息如何经产出缺口传导到通胀</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>费雪方程</td><td><a href="https://en.wikipedia.org/wiki/Fisher_hypothesis" target="_blank" rel="noopener">Fisher hypothesis</a> · <a href="https://en.wikipedia.org/wiki/Inflation" target="_blank" rel="noopener">Inflation</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>实际利率与名义利率</td><td><a href="https://en.wikipedia.org/wiki/Fisher_hypothesis" target="_blank" rel="noopener">Fisher hypothesis</a> · <a href="https://en.wikipedia.org/wiki/Monetary_policy" target="_blank" rel="noopener">Monetary policy</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>央行目标与工具</td><td><a href="https://en.wikipedia.org/wiki/Central_bank" target="_blank" rel="noopener">Central bank</a> · <a href="https://en.wikipedia.org/wiki/Monetary_policy" target="_blank" rel="noopener">Monetary policy</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>泰勒规则</td><td><a href="https://en.wikipedia.org/wiki/Taylor_rule" target="_blank" rel="noopener">Taylor rule</a> · <a href="https://en.wikipedia.org/wiki/Monetary_policy" target="_blank" rel="noopener">Monetary policy</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>泰勒原理</td><td><a href="https://en.wikipedia.org/wiki/Monetary_policy" target="_blank" rel="noopener">Monetary policy</a> · <a href="https://en.wikipedia.org/wiki/Central_bank" target="_blank" rel="noopener">Central bank</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>通胀预期</td><td><a href="https://en.wikipedia.org/wiki/Inflation" target="_blank" rel="noopener">Inflation</a> · <a href="https://en.wikipedia.org/wiki/Consumer_price_index" target="_blank" rel="noopener">Consumer price index</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>菲利普斯曲线</td><td><a href="https://en.wikipedia.org/wiki/Monetary_policy" target="_blank" rel="noopener">Monetary policy</a> · <a href="https://en.wikipedia.org/wiki/Central_bank" target="_blank" rel="noopener">Central bank</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>传导机制与滞后</td><td><a href="https://en.wikipedia.org/wiki/Monetary_policy" target="_blank" rel="noopener">Monetary policy</a> · <a href="https://en.wikipedia.org/wiki/Central_bank" target="_blank" rel="noopener">Central bank</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s17-1"><h2><span class="sec-num">§17.1</span>费雪方程：三个利率一个关系</h2>
+<p>投资者关心的是购买力，因此名义利率要补偿预期通胀：</p><p class="eq">i ≈ r + πᵉ   ;   r ≈ i − πᵉ   ;   精确式 1+i = (1+r)(1+πᵉ)</p><p><code>r</code> 是 <a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a> 欧拉方程里决定跨期消费的实际利率，也是 <a href='../../part5/29-bonds/index.html'>第 29 章 · 债券、久期与期限结构：利率风险的一阶与二阶</a> 债券定价与 <a href='../../part5/27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> 组合选择的贴现基准。<strong>名义利率低不等于货币宽松</strong>：若通胀预期更低，实际利率可能很高。这是读历史数据时最容易踩的坑。</p>
+<p>长期中货币中性（货币量变化主要影响价格水平），但短期因价格黏性，实际利率变化会影响产出——这正是 <a href='../16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a> AD-AS 的传导通道。</p>
+</section>
+<section id="s17-2"><h2><span class="sec-num">§17.2</span>泰勒规则与泰勒原理</h2>
+<p>标准泰勒规则：</p><p class="eq">i* = r* + π + 0.5(π − π*) + 0.5·y_gap</p><p>通胀高于目标 1 个百分点，名义利率应上升 1.5 个百分点，于是<strong>实际利率上升 0.5 个百分点</strong>，需求降温。这个「名义利率对通胀的响应大于 1」称为<strong>泰勒原理</strong>：若响应小于 1，通胀上升反而压低实际利率，形成自我强化的不稳定闭环。程序员的读法：闭环增益必须落在稳定区间。</p>
+</section>
+<section id="s17-3"><h2><span class="sec-num">§17.3</span>一次供给冲击的动态路径</h2>
+<p>把 IS 曲线 <code>y_t = ρy_{t−1} − β(i_t − r* − π_t)</code>、菲利普斯曲线 <code>π_t = π_{t−1} + κy_t − γ(π_{t−1} − π*)</code> 与泰勒规则联立，就能迭代出「油价冲击 → 加息 → 负产出缺口 → 通胀回落」的路径。注意<strong>滞后</strong>：本期利率影响下一期产出，再影响后续通胀，因此政策存在「打得过猛/过晚」的风险。</p>
+<div class="card warn"><p style="margin-bottom:0">这类小型模型用于<strong>讲清机制</strong>，不是预测工具：参数是校准出来的、预期是适应性的、没有微观基础。真实政策分析用 DSGE 或 VAR，见 <a href='../../part4/25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a> 时间序列；用历史数据拟合后做反事实还要面对 <a href='../../part4/20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a> 的卢卡斯批判。</p></div>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>费雪方程、泰勒规则与冲击传导模拟</h3>
+<pre class="code" data-file="code/17-monetary.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 17-monetary.py | 政策利率与通胀动态（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+R_STAR, PI_STAR = 2.0, 2.0
+COEF_PI, COEF_Y = 0.5, 0.5       # 泰勒规则增益
+RHO_IS, BETA_IS = 0.7, 0.4       # IS: 产出持续性与实际利率敏感度
+KAPPA_PC, GAMMA_PC = 0.25, 0.15  # 菲利普斯曲线与预期锚定
+PI_SHOCK = 5.0                   # 初始通胀（供给冲击后）
+PERIODS = 10
+# ---- 费雪方程与泰勒规则表 ----
+def taylor(pi, y):
+    return R_STAR + pi + COEF_PI * (pi - PI_STAR) + COEF_Y * y
+
+grid = [(2.0, 0.0), (4.0, 0.0), (4.0, -2.0), (1.0, 1.0)]
+# ---- 动态模拟 ----
+pi, y = PI_SHOCK, 0.0
+path = []
+for t in range(1, PERIODS + 1):
+    i = taylor(pi, y)
+    y = RHO_IS * y - BETA_IS * (i - R_STAR - pi)
+    pi = pi + KAPPA_PC * y - GAMMA_PC * (pi - PI_STAR)
+    path.append((t, i, pi, y, i - pi))
+# ---- 数值验证：打印可手算核对的量 ----
+print("费雪: i=5%%, pi^e=2%% =&gt; 实际利率 r≈%.2f%%" % (5.0 - 2.0))
+for p, g in grid:
+    print("泰勒规则 pi=%.1f y=%.1f =&gt; i*=%.4f 实际利率=%.4f" %
+          (p, g, taylor(p, g), taylor(p, g) - p))
+print("通胀每高 1pp，名义利率升 %.2fpp，实际利率升 %.2fpp (泰勒原理)" %
+      (1 + COEF_PI, COEF_PI))
+for t, i, p, g, r in path[:6]:
+    print("  t=%d i=%.3f pi=%.3f y_gap=%.3f r_real=%.3f" % (t, i, p, g, r))
+print("第 %d 期通胀=%.4f (目标 %.2f)" % (PERIODS, path[-1][2], PI_STAR))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>COEF_PI</code> 改成 0（违反泰勒原理），观察通胀路径是否不再回落。　<strong>预期与判读：</strong>费雪 i=5%、πᵉ=2% ⇒ r≈3%；π=4、缺口 0 时 i*=7、实际利率 3；通胀每高 1pp 名义升 1.5pp、实际升 0.5pp；供给冲击后通胀从 5 逐步向 2 回落并伴随负产出缺口。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>COEF_PI&lt;0 或过小会破坏稳定性；BETA_IS 越大加息对产出的压制越强；GAMMA_PC 越大通胀预期锚定越强。　文件位置：<code>part3/17-monetary-policy/code/17-monetary.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Taylor_rule" target="_blank" rel="noopener">Taylor rule</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>以通胀与产出缺口设定政策利率的简单规则</p>
+<span class="why"><strong>怎么用</strong>：规则与泰勒原理</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Taylor_rule</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Fisher_hypothesis" target="_blank" rel="noopener">Fisher hypothesis</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>名义利率 ≈ 实际利率 + 预期通胀</p>
+<span class="why"><strong>怎么用</strong>：费雪方程</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Fisher_hypothesis</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Monetary_policy" target="_blank" rel="noopener">Monetary policy</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>政策目标、工具与传导机制</p>
+<span class="why"><strong>怎么用</strong>：政策工具与传导机制</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Monetary_policy</code></p></div>
+<div class="repo-card">
+<h3><a href="https://www.federalreserve.gov/" target="_blank" rel="noopener">Federal Reserve</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>货币政策声明、利率与政策规则资料</p>
+<span class="why"><strong>怎么用</strong>：官方政策声明与利率数据</span>
+<p style="margin:0"><code>https://www.federalreserve.gov/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>用名义利率判断松紧：必须减去预期通胀得到实际利率。</li>
+<li>把央行反应函数当结构不变：政策规则本身会变，历史拟合不能直接做反事实。</li>
+<li>忽略传导滞后：本期加息主要影响后续若干期的产出与通胀。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>把 <code>COEF_PI</code> 从 0 扫到 1.5，画出 10 期后通胀，找出稳定边界。</li>
+<li>加入零利率下限 <code>i≥0</code>，说明通缩冲击下政策为何失效。</li>
+<li>用 <a href='../../part5/29-bonds/index.html'>第 29 章 · 债券、久期与期限结构：利率风险的一阶与二阶</a> 的久期公式说明政策利率上升 1pp 对债券价格的影响。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Monetary policy</strong>（百科）：政策目标、工具与传导机制<br><a href="https://en.wikipedia.org/wiki/Monetary_policy" target="_blank" rel="noopener">Monetary policy</a></li>
+<li><strong>Central bank</strong>（百科）：央行职能与独立性<br><a href="https://en.wikipedia.org/wiki/Central_bank" target="_blank" rel="noopener">Central bank</a></li>
+<li><strong>Taylor rule</strong>（百科）：以通胀与产出缺口设定政策利率的简单规则<br><a href="https://en.wikipedia.org/wiki/Taylor_rule" target="_blank" rel="noopener">Taylor rule</a></li>
+<li><strong>Fisher hypothesis</strong>（百科）：名义利率 ≈ 实际利率 + 预期通胀<br><a href="https://en.wikipedia.org/wiki/Fisher_hypothesis" target="_blank" rel="noopener">Fisher hypothesis</a></li>
+<li><strong>Federal Reserve</strong>（数据）：货币政策声明、利率与政策规则资料<br><a href="https://www.federalreserve.gov/" target="_blank" rel="noopener">Federal Reserve</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=monetary%20policy%20Taylor%20rule%20Fisher%20equation" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=monetary%20policy%20Taylor%20rule%20Fisher%20equation" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=monetary%20policy%20Taylor%20rule%20Fisher%20equation" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a>　实际利率与跨期选择</li>
+<li><a href='../16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a>　IS-LM 中的货币市场</li>
+<li><a href='../../part5/29-bonds/index.html'>第 29 章 · 债券、久期与期限结构：利率风险的一阶与二阶</a>　利率与债券定价</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 13 章 · 信息不对称：逆向选择、信号与道德风险 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="13">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第二篇 · 市场结构、策略与失灵 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 13 章</span>信息不对称：逆向选择、信号与道德风险</h1>
+<p class="lede">当一方比另一方知道得多，价格不再只反映供需，还反映「谁愿意在这个价格上交易」，市场可能整体萎缩甚至消失。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">市场 · 策略</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>打破 <a href='../09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a> 福利定理的「信息对称」前提；<a href='../10-monopoly/index.html'>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视</a> 的规制难题与 <a href='../../part4/24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a> 的样本选择偏误都可以在这里找到根源。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">逆向选择是「输入数据分布随筛选规则漂移」：按价格过滤卖家会改变剩下样本的质量分布，进而改变合理价格，形成正反馈。信号是可验证但无生产性的开销，等价于成本高到低类型不愿伪造的认证。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能复现柠檬市场的逆向选择 unraveling 过程</li>
+<li>会写出分离均衡的教育信号区间条件</li>
+<li>区分签约前的逆向选择与签约后的道德风险</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>隐藏信息与隐藏行动</td><td><a href="https://en.wikipedia.org/wiki/Adverse_selection" target="_blank" rel="noopener">Adverse selection</a> · <a href="https://en.wikipedia.org/wiki/Moral_hazard" target="_blank" rel="noopener">Moral hazard</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>柠檬市场与逆向选择</td><td><a href="https://en.wikipedia.org/wiki/Adverse_selection" target="_blank" rel="noopener">Adverse selection</a> · <a href="https://en.wikipedia.org/wiki/Signalling_(economics)" target="_blank" rel="noopener">Signalling (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>平均质量与价格的反馈环</td><td><a href="https://en.wikipedia.org/wiki/Adverse_selection" target="_blank" rel="noopener">Adverse selection</a> · <a href="https://en.wikipedia.org/wiki/Moral_hazard" target="_blank" rel="noopener">Moral hazard</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>信号传递与分离均衡</td><td><a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a> · <a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>混同均衡</td><td><a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a> · <a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>道德风险与 deductible</td><td><a href="https://en.wikipedia.org/wiki/Moral_hazard" target="_blank" rel="noopener">Moral hazard</a> · <a href="https://en.wikipedia.org/wiki/Adverse_selection" target="_blank" rel="noopener">Adverse selection</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>委托代理与激励相容</td><td><a href="https://en.wikipedia.org/wiki/Adverse_selection" target="_blank" rel="noopener">Adverse selection</a> · <a href="https://en.wikipedia.org/wiki/Moral_hazard" target="_blank" rel="noopener">Moral hazard</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s13-1"><h2><span class="sec-num">§13.1</span>逆向选择：价格改变样本构成</h2>
+<p>Akerlof 模型：二手车质量 <code>q</code> 在 <code>[0, Q̄]</code> 上均匀分布，卖家保留价值 <code>αq</code>（α&lt;1），买家估值 <code>γq</code>（γ&gt;1）。给定价格 <code>p</code>，只有 <code>q ≤ p/α</code> 的车主愿意卖，于是买家面对的平均质量是 <code>q̄(p)=p/(2α)</code>，愿意付的最高价是 <code>γ·q̄(p)=γp/(2α)</code>。</p><p class="eq">自洽条件: p = γ·p/(2α)  ⇒  若 γ/(2α) &lt; 1，唯一解是 p = 0（市场完全消失）</p><p>关键在于<strong>不是需求不足，而是价格本身决定了谁留在市场里</strong>。质量的平均被不断向下修正，形成反身性循环。保修、第三方检测、品牌与平台评价，都是把 <code>q</code> 变成可观测信息的制度。</p>
+</section>
+<section id="s13-2"><h2><span class="sec-num">§13.2</span>信号：用成本差异把类型分开</h2>
+<p>Spence 模型里教育不提高生产率，只提高可观测程度。设两类生产率 <code>θ_L=1</code>、<code>θ_H=2</code>，教育成本 <code>e/θ</code>（高能力者更省力），工资等于市场对类型的期望生产率。分离均衡要同时满足：</p><p class="eq">低类型不冒充: θ_H − e/θ_L ≤ θ_L   ⇒  e ≥ 1</p><p class="eq">高类型愿意选: θ_H − e/θ_H ≥ θ_L   ⇒  e ≤ 2</p><p>于是 <code>e∈[1,2]</code> 都构成分离均衡。注意<strong>教育支出是纯社会成本</strong>：它不改变产出，只改变信息。这是「私人理性、社会浪费」的经典例子，也说明均衡不唯一、制度细节（谁先行动、信念如何形成）会影响结果。</p>
+</section>
+<section id="s13-3"><h2><span class="sec-num">§13.3</span>道德风险：签约后的隐藏行动</h2>
+<table><thead><tr><th style="width:22%">问题</th><th>信息在何时不对称</th><th>典型解法</th></tr></thead><tbody>
+<tr><td>逆向选择</td><td>签约前，类型（风险高低）隐藏</td><td>筛查、信号、分级定价</td></tr>
+<tr><td>道德风险</td><td>签约后，行动（是否谨慎、是否努力）隐藏</td><td>免赔额、共保、绩效合约</td></tr>
+</tbody></table>
+<p>全额保险使投保人对损失无感，从而不采取防损行动；留一部分风险（deductible）恢复了边际激励，代价是风险分担变差。委托代理模型把它形式化为<strong>激励相容约束 + 参与约束</strong>下的次优合约：信息租金与风险分担之间存在可计算的权衡。</p>
+<div class="card tip"><p style="margin-bottom:0"><strong>与计量的接口</strong>：<a href='../../part4/23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a> 的工具变量、<a href='../../part4/24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a> 的 DID 都在处理「处理组不是随机分配的」；而「谁选择投保、谁选择交易」本身就是选择行为，忽略它就会把选择效应误判成因果效应。</p></div>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>柠檬市场收敛与信号分离区间</h3>
+<pre class="code" data-file="code/13-information.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 13-information.py | 逆向选择的价格-质量反馈与 Spence 信号（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+Q_MAX = 100.0        # 质量上界
+ALPHA = 0.8          # 卖家保留价值 = alpha * q
+GAMMA = 1.2          # 买家估值 = gamma * q
+P_START = 60.0
+STEPS = 12
+THETA_L, THETA_H = 1.0, 2.0
+# ---- 柠檬市场：迭代 p &lt;- gamma * E[q | alpha*q &lt;= p] ----
+def avg_quality(p):
+    cutoff = min(Q_MAX, p / ALPHA)
+    return cutoff / 2.0
+
+p = P_START
+trace = [p]
+for _ in range(STEPS):
+    p = GAMMA * avg_quality(p)
+    trace.append(p)
+ratio = GAMMA / (2 * ALPHA)
+# ---- 信号：分离均衡的教育区间 ----
+e_low = THETA_H - THETA_L                 # 低类型不冒充的下界
+e_high = THETA_H * (THETA_H - THETA_L)   # 高类型愿意选的上界
+check_low = THETA_H - e_low / THETA_L    # 冒充所得
+check_high = THETA_H - e_low / THETA_H   # 选择所得
+# ---- 数值验证：打印可手算核对的量 ----
+print("参数: alpha=%.2f gamma=%.2f 收敛因子 gamma/(2 alpha)=%.4f" % (ALPHA, GAMMA, ratio))
+print("价格迭代(前 6 步): " + " -&gt; ".join("%.4f" % x for x in trace[:6]))
+print("第 %d 步价格=%.8f (收敛因子&lt;1 时趋于 0)" % (STEPS, trace[-1]))
+print("分离均衡教育区间 e ∈ [%.2f, %.2f]" % (e_low, e_high))
+print("e=1 时低类型冒充所得=%.2f (=不冒充的工资 %.2f)" % (check_low, THETA_L))
+print("e=1 时高类型净所得=%.2f (&gt;低类型工资 %.2f)" % (check_high, THETA_L))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>GAMMA</code> 改成 2.0（买家更看重质量），观察收敛因子大于 1 时价格迭代是否还收敛到 0。　<strong>预期与判读：</strong>α=0.8、γ=1.2 时收敛因子 0.75，价格从 60 按 0.75 倍递减并趋于 0；分离均衡教育区间 e∈[1,2]；e=1 时低类型冒充所得 1，恰好等于不冒充的工资。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>GAMMA 上升到 1.6 以上时因子≥1，市场不再必然 unravel；ALPHA 越大（卖家越惜售）市场越可能存活。　文件位置：<code>part2/13-information/code/13-information.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Adverse_selection" target="_blank" rel="noopener">Adverse selection</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>签约前隐藏信息导致的市场失灵</p>
+<span class="why"><strong>怎么用</strong>：逆向选择的经典模型</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Adverse_selection</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Signalling_(economics)" target="_blank" rel="noopener">Signalling (economics)</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>通过可观测成本传递私有信息</p>
+<span class="why"><strong>怎么用</strong>：Spence 信号均衡</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Signalling_(economics)</code></p></div>
+<div class="repo-card">
+<h3><a href="https://matheusfacure.github.io/python-causality-handbook/landing-page.html" target="_blank" rel="noopener">Causal Inference for the Brave and True</a></h3>
+<span class="tag">教材 · 参考资料</span>
+<p>用 Python 讲因果推断的开放教材，含可运行代码</p>
+<span class="why"><strong>怎么用</strong>：把选择行为与因果识别联系起来</span>
+<p style="margin:0"><code>https://matheusfacure.github.io/python-causality-handbook/landing-page.html</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把市场萎缩归咎于买家「不识货」：即使信息结构清晰，均衡也可能不存在非零交易。</li>
+<li>把信号成本当成生产性投资：分离均衡里教育只传递信息，是净社会成本。</li>
+<li>混淆逆向选择与道德风险：前者是签约前隐藏类型，后者是签约后隐藏行动。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>引入检测技术使买家能观测 <code>q</code> 的概率为 0.5，重新推导均衡价格区间。</li>
+<li>证明当 <code>γ/(2α)>1</code> 时存在多重均衡，并解释为什么「信念」能自我实现。</li>
+<li>结合 <a href='../../part4/24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a>，说明「只观察投保人的事故率」为何会高估保险的风险效应。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Adverse selection</strong>（百科）：签约前隐藏信息导致的市场失灵<br><a href="https://en.wikipedia.org/wiki/Adverse_selection" target="_blank" rel="noopener">Adverse selection</a></li>
+<li><strong>Moral hazard</strong>（百科）：签约后隐藏行动导致的风险扭曲<br><a href="https://en.wikipedia.org/wiki/Moral_hazard" target="_blank" rel="noopener">Moral hazard</a></li>
+<li><strong>Signalling (economics)</strong>（百科）：通过可观测成本传递私有信息<br><a href="https://en.wikipedia.org/wiki/Signalling_(economics)" target="_blank" rel="noopener">Signalling (economics)</a></li>
+<li><strong>Causal Inference for the Brave and True</strong>（教材）：用 Python 讲因果推断的开放教材，含可运行代码<br><a href="https://matheusfacure.github.io/python-causality-handbook/landing-page.html" target="_blank" rel="noopener">Causal Inference for the Brave and True</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=adverse%20selection%20moral%20hazard%20signaling" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=adverse%20selection%20moral%20hazard%20signaling" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=adverse%20selection%20moral%20hazard%20signaling" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../10-monopoly/index.html'>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视</a>　规制中的信息不对称</li>
+<li><a href='../../part4/23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a>　工具变量与选择偏误</li>
+<li><a href='../../part4/24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a>　处理组非随机的识别</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

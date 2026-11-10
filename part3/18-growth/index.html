@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="18">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第三篇 · 宏观、货币与增长 · 第二阶段 · 总量、货币与增长</span>
+<h1><span class="ch-num">第 18 章</span>长期增长：索洛稳态、条件收敛与内生增长</h1>
+<p class="lede">把视野从需求侧波动移到供给侧能力：资本积累受边际报酬递减约束，长期人均增长只能来自技术进步。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s2">总量 · 增长</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../../part1/06-production-cost/index.html'>第 06 章 · 生产者理论、成本曲线与供给</a> 的微观生产函数加总并加上资本积累动态；<a href='../16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a> 讨论短期为何偏离潜在产出，本章决定潜在产出本身的路径。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">稳态是迭代 <code>k ← (1−δ)k + s·f(k)</code> 的不动点；收敛速度由 <code>f'(k*)</code> 决定，与 <a href='../16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a> 乘数迭代的谱半径是同一个概念。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>会推导并数值求解索洛稳态 k*，验证资本边际报酬递减导致的收敛</li>
+<li>理解黄金律储蓄率与「储蓄率不决定长期增长率」</li>
+<li>比较索洛外生增长与 AK 内生增长模型的可检验含义</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>总量生产函数</td><td><a href="https://en.wikipedia.org/wiki/Production_function" target="_blank" rel="noopener">Production function</a> · <a href="https://en.wikipedia.org/wiki/Cobb%E2%80%93Douglas_production_function" target="_blank" rel="noopener">Cobb-Douglas production function</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>资本积累方程</td><td><a href="https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model" target="_blank" rel="noopener">Solow–Swan model</a> · <a href="https://en.wikipedia.org/wiki/Endogenous_growth_theory" target="_blank" rel="noopener">Endogenous growth theory</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>稳态与不动点</td><td><a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a> · <a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>条件收敛</td><td><a href="https://en.wikipedia.org/wiki/Convergence_(economics)" target="_blank" rel="noopener">Convergence (economics)</a> · <a href="https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model" target="_blank" rel="noopener">Solow–Swan model</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>储蓄率与黄金律</td><td><a href="https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model" target="_blank" rel="noopener">Solow–Swan model</a> · <a href="https://en.wikipedia.org/wiki/Endogenous_growth_theory" target="_blank" rel="noopener">Endogenous growth theory</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>技术进步与外生增长</td><td><a href="https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model" target="_blank" rel="noopener">Solow–Swan model</a> · <a href="https://en.wikipedia.org/wiki/Endogenous_growth_theory" target="_blank" rel="noopener">Endogenous growth theory</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>AK 内生增长</td><td><a href="https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model" target="_blank" rel="noopener">Solow–Swan model</a> · <a href="https://en.wikipedia.org/wiki/Endogenous_growth_theory" target="_blank" rel="noopener">Endogenous growth theory</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>跨国增长实证</td><td><a href="https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model" target="_blank" rel="noopener">Solow–Swan model</a> · <a href="https://en.wikipedia.org/wiki/Endogenous_growth_theory" target="_blank" rel="noopener">Endogenous growth theory</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s18-1"><h2><span class="sec-num">§18.1</span>索洛模型：一个一维动力系统</h2>
+<p>人均生产函数 <code>y = A·k^α</code>（<code>0&lt;α&lt;1</code>，来自 <a href='../../part1/06-production-cost/index.html'>第 06 章 · 生产者理论、成本曲线与供给</a> 的规模报酬不变技术），资本积累：</p><p class="eq">k_{t+1} = (1−δ)k_t + s·A·k_t^α   ;   稳态 s·A·k*^α = δ·k*</p><p class="eq">k* = (sA/δ)^{1/(1−α)} ,  y* = (sA/δ)^{α/(1−α)}</p><p>因为 <code>α&lt;1</code>，<code>k^α</code> 的增长慢于 <code>k</code>，投资终将被折旧追上。<strong>储蓄率 s 提高只能把经济抬到更高的稳态水平，不能维持长期增长率</strong>；人均长期增长必须靠 A 的持续提高（外生的技术进步）。</p>
+</section>
+<section id="s18-2"><h2><span class="sec-num">§18.2</span>条件收敛与黄金律</h2>
+<p>离自身稳态越远，增长速度越快，这解释了<strong>条件收敛</strong>：在储蓄率、人口增长、制度与技术相近的国家之间，穷国增长更快；无条件对比所有国家则不成立。跨国实证常用 <a href='../../part4/21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a> 的回归检验「初始人均 GDP 的系数显著为负，且控制住 s、n、人力资本」。</p>
+<p>稳态消费 <code>c* = (1−s)f(k*)</code> 关于 s 先升后降。令 <code>dc*/ds=0</code> 得<strong>黄金律</strong> <code>f'(k_gr)=δ</code>，Cobb-Douglas 下 <code>s_gr=α</code>：把过多产出用于积累反而降低长期消费（动态无效率）。</p>
+</section>
+<section id="s18-3"><h2><span class="sec-num">§18.3</span>内生增长：把 A 变成变量</h2>
+<p>AK 模型令 <code>y = A·k</code>（资本边际报酬不递减，把人力资本、知识溢出都算进广义资本）：</p><p class="eq">Δk/k = sA − δ = g   ⇒   增长率由 s 与 A 永久决定，无稳态</p><p>两模型给出完全不同的可检验含义：索洛预测储蓄率变化只带来水平效应、且存在条件收敛；AK 预测增长效应持续、贫富差距不自动缩小。研发驱动的增长模型（Romer）、创造性破坏（Aghion–Howitt）与人力资本模型则进一步解释 A 从何而来，把 <a href='../../part2/10-monopoly/index.html'>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视</a> 的垄断租金与 <a href='../../part2/12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a> 的知识外部性接进增长框架。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>索洛稳态、收敛速度与黄金律</h3>
+<pre class="code" data-file="code/18-solow.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 18-solow.py | 资本积累动力系统与条件收敛（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+A_PROD, ALPHA, DELTA = 1.0, 0.4, 0.05
+SAVE = 0.2
+K_POOR, K_RICH = 1.0, 8.0
+PERIODS = 120
+# ---- 模型 ----
+def f(k):
+    return A_PROD * (k ** ALPHA)
+
+def step(k, s=SAVE):
+    return (1 - DELTA) * k + s * f(k)
+
+def steady(s):
+    return (s * A_PROD / DELTA) ** (1 / (1 - ALPHA))
+
+k_star = steady(SAVE)
+k_gr = (ALPHA * A_PROD / DELTA) ** (1 / (1 - ALPHA))
+s_gr = DELTA * (k_gr ** (1 - ALPHA)) / A_PROD
+c_star = (1 - SAVE) * f(k_star)
+c_gr = (1 - s_gr) * f(k_gr)
+# ---- 条件收敛：穷国与富国从各自初始点出发 ----
+kp, kr = K_POOR, K_RICH
+for _ in range(PERIODS):
+    kp, kr = step(kp), step(kr)
+g_poor = (step(K_POOR) / K_POOR - 1)
+g_rich = (step(K_RICH) / K_RICH - 1)
+# ---- AK 模型 ----
+g_ak = SAVE * A_PROD - DELTA
+k_ak = 1.0
+for _ in range(20):
+    k_ak = (1 - DELTA) * k_ak + SAVE * A_PROD * k_ak
+# ---- 数值验证：打印可手算核对的量 ----
+print("稳态 k*=%.6f y*=%.6f c*=%.6f" % (k_star, f(k_star), c_star))
+print("迭代 %d 期后 k=%.6f (应接近稳态)" % (PERIODS, kp))
+print("初始增长率: 穷国(k=1)=%.4f 富国(k=8)=%.4f → 条件收敛" % (g_poor, g_rich))
+print("黄金律 k_gr=%.4f s_gr=%.4f (=alpha %.2f) c_gr=%.4f" % (k_gr, s_gr, ALPHA, c_gr))
+print("本例 s=%.2f &lt; s_gr 时 c_gr=%.4f &gt; c*=%.4f" % (SAVE, c_gr, c_star))
+print("AK: 理论增长率=%.4f, 20 期实际平均=%.4f (无稳态)" %
+      (g_ak, (k_ak ** (1 / 20) - 1)))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>SAVE</code> 从 0.1 扫到 0.6，画出稳态消费曲线并验证最大值在 s=α=0.4。　<strong>预期与判读：</strong>s=0.2 时 k*≈10.079、y*≈2.520、c*≈2.016；穷国(k=1)初始增长率 15%、富国(k=8)约 0.74%；120 期后 k≈9.75（因 α=0.4 收敛较慢）；黄金律 s=0.4、k=32、c≈2.4；AK 模型增长率恒为 0.15。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>SAVE 上升提高稳态水平但不改变长期增长率；ALPHA 越大收敛越慢；DELTA 上升压低稳态资本。　文件位置：<code>part3/18-growth/code/18-solow.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model" target="_blank" rel="noopener">Solow–Swan model</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>资本积累、折旧与稳态增长</p>
+<span class="why"><strong>怎么用</strong>：索洛模型标准推导</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Convergence_(economics)" target="_blank" rel="noopener">Convergence (economics)</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>条件收敛与跨国增长实证</p>
+<span class="why"><strong>怎么用</strong>：条件收敛与跨国实证</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Convergence_(economics)</code></p></div>
+<div class="repo-card">
+<h3><a href="https://data.worldbank.org/" target="_blank" rel="noopener">World Bank Data</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>跨国发展指标，适合增长与制度研究</p>
+<span class="why"><strong>怎么用</strong>：跨国人均 GDP 与储蓄率数据</span>
+<p style="margin:0"><code>https://data.worldbank.org/</code></p></div>
+<div class="repo-card">
+<h3><a href="https://ourworldindata.org/" target="_blank" rel="noopener">Our World in Data</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>带图表与数据下载的长周期发展数据</p>
+<span class="why"><strong>怎么用</strong>：长周期增长数据</span>
+<p style="margin:0"><code>https://ourworldindata.org/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把「储蓄率提高」说成「长期增长率提高」：索洛里只有水平效应和过渡期增长。</li>
+<li>把条件收敛说成「穷国一定追上富国」：前提是稳态决定因素相近。</li>
+<li>忽略人口增长与折旧：稳态条件是 s·f(k) = (n+δ)k，本例为简化设 n=0。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>在脚本里加入人口增长率 n=0.02，重新推导并核对稳态 k*。</li>
+<li>把 <code>SAVE</code> 从 0.1 扫到 0.6 打印 c*，验证峰值在 α=0.4 附近。</li>
+<li>用 <a href='../../part4/21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a> 的 OLS 思路设计一个条件收敛回归：被解释变量、核心解释变量与控制变量各是什么。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Solow–Swan model</strong>（百科）：资本积累、折旧与稳态增长<br><a href="https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model" target="_blank" rel="noopener">Solow–Swan model</a></li>
+<li><strong>Endogenous growth theory</strong>（百科）：把技术进步内生化的增长模型<br><a href="https://en.wikipedia.org/wiki/Endogenous_growth_theory" target="_blank" rel="noopener">Endogenous growth theory</a></li>
+<li><strong>Convergence (economics)</strong>（百科）：条件收敛与跨国增长实证<br><a href="https://en.wikipedia.org/wiki/Convergence_(economics)" target="_blank" rel="noopener">Convergence (economics)</a></li>
+<li><strong>World Bank Data</strong>（数据）：跨国发展指标，适合增长与制度研究<br><a href="https://data.worldbank.org/" target="_blank" rel="noopener">World Bank Data</a></li>
+<li><strong>Our World in Data</strong>（数据）：带图表与数据下载的长周期发展数据<br><a href="https://ourworldindata.org/" target="_blank" rel="noopener">Our World in Data</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=Solow%20model%20steady%20state%20convergence%20empirics" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=Solow%20model%20steady%20state%20convergence%20empirics" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=Solow%20model%20steady%20state%20convergence%20empirics" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part1/06-production-cost/index.html'>第 06 章 · 生产者理论、成本曲线与供给</a>　生产函数与规模报酬</li>
+<li><a href='../16-is-lm/index.html'>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</a>　短期波动与潜在产出</li>
+<li><a href='../../part4/21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a>　增长回归的估计</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

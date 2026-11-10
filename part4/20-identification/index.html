@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 20 章 · 识别：从数据生成过程到因果参数 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="20">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第四篇 · 计量经济学与因果推断 · 第三阶段 · 数据与因果识别</span>
+<h1><span class="ch-num">第 20 章</span>识别：从数据生成过程到因果参数</h1>
+<p class="lede">在估计之前先问：这个参数能否由观测数据的分布唯一确定？本章用潜在结果框架把「相关不等于因果」写成可计算的偏误公式。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s3">数据 · 因果</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../../part0/02-probability-simulation/index.html'>第 02 章 · 概率、统计与模拟：从分布到证据</a> 的 DGP 升级为研究对象：前四篇都在已知参数下正推均衡，从这里开始要从观测数据反推参数。<a href='../21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a>～<a href='../25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a> 逐一给出估计量与诊断。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">DGP 是「带已知答案的测试夹具」；识别是检查「从可观测日志里能不能反解出参数」，估计是「样本有限时解得准不准」，推断是「误差有多大」。三者是不同的失败模式。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能写出潜在结果、ATE 与选择偏误的代数分解</li>
+<li>会构造一个已知真值的 DGP，并对比选择样本与随机实验的估计</li>
+<li>理解「先识别、后估计」的研究顺序与卢卡斯批判</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>数据生成过程 DGP</td><td><a href="https://en.wikipedia.org/wiki/Data-generating_process" target="_blank" rel="noopener">Data-generating process</a> · <a href="https://en.wikipedia.org/wiki/Identification_(economics)" target="_blank" rel="noopener">Identification (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>潜在结果与 ATE</td><td><a href="https://en.wikipedia.org/wiki/Rubin_causal_model" target="_blank" rel="noopener">Rubin causal model</a> · <a href="https://en.wikipedia.org/wiki/Causality_(economics)" target="_blank" rel="noopener">Causality (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>选择偏误</td><td><a href="https://en.wikipedia.org/wiki/Data-generating_process" target="_blank" rel="noopener">Data-generating process</a> · <a href="https://en.wikipedia.org/wiki/Identification_(economics)" target="_blank" rel="noopener">Identification (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>随机化与可忽略性</td><td><a href="https://en.wikipedia.org/wiki/Data-generating_process" target="_blank" rel="noopener">Data-generating process</a> · <a href="https://en.wikipedia.org/wiki/Identification_(economics)" target="_blank" rel="noopener">Identification (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>条件独立与分层</td><td><a href="https://en.wikipedia.org/wiki/Data-generating_process" target="_blank" rel="noopener">Data-generating process</a> · <a href="https://en.wikipedia.org/wiki/Identification_(economics)" target="_blank" rel="noopener">Identification (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>反事实与识别</td><td><a href="https://en.wikipedia.org/wiki/Identification_(economics)" target="_blank" rel="noopener">Identification (economics)</a> · <a href="https://en.wikipedia.org/wiki/Causality_(economics)" target="_blank" rel="noopener">Causality (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>卢卡斯批判</td><td><a href="https://en.wikipedia.org/wiki/Data-generating_process" target="_blank" rel="noopener">Data-generating process</a> · <a href="https://en.wikipedia.org/wiki/Identification_(economics)" target="_blank" rel="noopener">Identification (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>内部/外部效度</td><td><a href="https://en.wikipedia.org/wiki/Data-generating_process" target="_blank" rel="noopener">Data-generating process</a> · <a href="https://en.wikipedia.org/wiki/Identification_(economics)" target="_blank" rel="noopener">Identification (economics)</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s20-1"><h2><span class="sec-num">§20.1</span>潜在结果与 ATE</h2>
+<p>对每个个体 i 定义两个潜在结果 <code>Y_i(1)</code>（接受处理）与 <code>Y_i(0)</code>（未接受），个体处理效应 <code>τ_i = Y_i(1) − Y_i(0)</code>，目标参数通常是 <code>ATE = E[τ_i]</code>。观测到的只有 <code>Y_i = D_i Y_i(1) + (1−D_i)Y_i(0)</code>：<strong>每个个体都缺一半数据</strong>，这就是因果推断的根本问题。</p>
+</section>
+<section id="s20-2"><h2><span class="sec-num">§20.2</span>朴素差异的偏误分解</h2>
+<p>把组间均值差拆开：</p><p class="eq">E[Y|D=1] − E[Y|D=0] = ATT + { E[Y(0)|D=1] − E[Y(0)|D=0] }</p><p>第二项是<strong>选择偏误</strong>：处理组即使不处理，本来结果也不同。随机化使 <code>D ⟂ (Y(1),Y(0))</code>，第二项归零；观察性研究里则要靠「依可观测变量条件独立」（<code>D ⟂ Y(0) | X</code>）或 <a href='../23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a>、<a href='../24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a> 的设计型识别策略。</p>
+<div class="card warn"><p style="margin-bottom:0"><strong>顺序不能倒过来</strong>：控制更多变量不等于识别更好；若控制的是处理之后的变量（对撞变量 / 中介），反而会引入新偏误。先画因果图（DAG）写清 DGP，再决定回归里放什么，这是程序员最容易凭直觉跳错的一步。</p></div>
+</section>
+<section id="s20-3"><h2><span class="sec-num">§20.3</span>模拟：把识别假设做成实验</h2>
+<p>本章脚本构造「能力高者更可能参加培训」的 DGP，真实 ATE 已知为 2。三种估计对比：直接用观测组间差（偏）、随机指派（无偏）、按能力分层后加权（分层越细越接近无偏，本例只分四层会残留少量偏误）。这是全书后续所有计量脚本的模板：<strong>已知真值 → 生成数据 → 估计 → 比较</strong>。</p>
+<p>最后提醒<strong>卢卡斯批判</strong>：若政策本身改变了行为方程（例如培训补贴改变了谁去培训），历史数据估计出的参数就不能直接用于反事实预测。这与「训练分布与部署分布不一致」是同一个问题。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>潜在结果、选择偏误与随机化</h3>
+<pre class="code" data-file="code/20-identification.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 20-identification.py | 已知真值 ATE 的识别实验（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+N = 20000
+TAU = 2.0                 # 真实 ATE
+BETA_ABILITY = 0.5        # 能力对基线结果的影响
+NOISE_SD = 0.5
+# ---- DGP: 能力 A 决定自我选择，Y(1)=Y(0)+TAU ----
+ability = [random.gauss(0, 1) for _ in range(N)]
+d = [1 if a + random.gauss(0, 1) &gt; 0 else 0 for a in ability]
+y0 = [1.0 + BETA_ABILITY * a + random.gauss(0, NOISE_SD) for a in ability]
+y1 = [v + TAU for v in y0]
+y = [y1[i] if d[i] else y0[i] for i in range(N)]
+ate_true = statistics.fmean([y1[i] - y0[i] for i in range(N)])
+# ---- 估计 1: 观测组间差 ----
+m1 = statistics.fmean([y[i] for i in range(N) if d[i] == 1])
+m0 = statistics.fmean([y[i] for i in range(N) if d[i] == 0])
+naive = m1 - m0
+sel_bias = statistics.fmean([y0[i] for i in range(N) if d[i] == 1]) - \
+           statistics.fmean([y0[i] for i in range(N) if d[i] == 0])
+# ---- 估计 2: 随机指派（反事实实验）----
+d_r = [1 if random.random() &lt; 0.5 else 0 for _ in range(N)]
+y_r = [y1[i] if d_r[i] else y0[i] for i in range(N)]
+mr1 = statistics.fmean([y_r[i] for i in range(N) if d_r[i] == 1])
+mr0 = statistics.fmean([y_r[i] for i in range(N) if d_r[i] == 0])
+rand_est = mr1 - mr0
+# ---- 估计 3: 按能力分层后加权（条件独立）----
+order = sorted(range(N), key=lambda i: ability[i])
+strata = [order[k * N // 4:(k + 1) * N // 4] for k in range(4)]
+strat_est = 0.0
+for s in strata:
+    t = [i for i in s if d[i] == 1]
+    c = [i for i in s if d[i] == 0]
+    strat_est += (statistics.fmean([y[i] for i in t]) -
+                  statistics.fmean([y[i] for i in c])) * len(s) / N
+# ---- 数值验证：打印可手算核对的量 ----
+print("真实 ATE=%.4f 处理组比例=%.4f" % (ate_true, sum(d) / N))
+print("朴素组间差=%.4f = ATE %.4f + 选择偏误 %.4f" % (naive, ate_true, sel_bias))
+print("随机指派估计=%.4f (误差 %.4f)" % (rand_est, rand_est - ate_true))
+print("按能力四分层估计=%.4f (误差 %.4f)" % (strat_est, strat_est - ate_true))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>BETA_ABILITY</code> 改成 0（能力不影响结果），观察选择偏误是否消失。　<strong>预期与判读：</strong>真实 ATE=2；朴素组间差≈2.55 = 2 + 选择偏误≈0.55；随机指派≈2.00；按能力四分层≈2.08（分层过粗残留约 0.08 偏误，把分层数加到 20 会明显减小）。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>BETA_ABILITY 越大选择偏误越大；NOISE_SD 越大估计方差越大；N 越大随机误差越小。　文件位置：<code>part4/20-identification/code/20-identification.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Rubin_causal_model" target="_blank" rel="noopener">Rubin causal model</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>潜在结果框架与平均处理效应</p>
+<span class="why"><strong>怎么用</strong>：潜在结果框架</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Rubin_causal_model</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Identification_(economics)" target="_blank" rel="noopener">Identification (economics)</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>参数能否由观测分布唯一确定</p>
+<span class="why"><strong>怎么用</strong>：识别的严格定义</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Identification_(economics)</code></p></div>
+<div class="repo-card">
+<h3><a href="https://matheusfacure.github.io/python-causality-handbook/landing-page.html" target="_blank" rel="noopener">Causal Inference for the Brave and True</a></h3>
+<span class="tag">教材 · 参考资料</span>
+<p>用 Python 讲因果推断的开放教材，含可运行代码</p>
+<span class="why"><strong>怎么用</strong>：用 Python 讲因果推断的开放教材</span>
+<p style="margin:0"><code>https://matheusfacure.github.io/python-causality-handbook/landing-page.html</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Data-generating_process" target="_blank" rel="noopener">Data-generating process</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>把「数据从哪来」写成可模拟的概率模型</p>
+<span class="why"><strong>怎么用</strong>：DGP 概念</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Data-generating_process</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把「控制了更多变量」当成识别改善：控制对撞变量或中介会引入偏误。</li>
+<li>把相关系数的显著性当成因果证据：显著性只回答抽样误差，不回答识别。</li>
+<li>忽略外部效度：样本上的 ATE 未必能外推到另一个人群或政策规模。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>在脚本里加入一个「处理后变量」作为控制，观察估计为何变坏。</li>
+<li>把处理效应改成异质 <code>τ_i = 2 + A_i</code>，分别计算 ATE 与 ATT 并比较。</li>
+<li>用 <a href='../../part0/02-probability-simulation/index.html'>第 02 章 · 概率、统计与模拟：从分布到证据</a> 的语言说明：为什么随机指派相当于消除了 D 与 u 的相关。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Data-generating process</strong>（百科）：把「数据从哪来」写成可模拟的概率模型<br><a href="https://en.wikipedia.org/wiki/Data-generating_process" target="_blank" rel="noopener">Data-generating process</a></li>
+<li><strong>Identification (economics)</strong>（百科）：参数能否由观测分布唯一确定<br><a href="https://en.wikipedia.org/wiki/Identification_(economics)" target="_blank" rel="noopener">Identification (economics)</a></li>
+<li><strong>Causality (economics)</strong>（百科）：相关不等于因果的经济学表述<br><a href="https://en.wikipedia.org/wiki/Causality_(economics)" target="_blank" rel="noopener">Causality (economics)</a></li>
+<li><strong>Rubin causal model</strong>（百科）：潜在结果框架与平均处理效应<br><a href="https://en.wikipedia.org/wiki/Rubin_causal_model" target="_blank" rel="noopener">Rubin causal model</a></li>
+<li><strong>Causal Inference for the Brave and True</strong>（教材）：用 Python 讲因果推断的开放教材，含可运行代码<br><a href="https://matheusfacure.github.io/python-causality-handbook/landing-page.html" target="_blank" rel="noopener">Causal Inference for the Brave and True</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=identification%20data%20generating%20process%20causal%20inference" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=identification%20data%20generating%20process%20causal%20inference" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=identification%20data%20generating%20process%20causal%20inference" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a>　OLS 与条件期望</li>
+<li><a href='../23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a>　工具变量识别</li>
+<li><a href='../24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a>　DID 与平行趋势</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

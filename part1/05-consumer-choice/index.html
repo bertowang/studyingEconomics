@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 05 章 · 消费者理论：偏好、需求与希克斯分解 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="05">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第一篇 · 原理与个体决策 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 05 章</span>消费者理论：偏好、需求与希克斯分解</h1>
+<p class="lede">把偏好写成效用函数，把预算写成约束，需求就是 01 章一阶条件的直接产物；价格变化的影响可分解为替代效应与收入效应。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">原理 · 个体</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../../part0/01-math-tools/index.html'>第 01 章 · 约束最优化与比较静态：经济学的核心 API</a> 的 FOC 应用到消费选择；需求曲线由此成为 <a href='../04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a> 里「给定」的那条曲线，<a href='../../part2/09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a> 再用它算福利。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">马歇尔需求是「给定预算的最优参数」，希克斯需求是「给定目标效用/服务等级的最小成本配置」；CV/EV 就是两次配置之间换算成钱的差价，相当于用统一的度量单位比较两个版本的性能。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能由 Cobb-Douglas 效用推出马歇尔需求与希克斯需求</li>
+<li>会用支出函数计算补偿变化 CV 与等价变化 EV</li>
+<li>能数值验证斯勒茨基分解，并说明其符号</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>效用与偏好</td><td><a href="https://en.wikipedia.org/wiki/Utility" target="_blank" rel="noopener">Utility</a> · <a href="https://en.wikipedia.org/wiki/Indifference_curve" target="_blank" rel="noopener">Indifference curve</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>预算约束与马歇尔需求</td><td><a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a> · <a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>边际替代率</td><td><a href="https://en.wikipedia.org/wiki/Marginalism" target="_blank" rel="noopener">Marginalism</a> · <a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>支出函数与希克斯需求</td><td><a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a> · <a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>替代效应与收入效应</td><td><a href="https://en.wikipedia.org/wiki/Utility" target="_blank" rel="noopener">Utility</a> · <a href="https://en.wikipedia.org/wiki/Indifference_curve" target="_blank" rel="noopener">Indifference curve</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>CV 与 EV</td><td><a href="https://en.wikipedia.org/wiki/Utility" target="_blank" rel="noopener">Utility</a> · <a href="https://en.wikipedia.org/wiki/Indifference_curve" target="_blank" rel="noopener">Indifference curve</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>显示偏好</td><td><a href="https://en.wikipedia.org/wiki/Utility" target="_blank" rel="noopener">Utility</a> · <a href="https://en.wikipedia.org/wiki/Indifference_curve" target="_blank" rel="noopener">Indifference curve</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s5-1"><h2><span class="sec-num">§5.1</span>偏好 → 效用 → 需求</h2>
+<p>偏好若满足完备性、传递性与连续性，就能用效用函数 <code>u(x,y)</code> 表示；<strong>效用只保序，基数大小没有意义</strong>。最常用的 Cobb-Douglas 形式：</p><p class="eq">u(x,y) = x^α · y^(1−α) ,  0&lt;α&lt;1 ;  MRS = MU_x/MU_y = (α/(1−α))·(y/x)</p><p>在预算 <code>pₓx + pᵧy = B</code> 下令 MRS 等于价格比，得到<strong>马歇尔需求</strong>：</p><p class="eq">x* = αB/pₓ ,  y* = (1−α)B/pᵧ ,  v(p,B) = B·(α/pₓ)^α·((1−α)/pᵧ)^(1−α)</p><p>注意 <code>x*</code> 只花掉固定比例 <code>α</code> 的收入——这是 Cobb-Douglas 的特殊性质，不是一般规律。它使需求的价格弹性恰为 −1，收入弹性恰为 1，便于手算核对。</p>
+</section>
+<section id="s5-2"><h2><span class="sec-num">§5.2</span>对偶问题：支出最小化</h2>
+<p>把同一个最优问题反过来问：达到给定效用 <code>u</code> 最少要花多少钱？这就是支出最小化，其解 <code>h(p,u)</code> 称为<strong>希克斯需求（补偿需求）</strong>：</p><p class="eq">e(p,u) = min p·x  s.t. u(x) ≥ u ;  h_i(p,u) = ∂e(p,u)/∂p_i  (谢泼德引理)</p><p>对 α=1/2，可解析求出 <code>e(p,u)=2u√(pₓpᵧ)</code>、<code>hₓ=u√(pᵧ/pₓ)</code>。由包络定理还能得到 <code>∂v/∂pᵢ = −λ·xᵢ</code> 与 <code>∂v/∂B = λ</code>，相除即<strong>罗伊恒等式</strong>。这些对偶关系让「从需求反推偏好」成为可能，也是 <a href='../../part5/29-bonds/index.html'>第 29 章 · 债券、久期与期限结构：利率风险的一阶与二阶</a> 久期、<a href='../../part5/27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> 前沿中「敏感度即导数」的同构。</p>
+</section>
+<section id="s5-3"><h2><span class="sec-num">§5.3</span>价格变化：斯勒茨基分解与货币化福利</h2>
+<p>价格上升对需求的总影响可以拆成两部分：</p><p class="eq">Δx = [h(p₁,u₀) − h(p₀,u₀)]  +  [x(p₁,B) − h(p₁,u₀)] = 替代效应 + 收入效应</p><p>替代效应沿同一条无差异曲线移动，<strong>必为负</strong>（相对变贵的商品少买）；收入效应反映实际购买力下降，方向取决于商品是正常品还是劣等品。吉芬品即收入效应强到压过替代效应的极端情形。</p>
+<p>把效用变化折算成钱，有两种约定：</p><p class="eq">CV = B − e(p₀,u₁)   (按旧价格补偿) ;  EV = e(p₁,u₀) − B   (按新价格等价)</p><p>二者一般不等，因为计价的「汇率」（价格向量）不同；对拟线性偏好才恒等。政策评估里选哪个取决于要回答「涨价为补偿需要补多少钱」还是「涨价相当于收入减少多少」。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>需求、支出函数、CV/EV 与斯勒茨基分解</h3>
+<pre class="code" data-file="code/05-consumer.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 05-consumer.py | Cobb-Douglas 需求的对偶计算（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+B = 100.0
+PX0, PY = 2.0, 5.0
+PX1 = 3.0              # x 涨价
+ALPHA = 0.5
+# ---- 马歇尔需求与间接效用 ----
+def demand(px, py, b):
+    return ALPHA * b / px, (1 - ALPHA) * b / py
+
+def utility(x, y):
+    return (x ** ALPHA) * (y ** (1 - ALPHA))
+
+# ---- 支出函数与希克斯需求（alpha=0.5 的解析式）----
+def expenditure(px, py, u):
+    return u * (px / ALPHA) ** ALPHA * (py / (1 - ALPHA)) ** (1 - ALPHA)
+
+def hicks_x(px, py, u):
+    return u * (py / px) ** (1 - ALPHA)
+
+x0, y0 = demand(PX0, PY, B)
+x1, y1 = demand(PX1, PY, B)
+u0, u1 = utility(x0, y0), utility(x1, y1)
+cv = B - expenditure(PX0, PY, u1)
+ev = expenditure(PX1, PY, u0) - B
+sub = hicks_x(PX1, PY, u0) - hicks_x(PX0, PY, u0)
+inc = x1 - hicks_x(PX1, PY, u0)
+# ---- 数值验证：打印可手算核对的量 ----
+print("旧价需求 x0=%.4f y0=%.4f u0=%.4f" % (x0, y0, u0))
+print("新价需求 x1=%.4f y1=%.4f u1=%.4f" % (x1, y1, u1))
+print("支出函数校验 e(p0,u0)=%.4f (应=B=%.2f)" % (expenditure(PX0, PY, u0), B))
+print("CV=%.4f  EV=%.4f  (涨价损失，EV&gt;CV 因新价计价更高)" % (cv, ev))
+print("总效应=%.4f = 替代效应 %.4f + 收入效应 %.4f" % (x1 - x0, sub, inc))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>ALPHA</code> 改成 0.3，观察 CV/EV 与替代效应如何变化；把 <code>PX1</code> 改成 2.5 观察分解是否仍成立。　<strong>预期与判读：</strong>x0=25、y0=10、u0≈15.8114；x1≈16.6667、u1≈12.9099；e(p0,u0)=100；CV≈18.3503、EV≈22.4745；总效应 −8.3333 = 替代 −4.5876 + 收入 −3.7457。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>PX1 越接近 PX0，CV 与 EV 越接近；ALPHA 越大，涨价带来的福利损失越大。　文件位置：<code>part1/05-consumer-choice/code/05-consumer.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Utility" target="_blank" rel="noopener">Utility</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>偏好表示与效用函数</p>
+<span class="why"><strong>怎么用</strong>：偏好表示的完备条目</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Utility</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Indifference_curve" target="_blank" rel="noopener">Indifference curve</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>无差异曲线与边际替代率</p>
+<span class="why"><strong>怎么用</strong>：无差异曲线与 MRS</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Indifference_curve</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Cobb%E2%80%93Douglas_production_function" target="_blank" rel="noopener">Cobb-Douglas production function</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>最常用的可解析生产/效用函数</p>
+<span class="why"><strong>怎么用</strong>：弹性为 1 的可解析需求</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Cobb%E2%80%93Douglas_production_function</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把效用当作可人际比较的基数：它只表示排序，单调变换不改变需求。</li>
+<li>把 CV 与 EV 混用：两者计价价格不同，只有拟线性偏好才相等。</li>
+<li>以为替代效应可能为正：希克斯需求对自身价格单调不增，符号由对偶性保证。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>推导一般 α 下的 <code>e(p,u)=u·(pₓ/α)^α·(pᵧ/(1−α))^(1−α)</code>，并验证脚本中的 α=0.5 情形。</li>
+<li>把 <code>x</code> 设为劣等品（例如线性支出系统），思考收入效应何时能压过替代效应。</li>
+<li>用 <a href='../../part0/01-math-tools/index.html'>第 01 章 · 约束最优化与比较静态：经济学的核心 API</a> 的包络定理证明谢泼德引理 <code>hᵢ=∂e/∂pᵢ</code>。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Utility</strong>（百科）：偏好表示与效用函数<br><a href="https://en.wikipedia.org/wiki/Utility" target="_blank" rel="noopener">Utility</a></li>
+<li><strong>Indifference curve</strong>（百科）：无差异曲线与边际替代率<br><a href="https://en.wikipedia.org/wiki/Indifference_curve" target="_blank" rel="noopener">Indifference curve</a></li>
+<li><strong>Budget constraint</strong>（百科）：可行集与相对价格<br><a href="https://en.wikipedia.org/wiki/Budget_constraint" target="_blank" rel="noopener">Budget constraint</a></li>
+<li><strong>Lagrange multiplier</strong>（百科）：约束最优的一阶条件与影子价格<br><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="noopener">Lagrange multiplier</a></li>
+<li><strong>Cobb-Douglas production function</strong>（百科）：最常用的可解析生产/效用函数<br><a href="https://en.wikipedia.org/wiki/Cobb%E2%80%93Douglas_production_function" target="_blank" rel="noopener">Cobb-Douglas production function</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=utility%20maximization%20budget%20constraint%20Cobb%20Douglas" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=utility%20maximization%20budget%20constraint%20Cobb%20Douglas" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=utility%20maximization%20budget%20constraint%20Cobb%20Douglas" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../06-production-cost/index.html'>第 06 章 · 生产者理论、成本曲线与供给</a>　生产侧的对偶问题：成本函数</li>
+<li><a href='../../part2/09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a>　用补偿变化衡量政策福利</li>
+<li><a href='../../part2/14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a>　一般均衡中的需求加总</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

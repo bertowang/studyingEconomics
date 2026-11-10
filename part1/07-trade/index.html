@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 07 章 · 比较优势、专业化与贸易收益 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="07">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第一篇 · 原理与个体决策 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 07 章</span>比较优势、专业化与贸易收益</h1>
+<p class="lede">贸易收益来自机会成本的差异，而不是绝对生产率的高低；世界价格落在两国机会成本之间时，双方都能消费到超出本国 PPF 的组合。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">原理 · 个体</span>
+<span>建议 2 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../03-scarcity-ppf/index.html'>第 03 章 · 稀缺、机会成本与生产可能性边界</a> 的机会成本推广到两个经济体；<a href='../../part2/14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a> 会把两国两商品模型升级成多市场一般均衡，<a href='../../part3/19-open-economy/index.html'>第 19 章 · 开放经济：国际收支、汇率与三元悖论</a> 加入汇率与资本流动。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">比较优势就是「按相对吞吐率分配任务」：即使一台机器样样都快，也该把稀缺资源投到它相对优势最大的任务上；调度依据是相对成本比，不是绝对耗时。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能由单位劳动投入计算两国机会成本并判定比较优势</li>
+<li>会构造世界价格并验证进出口与市场出清</li>
+<li>解释为什么贸易收益是「消费可能性外移」而不是「多生产了所有商品」</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>绝对优势与比较优势</td><td><a href="https://en.wikipedia.org/wiki/Comparative_advantage" target="_blank" rel="noopener">Comparative advantage</a> · <a href="https://en.wikipedia.org/wiki/Opportunity_cost" target="_blank" rel="noopener">Opportunity cost</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>机会成本</td><td><a href="https://en.wikipedia.org/wiki/Opportunity_cost" target="_blank" rel="noopener">Opportunity cost</a> · <a href="https://en.wikipedia.org/wiki/Production-possibility_frontier" target="_blank" rel="noopener">Production-possibility frontier</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>专业化</td><td><a href="https://en.wikipedia.org/wiki/Comparative_advantage" target="_blank" rel="noopener">Comparative advantage</a> · <a href="https://en.wikipedia.org/wiki/Opportunity_cost" target="_blank" rel="noopener">Opportunity cost</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>世界价格区间</td><td><a href="https://en.wikipedia.org/wiki/Comparative_advantage" target="_blank" rel="noopener">Comparative advantage</a> · <a href="https://en.wikipedia.org/wiki/Opportunity_cost" target="_blank" rel="noopener">Opportunity cost</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>贸易收益</td><td><a href="https://en.wikipedia.org/wiki/Comparative_advantage" target="_blank" rel="noopener">Comparative advantage</a> · <a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>市场出清</td><td><a href="https://en.wikipedia.org/wiki/Comparative_advantage" target="_blank" rel="noopener">Comparative advantage</a> · <a href="https://en.wikipedia.org/wiki/Opportunity_cost" target="_blank" rel="noopener">Opportunity cost</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>贸易分配的代价</td><td><a href="https://en.wikipedia.org/wiki/Comparative_advantage" target="_blank" rel="noopener">Comparative advantage</a> · <a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s7-1"><h2><span class="sec-num">§7.1</span>绝对优势不是贸易的理由</h2>
+<p>李嘉图模型里，两国各有一种固定技术 <code>aᵢⱼ</code>（生产一单位商品 j 所需工时），劳动总量 <code>L</code>。自给自足的相对价格就是本国 PPF 斜率：</p><p class="eq">(p_F/p_C)_A = a_AF/a_AC ,  (p_F/p_C)_B = a_BF/a_BC</p><p>只要这两个比值不同，就存在比较优势。<strong>即使 A 国两种商品都更省工（绝对优势全占），贸易仍对双方有利</strong>，因为资源配置看的是「放弃什么」，不是「干得多快」。</p>
+</section>
+<section id="s7-2"><h2><span class="sec-num">§7.2</span>世界价格与贸易收益</h2>
+<p>设 A 国食品机会成本为 1、B 国为 0.25。开放后世界相对价格 <code>p_F/p_C</code> 必落在 <code>[0.25, 1]</code> 之间；在此区间内 A 专业化生产布、B 专业化生产食品。用出口收入按世界价格买回另一种商品，两国消费组合都<strong>落在各自 PPF 之外</strong>：</p><p class="eq">消费可能性: p_F·F + p_C·C ≤ p_C·(L/a_AC)   (A 国专业化生产布时的预算线)</p><p>这是全书第一个「<strong>约束被交换放宽</strong>」的例子：不是技术进步，而是允许交换使可行集外移。<a href='../../part2/09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a> 的福利定理会说清它在什么条件下成立，<a href='../../part2/12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a>、<a href='../../part2/13-information/index.html'>第 13 章 · 信息不对称：逆向选择、信号与道德风险</a> 则说明市场缺失或信息不对称时收益会打折。</p>
+</section>
+<section id="s7-3"><h2><span class="sec-num">§7.3</span>收益不等于人人受益</h2>
+<table><thead><tr><th style="width:24%">层次</th><th>结论</th><th>前提 / 限制</th></tr></thead><tbody>
+<tr><td>两国总量</td><td>贸易使双方总消费可能性扩大</td><td>技术差异、无运输成本、完全竞争</td></tr>
+<tr><td>国内分配</td><td>相对价格变化使稀缺要素受益、密集使用该要素的部门收缩</td><td>要素可流动需要时间，短期有调整成本</td></tr>
+<tr><td>长期增长</td><td>贸易可能通过技术扩散影响增长率</td><td>超出李嘉图静态模型，见 <a href='../../part3/18-growth/index.html'>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</a></td></tr>
+</tbody></table>
+<p>把「总量收益」直接说成「每个人都变好」是常见逻辑跳跃；补偿原则说的是<strong>赢家理论上足以补偿输家</strong>，不等于补偿真的发生。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>两国两商品：机会成本、专业化与市场出清</h3>
+<pre class="code" data-file="code/07-trade.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 07-trade.py | 李嘉图模型的贸易收益（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+L = 100.0
+A_AF, A_AC = 2.0, 2.0      # A 国: 食品/布 单位工时
+A_BF, A_BC = 1.0, 4.0      # B 国
+WORLD_PF = 0.5             # 世界相对价格 p_F/p_C，p_C=1
+SHARE = 0.5                # 收入中用于食品的份额（Cobb-Douglas）
+# ---- 机会成本与比较优势 ----
+oc_a = A_AF / A_AC
+oc_b = A_BF / A_BC
+# ---- 自给自足：收入一半买食品、一半买布 ----
+fa = SHARE * L / A_AF
+ca = SHARE * L / A_AC
+fb = SHARE * L / A_BF
+cb = SHARE * L / A_BC
+# ---- 专业化 + 贸易 ----
+# A 生产布，B 生产食品；世界价格必须落在两国机会成本之间
+q_c_world = L / A_AC
+q_f_world = L / A_BF
+value_a = q_c_world * 1.0
+value_b = q_f_world * WORLD_PF
+f_a = SHARE * value_a / WORLD_PF
+c_a = SHARE * value_a / 1.0
+f_b = SHARE * value_b / WORLD_PF
+c_b = SHARE * value_b / 1.0
+# ---- 数值验证：打印可手算核对的量 ----
+def u(f, c):
+    return math.sqrt(f * c)
+print("机会成本: A=%.4f  B=%.4f  世界价=%.4f 在区间内=%s" %
+      (oc_a, oc_b, WORLD_PF, min(oc_a, oc_b) &lt;= WORLD_PF &lt;= max(oc_a, oc_b)))
+print("自给自足 A=(%.2f, %.2f) u=%.4f ; B=(%.2f, %.2f) u=%.4f" %
+      (fa, ca, u(fa, ca), fb, cb, u(fb, cb)))
+print("贸易后   A=(%.2f, %.2f) u=%.4f ; B=(%.2f, %.2f) u=%.4f" %
+      (f_a, c_a, u(f_a, c_a), f_b, c_b, u(f_b, c_b)))
+print("市场出清: 食品需求=%.2f 供给=%.2f ; 布需求=%.2f 供给=%.2f" %
+      (f_a + f_b, q_f_world, c_a + c_b, q_c_world))
+print("A 出口布=%.2f 进口食品=%.2f" % (q_c_world - c_a, f_a))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>WORLD_PF</code> 改成 0.9（更靠近 A 国机会成本），观察收益如何在两国之间重新分配。　<strong>预期与判读：</strong>A 国机会成本 1、B 国 0.25，世界价 0.5 落在区间内；自给自足 A=(25,25)、B=(50,12.5)，效用均 25；贸易后两国均为 (50,25)，效用≈35.36；两个市场都恰好出清。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>WORLD_PF 越接近某国自给自足价格，该国贸易收益越小；A_BC 下降会缩小两国技术差异与收益。　文件位置：<code>part1/07-trade/code/07-trade.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Comparative_advantage" target="_blank" rel="noopener">Comparative advantage</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>按机会成本分工使双方受益</p>
+<span class="why"><strong>怎么用</strong>：李嘉图模型的标准表述</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Comparative_advantage</code></p></div>
+<div class="repo-card">
+<h3><a href="https://data.worldbank.org/" target="_blank" rel="noopener">World Bank Data</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>跨国发展指标，适合增长与制度研究</p>
+<span class="why"><strong>怎么用</strong>：用跨国数据观察专业化与收入</span>
+<p style="margin:0"><code>https://data.worldbank.org/</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>所有市场同时出清的联立系统</p>
+<span class="why"><strong>怎么用</strong>：两商品模型如何推广到多市场</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/General_equilibrium_theory</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把绝对优势当成贸易原因：关键是比较机会成本，不是绝对生产率。</li>
+<li>以为世界价格可以任意设定：必须落在两国机会成本之间，否则至少一国不愿专业化。</li>
+<li>把总量收益说成人人受益：部门间要素再配置会产生受损者。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>把 <code>WORLD_PF</code> 从 0.26 扫到 0.99，画出两国效用曲线并解释为何单调性相反。</li>
+<li>加入每单位 0.1 的运输成本（楔子），说明贸易收益如何被侵蚀，联系 <a href='../04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a> 的税收楔子。</li>
+<li>用 <a href='../../part2/14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a> 的语言说明本例其实是一个 2 国 × 2 商品的一般均衡。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Comparative advantage</strong>（百科）：按机会成本分工使双方受益<br><a href="https://en.wikipedia.org/wiki/Comparative_advantage" target="_blank" rel="noopener">Comparative advantage</a></li>
+<li><strong>Opportunity cost</strong>（百科）：被放弃的最优替代用途，决策的真正成本<br><a href="https://en.wikipedia.org/wiki/Opportunity_cost" target="_blank" rel="noopener">Opportunity cost</a></li>
+<li><strong>General equilibrium theory</strong>（百科）：所有市场同时出清的联立系统<br><a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a></li>
+<li><strong>World Bank Data</strong>（数据）：跨国发展指标，适合增长与制度研究<br><a href="https://data.worldbank.org/" target="_blank" rel="noopener">World Bank Data</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=comparative%20advantage%20gains%20from%20trade" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=comparative%20advantage%20gains%20from%20trade" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=comparative%20advantage%20gains%20from%20trade" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../03-scarcity-ppf/index.html'>第 03 章 · 稀缺、机会成本与生产可能性边界</a>　机会成本与 PPF</li>
+<li><a href='../../part2/14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a>　一般均衡与瓦尔拉斯法则</li>
+<li><a href='../../part3/19-open-economy/index.html'>第 19 章 · 开放经济：国际收支、汇率与三元悖论</a>　开放经济与汇率</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

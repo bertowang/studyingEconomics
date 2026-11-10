@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>经济学：从稀缺到证据 · 总目录</title>
+<link rel="stylesheet" href="./assets/style.css">
+<script src="./assets/toc.js" defer></script>
+<script src="./assets/app.js" defer></script>
+</head>
+<body data-root="./" data-page="index">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">Undergraduate → Graduate · Principles / Micro / Macro / Metrics / Finance</span>
+<h1>经济学：从稀缺到证据</h1>
+<p class="lede">一本面向计算机专业背景、面向本科到研究生的经济学教材。全书不按课程拼盘，而沿<strong>稀缺 → 选择 → 均衡 → 效率 → 失灵 → 动态 → 不确定 → 证据 → 决策</strong>一条主线展开：原理、微观、宏观、计量与投资是同一个问题在不同约束下的放大。每章给出原理、公式、可运行的 Python 建模脚本与可核对的数值输出。</p>
+<div class="meta">
+<span class="badge done">全部 33 章已完稿</span>
+<span class="badge done">每章配可运行 Python 实例</span>
+<span>共 33 章 · 5 个学习阶段 · 1 附录 · 33 个 Python 实例 · 159 条参考链接</span>
+<span>版本 v0.1 · 2026-11</span>
+</div></header>
+<div class="card note"><span class="card-label">本书的主张</span><p><strong>四种数学骨架反复出现</strong>：约束最优化（消费者、企业、组合）、不动点（均衡、纳什、稳态）、条件期望（回归、资产定价）、反事实（因果推断、政策评估、期权 payoff）。认出骨架，五门课就变成五种应用配置。</p><p style="margin-bottom:0">每章学习闭环固定为四步：<strong>读模型 → 跑代码 → 改参数 → 写结论</strong>；每个脚本都用已知真值的数据生成过程，把估计结果和真值并列打印，相当于带答案的单元测试。</p></div>
+<h2 id="howto">如何使用这本教材</h2>
+<table><thead><tr><th style="width:24%">栏目</th><th>作用</th></tr></thead><tbody><tr><td>本章位置 / 给程序员的翻译</td><td>说明承接什么、引出什么，并把概念映射到计算概念</td></tr><tr><td>学习目标</td><td>学完应能做什么，用可检验的动词描述</td></tr><tr><td>知识点地图</td><td>逐条列出知识点，每条挂 1～2 个扩展学习链接</td></tr><tr><td>原理小节 §x.y</td><td>概念、直觉、公式推导、对照表与常见边界</td></tr><tr><td>Python 建模实例</td><td>完整可运行脚本 + 操作步骤 + 预期数值与判读逻辑</td></tr><tr><td>本章参考资料</td><td>按本章知识点挑选的教材、课程、数据与工具卡片</td></tr><tr><td>常见误区 / 习题</td><td>典型错误与可动手验证的思考题</td></tr><tr><td>扩展学习</td><td>精读清单、论文/课程检索入口与全书资源总表</td></tr></tbody></table>
+<h2 id="python">运行 Python 示例（30 秒）</h2>
+<ol><li>需要 Python 3.8+，<strong>不需要安装任何第三方包</strong>：示例只用 <code>math</code>、<code>random</code>、<code>statistics</code> 等标准库。</li><li>直接运行某一章脚本：<code>python3 part1/04-supply-demand/code/04-supply-demand.py</code>；或从页面代码块右上角「复制」。</li><li>批量验证全部示例：<code>./tools/run_python.sh</code>；只跑某几个：<code>./tools/run_python.sh part4/21-ols/code/21-ols.py</code>。</li><li>页面里的代码块与磁盘上的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 自动同步，永远一致。</li></ol>
+<div class="card contract"><span class="card-label">给程序员的代码契约</span><ul style="margin-bottom:0"><li><strong>零依赖</strong>：矩阵求逆、OLS、稳健标准误、二叉树定价全部手写展开，方便对照公式。</li><li><strong>自包含</strong>：数据由脚本里的「数据生成过程」合成，不下载、不读外部文件。</li><li><strong>可复现</strong>：固定 <code>random.seed(7)</code>；参数集中在 <code># ---- 参数区 ----</code>。</li><li><strong>数值可核对</strong>：结尾 <code>print</code> 打印可手算的量，页面给出预期值与判读。</li><li><strong>可批量验证</strong>：<code>./tools/run_python.sh</code> 跑完全部脚本；<code>python3 tools/check_book.py --run</code> 把实跑纳入自检。</li></ul></div>
+<p class="code-hint">为什么不用 <code>numpy</code> / <code>statsmodels</code>？因为教材要展示的是算法本身。附录 A.5 给出手写实现与工业库的对照表，学完之后应能无缝切换到成熟工具。</p>
+<h2 id="roadmap">学习路线（建议两个学期）</h2>
+<ol class="roadmap"><li><strong>第一阶段 · 个体、市场与效率</strong>（00～14）：约束最优化、供需与弹性、消费者/生产者、贸易与风险、福利定理、垄断与博弈、外部性与信息、一般均衡。</li><li><strong>第二阶段 · 总量、货币与增长</strong>（15～19）：国民账户、乘数与 IS-LM、泰勒规则、索洛稳态、国际收支与汇率。</li><li><strong>第三阶段 · 数据与因果识别</strong>（20～25）：潜在结果 → 手写 OLS → 稳健标准误 → IV/2SLS → DID 与固定效应 → 平稳性与伪回归。</li><li><strong>第四阶段 · 不确定性与资产定价</strong>（26～30）：收益与复利 → 有效前沿 → CAPM 与因子 → 久期与期限结构 → 二叉树 / Black-Scholes / 蒙特卡洛。</li><li><strong>第五阶段 · 综合与方法论</strong>（31～32、附录）：多重检验与复现规范，最后用一个端到端政策评估课题把全部环节跑通。</li></ol>
+<p>时间有限时的最短路径：<a href="part0/01-math-tools/index.html">01</a> → <a href="part1/04-supply-demand/index.html">04</a> → <a href="part2/09-welfare/index.html">09</a> → <a href="part4/20-identification/index.html">20</a> → <a href="part4/21-ols/index.html">21</a> → <a href="part4/24-did-panel/index.html">24</a> → <a href="part5/27-portfolio/index.html">27</a> → <a href="part5/30-options/index.html">30</a> → <a href="part6/32-capstone/index.html">32</a>。</p>
+<h2 id="toc">全书目录</h2>
+<p class="lede">每一章一个文件夹，内含 <code>index.html</code>（知识讲解）与 <code>code/*.py</code>（可直接运行的建模脚本）。状态徽章：<span class="badge done">已完稿</span> 表示正文、知识点地图、参考链接与实例齐备。</p>
+<div class="stage-banner"><h2>第一阶段 · 个体、市场与效率</h2><p>第 00～14 章。把「选择」写成可解的约束最优化，再研究多人同时选择时的均衡、效率与失灵。</p></div>
+<section class="toc-part"><h2><span class="part-id">卷首</span>共同语言</h2>
+<ul class="toc-list">
+<li>
+<div class="toc-head"><span class="num">00</span><a class="toc-title" href="part0/00-preface/index.html">绪论：一条主线，五个阶段</a> <a class="toc-extra" href="part0/00-preface/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把经济学原理、微观、宏观、计量与投资看成同一个问题的五层放大：稀缺下的选择、选择的均衡、均衡的失灵、从数据里识别因果、在不确定中做决策。</p>
+<ul class="toc-points"><li>全书主线与五个阶段</li><li>有机组合而非课程拼接</li><li>模型的三层用法</li><li>给程序员的阅读约定</li><li>先修数学清单</li><li>符号与数据约定</li><li>AI 使用说明</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">01</span><a class="toc-title" href="part0/01-math-tools/index.html">约束最优化与比较静态：经济学的核心 API</a> <a class="toc-extra" href="part0/01-math-tools/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把「最优选择」抽象成带约束的极值问题，程序员只要会写目标函数、约束与一阶条件，就掌握了后面十章反复调用的核心接口。</p>
+<ul class="toc-points"><li>约束最优化与拉格朗日</li><li>一阶条件与二阶条件</li><li>影子价格</li><li>比较静态</li><li>数值求解与二分法</li><li>包络定理</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">02</span><a class="toc-title" href="part0/02-probability-simulation/index.html">概率、统计与模拟：从分布到证据</a> <a class="toc-extra" href="part0/02-probability-simulation/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">计量与金融都建立在「观测只是分布的一次实现」之上。本章用固定种子的模拟把大数定律、中心极限定理与标准误变成可核对的数字。</p>
+<ul class="toc-points"><li>期望与方差</li><li>数据生成过程 DGP</li><li>大数定律</li><li>中心极限定理</li><li>标准误与置信区间</li><li>随机种子与复现</li></ul>
+</li>
+</ul></section>
+<section class="toc-part"><h2><span class="part-id">第一篇</span>原理与个体决策</h2>
+<ul class="toc-list">
+<li>
+<div class="toc-head"><span class="num">03</span><a class="toc-title" href="part1/03-scarcity-ppf/index.html">稀缺、机会成本与生产可能性边界</a> <a class="toc-extra" href="part1/03-scarcity-ppf/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">经济学第一原理：资源有限而用途很多，选择的真实成本是被放弃的最优替代用途。生产可能性边界把这句话画成一条可计算的曲线。</p>
+<ul class="toc-points"><li>稀缺与选择</li><li>机会成本</li><li>生产可能性边界</li><li>边际转换率</li><li>比较优势的雏形</li><li>效率与不可行点</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">04</span><a class="toc-title" href="part1/04-supply-demand/index.html">供需、弹性与税收归宿：第一个均衡</a> <a class="toc-extra" href="part1/04-supply-demand/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">局部均衡是全书第一个「不动点」：价格调整到需求量等于供给量。弹性决定谁承担税负，无谓损失量化扭曲的代价。</p>
+<ul class="toc-points"><li>需求与供给</li><li>均衡与不动点</li><li>点弹性</li><li>税收归宿</li><li>无谓损失</li><li>比较静态</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">05</span><a class="toc-title" href="part1/05-consumer-choice/index.html">消费者理论：偏好、需求与希克斯分解</a> <a class="toc-extra" href="part1/05-consumer-choice/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把偏好写成效用函数，把预算写成约束，需求就是 01 章一阶条件的直接产物；价格变化的影响可分解为替代效应与收入效应。</p>
+<ul class="toc-points"><li>效用与偏好</li><li>预算约束与马歇尔需求</li><li>边际替代率</li><li>支出函数与希克斯需求</li><li>替代效应与收入效应</li><li>CV 与 EV</li><li>显示偏好</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">06</span><a class="toc-title" href="part1/06-production-cost/index.html">生产者理论、成本曲线与供给</a> <a class="toc-extra" href="part1/06-production-cost/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">企业的技术与消费者的偏好是同一套最优化的对偶镜像：利润最大化给出供给，成本最小化给出条件要素需求。</p>
+<ul class="toc-points"><li>生产函数与边际产量</li><li>规模报酬</li><li>成本最小化</li><li>边际成本与平均成本</li><li>利润最大化与供给</li><li>零利润条件</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">07</span><a class="toc-title" href="part1/07-trade/index.html">比较优势、专业化与贸易收益</a> <a class="toc-extra" href="part1/07-trade/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">贸易收益来自机会成本的差异，而不是绝对生产率的高低；世界价格落在两国机会成本之间时，双方都能消费到超出本国 PPF 的组合。</p>
+<ul class="toc-points"><li>绝对优势与比较优势</li><li>机会成本</li><li>专业化</li><li>世界价格区间</li><li>贸易收益</li><li>市场出清</li><li>贸易分配的代价</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">08</span><a class="toc-title" href="part1/08-risk-time/index.html">跨期选择与不确定下的决策</a> <a class="toc-extra" href="part1/08-risk-time/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把时间贴现与风险偏好写进同一个最优化框架：欧拉方程决定今天与明天的消费比例，凹效用决定愿意为规避风险付多少钱。</p>
+<ul class="toc-points"><li>贴现与现值</li><li>跨期预算与欧拉方程</li><li>期望效用</li><li>确定性等价</li><li>风险溢价</li><li>风险厌恶系数</li><li>蒙特卡洛验证</li></ul>
+</li>
+</ul></section>
+<section class="toc-part"><h2><span class="part-id">第二篇</span>市场结构、策略与失灵</h2>
+<ul class="toc-list">
+<li>
+<div class="toc-head"><span class="num">09</span><a class="toc-title" href="part2/09-welfare/index.html">福利经济学：剩余、效率与两条福利定理</a> <a class="toc-extra" href="part2/09-welfare/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把供需曲线下的面积翻译成福利，给「市场好不好」一个可计算的答案；两条福利定理说明竞争均衡与帕累托效率在什么条件下互为表里。</p>
+<ul class="toc-points"><li>消费者剩余与生产者剩余</li><li>总剩余最大化</li><li>帕累托效率</li><li>价格上限与短缺</li><li>无谓损失</li><li>福利第一定理</li><li>福利第二定理</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">10</span><a class="toc-title" href="part2/10-monopoly/index.html">市场势力：垄断定价、勒纳指数与价格歧视</a> <a class="toc-extra" href="part2/10-monopoly/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">当企业面对向下倾斜的需求曲线，边际收益不再等于价格；产量下降、价格上升，福利出现净损失。</p>
+<ul class="toc-points"><li>边际收益曲线</li><li>MR=MC 定价</li><li>勒纳指数与弹性</li><li>垄断无谓损失</li><li>三级价格歧视</li><li>价格歧视的福利条件</li><li>自然垄断与规制</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">11</span><a class="toc-title" href="part2/11-games-oligopoly/index.html">博弈论与寡头：策略互动与不动点</a> <a class="toc-extra" href="part2/11-games-oligopoly/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">当一方的收益依赖另一方的选择，「最优」变成「互为最优反应」；纳什均衡是策略空间上的不动点，古诺模型是它最干净的数值例子。</p>
+<ul class="toc-points"><li>支付矩阵与占优策略</li><li>纳什均衡</li><li>囚徒困境</li><li>古诺最优反应</li><li>不动点迭代</li><li>重复博弈与合作</li><li>子博弈精炼</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">12</span><a class="toc-title" href="part2/12-externality/index.html">外部性、公共品与科斯谈判</a> <a class="toc-extra" href="part2/12-externality/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">当私人边际成本与社会边际成本分离，竞争均衡不再有效；庇古税与科斯谈判是两条互补的修复路径。</p>
+<ul class="toc-points"><li>私人成本与社会成本</li><li>边际外部损害</li><li>庇古税</li><li>社会最优产量</li><li>科斯定理与产权</li><li>交易成本</li><li>公共品与萨缪尔森条件</li><li>搭便车</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">13</span><a class="toc-title" href="part2/13-information/index.html">信息不对称：逆向选择、信号与道德风险</a> <a class="toc-extra" href="part2/13-information/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">当一方比另一方知道得多，价格不再只反映供需，还反映「谁愿意在这个价格上交易」，市场可能整体萎缩甚至消失。</p>
+<ul class="toc-points"><li>隐藏信息与隐藏行动</li><li>柠檬市场与逆向选择</li><li>平均质量与价格的反馈环</li><li>信号传递与分离均衡</li><li>混同均衡</li><li>道德风险与 deductible</li><li>委托代理与激励相容</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">14</span><a class="toc-title" href="part2/14-general-equilibrium/index.html">一般均衡与加总：微观部分的收口</a> <a class="toc-extra" href="part2/14-general-equilibrium/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把所有市场同时出清写成一个价格向量的不动点问题；瓦尔拉斯法则说明只需解 n−1 个方程，但加总会带来合成谬误。</p>
+<ul class="toc-points"><li>纯交换经济与禀赋</li><li>预算约束与需求</li><li>超额需求函数</li><li>相对价格与计价物</li><li>均衡价格不动点</li><li>瓦尔拉斯法则</li><li>福利第二定理</li><li>合成谬误</li></ul>
+</li>
+</ul></section>
+<div class="stage-banner"><h2>第二阶段 · 总量、货币与增长</h2><p>第 15～19 章。把加总当作新问题：核算恒等式、短期波动、政策规则、长期增长与开放经济。</p></div>
+<section class="toc-part"><h2><span class="part-id">第三篇</span>宏观、货币与增长</h2>
+<ul class="toc-list">
+<li>
+<div class="toc-head"><span class="num">15</span><a class="toc-title" href="part3/15-national-accounts/index.html">国民账户与价格指数：如何度量总量</a> <a class="toc-extra" href="part3/15-national-accounts/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">宏观的第一件事是把无数微观交易压成几个可加总、且相互钩稽的数字；三套核算恒等式是后面所有模型的坐标系。</p>
+<ul class="toc-points"><li>GDP 与国民账户恒等式</li><li>支出法/收入法/生产法</li><li>名义与实际</li><li>GDP 平减指数</li><li>CPI 与拉氏指数</li><li>帕氏指数与费雪指数</li><li>替代偏差</li><li>存量与流量</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">16</span><a class="toc-title" href="part3/16-is-lm/index.html">短期波动：乘数、IS-LM 与 AD-AS</a> <a class="toc-extra" href="part3/16-is-lm/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把 <a href='part2/14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a> 的合成谬误具体化：人人同时多储蓄会压低总需求；乘数、挤出效应与总供给约束是宏观短期分析的三个齿轮。</p>
+<ul class="toc-points"><li>凯恩斯交叉与乘数</li><li>边际消费倾向</li><li>储蓄悖论</li><li>IS 曲线</li><li>LM 曲线与货币需求</li><li>挤出效应</li><li>AD-AS 与价格黏性</li><li>菲利普斯曲线</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">17</span><a class="toc-title" href="part3/17-monetary-policy/index.html">货币政策、通胀与利率：费雪方程与泰勒规则</a> <a class="toc-extra" href="part3/17-monetary-policy/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">名义利率、实际利率与预期通胀由费雪方程相连；央行用一个可写的反应函数把通胀与产出缺口反馈到政策利率。</p>
+<ul class="toc-points"><li>费雪方程</li><li>实际利率与名义利率</li><li>央行目标与工具</li><li>泰勒规则</li><li>泰勒原理</li><li>通胀预期</li><li>菲利普斯曲线</li><li>传导机制与滞后</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">18</span><a class="toc-title" href="part3/18-growth/index.html">长期增长：索洛稳态、条件收敛与内生增长</a> <a class="toc-extra" href="part3/18-growth/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把视野从需求侧波动移到供给侧能力：资本积累受边际报酬递减约束，长期人均增长只能来自技术进步。</p>
+<ul class="toc-points"><li>总量生产函数</li><li>资本积累方程</li><li>稳态与不动点</li><li>条件收敛</li><li>储蓄率与黄金律</li><li>技术进步与外生增长</li><li>AK 内生增长</li><li>跨国增长实证</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">19</span><a class="toc-title" href="part3/19-open-economy/index.html">开放经济：国际收支、汇率与三元悖论</a> <a class="toc-extra" href="part3/19-open-economy/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把 <a href='part3/15-national-accounts/index.html'>第 15 章 · 国民账户与价格指数：如何度量总量</a> 的 NX = S − I 展开到跨境：经常账户、资本账户与官方储备必须钩稽；汇率把两国价格与利率连起来。</p>
+<ul class="toc-points"><li>国际收支恒等式</li><li>NX = S − I</li><li>名义与实际汇率</li><li>购买力平价</li><li>利率平价与远期汇率</li><li>三元悖论</li><li>资本流动与风险溢价</li><li>汇率制度</li></ul>
+</li>
+</ul></section>
+<div class="stage-banner later"><h2>第三阶段 · 数据与因果识别</h2><p>第 20～25 章。从已知真值的 DGP 出发，手写 OLS、稳健推断、IV、DID 与时间序列。</p></div>
+<section class="toc-part"><h2><span class="part-id">第四篇</span>计量经济学与因果推断</h2>
+<ul class="toc-list">
+<li>
+<div class="toc-head"><span class="num">20</span><a class="toc-title" href="part4/20-identification/index.html">识别：从数据生成过程到因果参数</a> <a class="toc-extra" href="part4/20-identification/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">在估计之前先问：这个参数能否由观测数据的分布唯一确定？本章用潜在结果框架把「相关不等于因果」写成可计算的偏误公式。</p>
+<ul class="toc-points"><li>数据生成过程 DGP</li><li>潜在结果与 ATE</li><li>选择偏误</li><li>随机化与可忽略性</li><li>条件独立与分层</li><li>反事实与识别</li><li>卢卡斯批判</li><li>内部/外部效度</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">21</span><a class="toc-title" href="part4/21-ols/index.html">最小二乘：手写 OLS、标准误与高斯-马尔可夫</a> <a class="toc-extra" href="part4/21-ols/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把 <code>(XᵀX)⁻¹Xᵀy</code> 完全展开成可读的循环，看清无偏性究竟依赖哪些假设，以及标准误从哪来。</p>
+<ul class="toc-points"><li>条件期望函数</li><li>最小二乘目标</li><li>正规方程与矩阵求逆</li><li>高斯-马尔可夫定理</li><li>残差与方差估计</li><li>标准误与 t 检验</li><li>R² 的误用</li><li>蒙特卡洛抽样分布</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">22</span><a class="toc-title" href="part4/22-diagnostics/index.html">诊断与修正：异方差、自相关与共线性</a> <a class="toc-extra" href="part4/22-diagnostics/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">OLS 的点估计在这些假设被破坏时往往仍无偏，但标准误失效；本章手写稳健标准误并用蒙特卡洛验证覆盖率。</p>
+<ul class="toc-points"><li>异方差的后果</li><li>普通标准误为何失效</li><li>White HC0 稳健标准误</li><li>蒙特卡洛覆盖率</li><li>自相关与 DW 统计量</li><li>多重共线性与 VIF</li><li>可行广义最小二乘思路</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">23</span><a class="toc-title" href="part4/23-iv/index.html">内生性与工具变量：2SLS 的手写实现</a> <a class="toc-extra" href="part4/23-iv/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">当解释变量与误差相关，OLS 连无偏性都失去；工具变量用「只通过 x 影响 y 的外生变动」隔离出因果通道。</p>
+<ul class="toc-points"><li>内生性来源</li><li>遗漏变量偏误公式</li><li>工具变量相关性</li><li>排他性约束</li><li>IV 估计量</li><li>两阶段最小二乘</li><li>弱工具变量</li><li>局部平均处理效应 LATE</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">24</span><a class="toc-title" href="part4/24-did-panel/index.html">面板与准实验：DID、固定效应与断点回归</a> <a class="toc-extra" href="part4/24-did-panel/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">没有随机实验时，用时间与个体两个维度的变异构造反事实；每种设计都对应一条可以被检验或反驳的关键假设。</p>
+<ul class="toc-points"><li>双重差分</li><li>平行趋势假设</li><li>事件研究与预趋势</li><li>面板数据</li><li>个体固定效应</li><li>组内去均值</li><li>断点回归</li><li>局部随机化与带宽</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">25</span><a class="toc-title" href="part4/25-time-series/index.html">时间序列：平稳性、单位根与伪回归</a> <a class="toc-extra" href="part4/25-time-series/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">时间观测不独立：均值方差是否随时间漂移、序列之间是否共享趋势，决定回归推断是否有效。</p>
+<ul class="toc-points"><li>平稳性</li><li>AR(1) 与自相关</li><li>随机游走与单位根</li><li>伪回归</li><li>差分与去趋势</li><li>协整</li><li>误差修正模型</li><li>ADF 检验思想</li></ul>
+</li>
+</ul></section>
+<div class="stage-banner later"><h2>第四阶段 · 不确定性与资产定价</h2><p>第 26～30 章。收益建模、组合优化、因子定价、债券久期与无套利期权定价。</p></div>
+<section class="toc-part"><h2><span class="part-id">第五篇</span>投资学、资产定价与风险管理</h2>
+<ul class="toc-list">
+<li>
+<div class="toc-head"><span class="num">26</span><a class="toc-title" href="part5/26-returns/index.html">收益、复利与波动：把价格变成可建模的序列</a> <a class="toc-extra" href="part5/26-returns/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">资产价格是 <a href='part4/25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a> 的随机游走，收益才近似平稳；对数收益可跨期相加，是建模与计量的标准输入。</p>
+<ul class="toc-points"><li>简单收益与对数收益</li><li>复利与年化</li><li>算术平均与几何平均</li><li>波动拖累</li><li>几何布朗运动</li><li>对数正态分布</li><li>最大回撤</li><li>收益的平稳性</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">27</span><a class="toc-title" href="part5/27-portfolio/index.html">均值-方差组合：分散化与有效前沿</a> <a class="toc-extra" href="part5/27-portfolio/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把 <a href='part0/01-math-tools/index.html'>第 01 章 · 约束最优化与比较静态：经济学的核心 API</a> 的约束最优化用于资产权重：给定风险求最高期望收益，或给定收益求最低方差。</p>
+<ul class="toc-points"><li>组合收益与方差</li><li>相关系数与分散化</li><li>最小方差组合</li><li>有效前沿</li><li>夏普比率</li><li>切点组合与两基金分离</li><li>系统性风险</li><li>均值-方差与期望效用</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">28</span><a class="toc-title" href="part5/28-capm-factors/index.html">CAPM 与因子模型：什么风险该有补偿</a> <a class="toc-extra" href="part5/28-capm-factors/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把 <a href='part5/27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> 的结论推到市场均衡：只有无法分散的系统性风险（beta）才该获得风险溢价。</p>
+<ul class="toc-points"><li>市场组合与两基金分离</li><li>beta 与系统性风险</li><li>证券市场线 SML</li><li>Jensen alpha</li><li>CAPM 时间序列回归</li><li>横截面检验</li><li>Fama-French 因子</li><li>有效市场假说</li><li>因子投资</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">29</span><a class="toc-title" href="part5/29-bonds/index.html">债券、久期与期限结构：利率风险的一阶与二阶</a> <a class="toc-extra" href="part5/29-bonds/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">债券价格是未来现金流的贴现值；久期是价格对收益率的一阶敏感度，凸性补上二阶项。</p>
+<ul class="toc-points"><li>现值定价</li><li>到期收益率 YTM</li><li>麦考利久期</li><li>修正久期</li><li>凸性</li><li>价格近似与误差</li><li>即期利率与远期利率</li><li>期限结构形状</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">30</span><a class="toc-title" href="part5/30-options/index.html">期权、二叉树与蒙特卡洛：无套利定价的闭环</a> <a class="toc-extra" href="part5/30-options/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把「复制组合 + 无套利」写成可回溯的二叉树，再与 Black-Scholes 闭式解和蒙特卡洛模拟三方对照。</p>
+<ul class="toc-points"><li>或有权益与 payoff</li><li>无套利与复制组合</li><li>风险中性概率</li><li>CRR 二叉树回溯</li><li>Black-Scholes 公式</li><li>平价关系</li><li>蒙特卡洛定价</li><li>delta 与对冲</li></ul>
+</li>
+</ul></section>
+<div class="stage-banner later"><h2>第五阶段 · 综合与方法论</h2><p>第 31～32 章与附录。多重检验、复现规范，以及一次端到端的政策评估流水线。</p></div>
+<section class="toc-part"><h2><span class="part-id">第六篇</span>方法论与综合课题</h2>
+<ul class="toc-list">
+<li>
+<div class="toc-head"><span class="num">31</span><a class="toc-title" href="part6/31-reproducibility/index.html">复现、多重检验与研究规范</a> <a class="toc-extra" href="part6/31-reproducibility/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把「显著性」放回抽样分布的语境：反复试设定、反复看数据、只汇报成功的一次，都会让假阳性率远远超过 5%。</p>
+<ul class="toc-points"><li>p 值的正确含义</li><li>多重检验与假阳性</li><li>p-hacking 与花园分叉路径</li><li>Bonferroni 校正</li><li>FDR 与 BH 过程</li><li>预注册与分析计划</li><li>功效分析</li><li>可复现清单</li></ul>
+</li>
+<li>
+<div class="toc-head"><span class="num">32</span><a class="toc-title" href="part6/32-capstone/index.html">综合课题：一项政策评估从数据到结论</a> <a class="toc-extra" href="part6/32-capstone/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">把全书环节拼成一条流水线：DGP → 描述与平衡 → 识别策略 → 估计 → 稳健性 → 边界 → 可复现报告。</p>
+<ul class="toc-points"><li>研究问题与 estimand</li><li>数据字典与 DGP</li><li>描述统计与平衡检验</li><li>DID 识别</li><li>事件研究与预趋势</li><li>安慰剂检验</li><li>稳健标准误</li><li>敏感性分析</li><li>外部效度与卢卡斯批判</li></ul>
+</li>
+</ul></section>
+<section class="toc-part"><h2><span class="part-id">附录</span>速查与资源总表</h2>
+<ul class="toc-list">
+<li>
+<div class="toc-head"><span class="num">A</span><a class="toc-title" href="appendix/index.html">速查与资源总表</a> <a class="toc-extra" href="appendix/index.html#extra-links">扩展阅读 →</a><span class="badge done">已完稿</span></div>
+<p class="toc-desc">符号、公式、脚本索引、常见坑、术语对照与全部扩展学习链接，供随时查阅。</p>
+<ul class="toc-points"><li>符号与约定</li><li>公式速查</li><li>章节脚本索引</li><li>手写实现与工业库对照</li><li>常见坑清单</li><li>数据字典模板</li><li>扩展学习链接总表</li><li>中英术语对照</li></ul>
+</li>
+</ul></section>
+<h2 id="resources">参考资源</h2>
+<p class="lede">以下为全书高频引用的开放教材、课程、数据与工具；完整清单（含百科条目与机构链接）见<a href="appendix/index.html">附录 A.7 扩展学习链接总表</a>。</p>
+<div class="repo-grid">
+<div class="repo-card"><h3><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></h3><span class="tag">教材</span><p>免费开源的本科经济学教材，以实证与数据贯穿全书，与本书的系统视角最接近</p><p style="margin:0"><code>https://www.core-econ.org/</code></p></div>
+<div class="repo-card"><h3><a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></h3><span class="tag">教材</span><p>免费、可下载的本科原理教材，适合查公式与习题</p><p style="margin:0"><code>https://openstax.org/details/books/principles-economics</code></p></div>
+<div class="repo-card"><h3><a href="https://ocw.mit.edu/search/?q=economics" target="_blank" rel="noopener">MIT OpenCourseWare 经济学课程</a></h3><span class="tag">课程</span><p>检索 14.01 微观、14.02 宏观、14.32 计量等完整课程材料</p><p style="margin:0"><code>https://ocw.mit.edu/search/?q=economics</code></p></div>
+<div class="repo-card"><h3><a href="https://matheusfacure.github.io/python-causality-handbook/landing-page.html" target="_blank" rel="noopener">Causal Inference for the Brave and True</a></h3><span class="tag">教材</span><p>用 Python 讲因果推断的开放教材，含可运行代码</p><p style="margin:0"><code>https://matheusfacure.github.io/python-causality-handbook/landing-page.html</code></p></div>
+<div class="repo-card"><h3><a href="https://mixtape.scunning.com/" target="_blank" rel="noopener">Causal Inference: The Mixtape</a></h3><span class="tag">教材</span><p>因果推断开放教材，DID / IV / RDD 讲得直观</p><p style="margin:0"><code>https://mixtape.scunning.com/</code></p></div>
+<div class="repo-card"><h3><a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></h3><span class="tag">工具</span><p>OLS / IV / 面板 / 时间序列的成熟实现</p><p style="margin:0"><code>https://www.statsmodels.org/stable/index.html</code></p></div>
+<div class="repo-card"><h3><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></h3><span class="tag">数据</span><p>美联储圣路易斯分行的宏观与金融时间序列，免费可下载</p><p style="margin:0"><code>https://fred.stlouisfed.org/</code></p></div>
+<div class="repo-card"><h3><a href="https://data.worldbank.org/" target="_blank" rel="noopener">World Bank Data</a></h3><span class="tag">数据</span><p>跨国发展指标，适合增长与制度研究</p><p style="margin:0"><code>https://data.worldbank.org/</code></p></div>
+<div class="repo-card"><h3><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Ken French Data Library</a></h3><span class="tag">数据</span><p>Fama-French 因子与组合收益，复现资产定价实证的标准数据</p><p style="margin:0"><code>https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html</code></p></div>
+<div class="repo-card"><h3><a href="https://numpy.org/doc/stable/" target="_blank" rel="noopener">NumPy</a></h3><span class="tag">工具</span><p>向量化与线性代数；本书手写实现的工业版</p><p style="margin:0"><code>https://numpy.org/doc/stable/</code></p></div>
+<div class="repo-card"><h3><a href="https://jupyter.org/" target="_blank" rel="noopener">Project Jupyter</a></h3><span class="tag">工具</span><p>把公式、代码与结果放在同一份可复现笔记里</p><p style="margin:0"><code>https://jupyter.org/</code></p></div>
+<div class="repo-card"><h3><a href="https://www.nber.org/" target="_blank" rel="noopener">NBER</a></h3><span class="tag">机构</span><p>工作论文与数据集，追踪前沿实证研究的入口</p><p style="margin:0"><code>https://www.nber.org/</code></p></div>
+</div>
+<h2 id="contribute">维护约定</h2>
+<p>全书由结构化数据生成，<strong>不要直接编辑章节 HTML</strong>，否则下次重建会被覆盖。改完数据后依次运行：<code>python3 tools/build_book.py --force</code> → <code>python3 tools/extract_code.py</code> → <code>python3 tools/check_book.py --run</code>。</p>
+<table><thead><tr><th style="width:28%">想改什么</th><th>编辑哪里</th></tr></thead><tbody><tr><td>细化某章正文或 Python 示例</td><td><code>tools/chapters_*.py</code> 中对应的 <code>C(...)</code></td></tr><tr><td>加参考资料链接</td><td><code>tools/book_resources.py</code> 的 <code>R</code>、<code>TOPIC_RULES</code>、<code>CHAPTER_RESOURCES</code>，以及章节的 <code>highlights</code></td></tr><tr><td>调整页面结构与总目录</td><td><code>tools/build_book.py</code> 的 <code>render()</code> / <code>render_index()</code></td></tr><tr><td>样式与交互</td><td><code>assets/style.css</code>、<code>assets/app.js</code></td></tr><tr><td>新增章节或分篇</td><td><code>tools/book_schema.py</code> 的 <code>PARTS</code> + 对应 <code>chapters_*.py</code>，再重建（<code>toc.js</code> 会自动同步）</td></tr><tr><td>验证全部示例</td><td><code>./tools/run_python.sh</code> 或 <code>python3 tools/check_book.py --run</code></td></tr></tbody></table>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>附录 A · 速查与资源总表 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/toc.js" defer></script>
+<script src="../assets/app.js" defer></script>
+</head>
+<body data-root="../" data-chapter="A" data-page="appendix">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb"><a href="../index.html">总目录</a> / 附录</nav>
+<header class="chapter-head">
+<span class="kicker">附录 · 速查与资源总表 · 第五阶段 · 综合与方法论</span>
+<h1><span class="ch-num">附录 A</span>速查与资源总表</h1>
+<p class="lede">符号、公式、脚本索引、常见坑、术语对照与全部扩展学习链接，供随时查阅。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s5">速查 · 附录</span>
+<span>建议 随查随用</span>
+<span>全书速查入口</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>全书查表入口：任何一章遇到符号、公式或参考链接，都回到这里。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">附录是项目的 README + API reference：A.3 是公式索引，A.5 是代码索引，A.7 是外部依赖清单。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能快速查到某个公式、符号或脚本的位置</li>
+<li>知道手写实现与工业库的对应关系</li>
+<li>能按主题找到该读的教材、课程、数据与工具</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>符号与约定</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>公式速查</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>章节脚本索引</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>手写实现与工业库对照</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>常见坑清单</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>数据字典模板</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>扩展学习链接总表</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>中英术语对照</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="sA-1"><h2><span class="sec-num">§A.1</span>符号与阅读约定</h2>
+<p>价格 <code>p</code>、数量 <code>q</code>、效用 <code>u</code>、成本 <code>C</code>、产出 <code>Y</code>；随机变量大写、实现值小写；<code>β</code> 为真实参数、<code>β̂</code> 为估计量；<code>ln</code> 为自然对数；<code>E[·]</code>、<code>Var(·)</code>、<code>Cov(·,·)</code> 为期望、方差与协方差。</p>
+<p>公式一律写成纯文本 Unicode（如 <code>α</code>、<code>σ²</code>、<code>Σ</code>），不依赖 MathJax，断网也能读；代码块右上角可一键复制，磁盘上的 <code>code/*.py</code> 与页面由 <code>tools/extract_code.py</code> 自动同步。</p>
+</section>
+<section id="sA-2"><h2><span class="sec-num">§A.2</span>学习路线与最短路径</h2>
+<ol class="roadmap">
+<li><strong>打底</strong>（00～02）：主线、约束最优化、概率与模拟。</li>
+<li><strong>微观</strong>（03～14）：选择 → 均衡 → 福利 → 失灵 → 一般均衡。</li>
+<li><strong>宏观</strong>（15～19）：核算 → 短期波动 → 政策 → 增长 → 开放。</li>
+<li><strong>计量</strong>（20～25）：识别 → OLS → 诊断 → IV → DID → 时间序列。</li>
+<li><strong>投资</strong>（26～30）：收益 → 组合 → 因子 → 债券 → 期权。</li>
+<li><strong>综合</strong>（31～32）：研究规范与端到端课题。</li>
+</ol>
+<p>时间有限的最短路径：<a href='../part0/01-math-tools/index.html'>第 01 章 · 约束最优化与比较静态：经济学的核心 API</a> → <a href='../part1/04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a> → <a href='../part2/09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a> → <a href='../part4/20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a> → <a href='../part4/21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a> → <a href='../part4/24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a> → <a href='../part5/27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> → <a href='../part5/30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a> → <a href='../part6/32-capstone/index.html'>第 32 章 · 综合课题：一项政策评估从数据到结论</a>。</p>
+</section>
+<section id="sA-3"><h2><span class="sec-num">§A.3</span>核心公式速查</h2>
+<table><thead><tr><th style="width:22%">主题</th><th>公式</th><th>章节</th></tr></thead><tbody>
+<tr><td>约束最优</td><td>∂f/∂x = λ·∂g/∂x；λ 为影子价格</td><td>01</td></tr>
+<tr><td>供需均衡</td><td>p*=(a−c)/(b+d)；ε=(dQ/dp)(p/Q)</td><td>04</td></tr>
+<tr><td>税负归宿</td><td>消费者份额 = d/(b+d)；DWL=½·t·ΔQ</td><td>04</td></tr>
+<tr><td>消费者需求</td><td>x*=αB/pₓ；e(p,u)=u·(pₓ/α)^α(pᵧ/(1−α))^(1−α)</td><td>05</td></tr>
+<tr><td>利润最大</td><td>p·MP_L=w ⇔ p=MC；MR=a−2bQ</td><td>06、10</td></tr>
+<tr><td>现值 / 欧拉</td><td>PV=ΣC_t/(1+r)^t；u'(c₁)=β(1+r)u'(c₂)</td><td>08、29</td></tr>
+<tr><td>风险</td><td>CE=u⁻¹(E[u(w)])；RP=E[w]−CE；勒纳=(p−MC)/p=−1/ε</td><td>08、10</td></tr>
+<tr><td>福利</td><td>TS=∫[p_d(q)−p_s(q)]dq；ΣMRS=MRT（公共品）</td><td>09、12</td></tr>
+<tr><td>古诺</td><td>q*=(a−c)/(3b)；Q_垄断 &lt; Q_古诺 &lt; Q_竞争</td><td>11</td></tr>
+<tr><td>一般均衡</td><td>p·z(p)≡0；只解 n−1 个市场</td><td>14</td></tr>
+<tr><td>核算</td><td>Y=C+I+G+NX；NX=S−I；平减指数=名义/实际</td><td>15、19</td></tr>
+<tr><td>乘数 / IS-LM</td><td>1/(1−c)；Y=[A+d(M/P)/h]/[(1−c)+dk/h]</td><td>16</td></tr>
+<tr><td>政策 / 增长</td><td>i≈r+πᵉ；i*=r*+π+0.5(π−π*)+0.5y；k*=(sA/δ)^(1/(1−α))</td><td>17、18</td></tr>
+<tr><td>利率平价</td><td>F=S(1+i)/(1+i*)；ε=e·P*/P</td><td>19</td></tr>
+<tr><td>识别</td><td>组间差 = ATT + 选择偏误；β̂_IV=Cov(z,y)/Cov(z,x)</td><td>20、23</td></tr>
+<tr><td>OLS</td><td>β̂=(XᵀX)⁻¹Xᵀy；Var(β̂)=σ²(XᵀX)⁻¹；HC0 三明治</td><td>21、22</td></tr>
+<tr><td>DID / FE</td><td>τ̂=Δ处理−Δ对照；组内去均值消掉 α_i</td><td>24</td></tr>
+<tr><td>时间序列</td><td>Var(x)=σ²/(1−φ²)；ρ_k=φ^k；DW≈2(1−ρ)</td><td>25</td></tr>
+<tr><td>收益 / 组合</td><td>g=E[r]−½σ²；σ_p²=w²σ₁²+(1−w)²σ₂²+2w(1−w)ρσ₁σ₂</td><td>26、27</td></tr>
+<tr><td>CAPM / 久期</td><td>E[r_i]−r_f=β_i(E[r_m]−r_f)；D_mod=−(1/P)∂P/∂y</td><td>28、29</td></tr>
+<tr><td>期权</td><td>p=(e^{rΔt}−d)/(u−d)；C=S·N(d₁)−K·e^{−rT}N(d₂)；C−P=S−K·e^{−rT}</td><td>30</td></tr>
+</tbody></table>
+</section>
+<section id="sA-4"><h2><span class="sec-num">§A.4</span>常见坑清单</h2>
+<div class="card warn"><ul style="margin-bottom:0">
+<li>把恒等式当行为方程（<a href='../part3/15-national-accounts/index.html'>第 15 章 · 国民账户与价格指数：如何度量总量</a>）、把相关当因果（<a href='../part4/20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a>）、把拟合优度当识别（<a href='../part4/21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a>）。</li>
+<li>用名义利率判断货币松紧（<a href='../part3/17-monetary-policy/index.html'>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</a>）、用 CPI 当平减指数（<a href='../part3/15-national-accounts/index.html'>第 15 章 · 国民账户与价格指数：如何度量总量</a>）、用算术平均当长期增长率（<a href='../part5/26-returns/index.html'>第 26 章 · 收益、复利与波动：把价格变成可建模的序列</a>）。</li>
+<li>把 R² 高的伪回归当发现（<a href='../part4/25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a>）、把 α 显著当能力（<a href='../part5/28-capm-factors/index.html'>第 28 章 · CAPM 与因子模型：什么风险该有补偿</a>）、把未校正的 p 值当证据（<a href='../part6/31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a>）。</li>
+<li>把风险中性概率当真实概率（<a href='../part5/30-options/index.html'>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</a>）、把模型内的反事实直接外推到政策变化后（<a href='../part4/20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a> 卢卡斯批判）。</li>
+</ul></div>
+</section>
+<section id="sA-5"><h2><span class="sec-num">§A.5</span>Python 示例索引与工业库对照</h2>
+<p>全书 33 个建模脚本，全部只用 Python 3 标准库、固定 <code>random.seed(7)</code>，参数集中在「参数区」，结尾打印可核对的数值。点击文件名可直接查看源码。</p><table><thead><tr><th style="width:34%">章节</th><th style="width:30%">脚本</th><th>演示内容</th></tr></thead><tbody><tr><td>第 00 章 · 绪论：一条主线，五个阶段</td><td><a href='../part0/00-preface/code/00-hello-econ.py'><code>code/00-hello-econ.py</code></a></td><td>最小可运行脚本：稀缺下的最优选择</td></tr>
+<tr><td>第 01 章 · 约束最优化与比较静态：经济学的核心 API</td><td><a href='../part0/01-math-tools/code/01-lagrange.py'><code>code/01-lagrange.py</code></a></td><td>二分法解一阶条件 + 影子价格</td></tr>
+<tr><td>第 02 章 · 概率、统计与模拟：从分布到证据</td><td><a href='../part0/02-probability-simulation/code/02-clt.py'><code>code/02-clt.py</code></a></td><td>大数定律、中心极限定理与 95% 覆盖率</td></tr>
+<tr><td>第 03 章 · 稀缺、机会成本与生产可能性边界</td><td><a href='../part1/03-scarcity-ppf/code/03-ppf.py'><code>code/03-ppf.py</code></a></td><td>线性与外凸 PPF：机会成本怎么变</td></tr>
+<tr><td>第 04 章 · 供需、弹性与税收归宿：第一个均衡</td><td><a href='../part1/04-supply-demand/code/04-supply-demand.py'><code>code/04-supply-demand.py</code></a></td><td>均衡、弹性、单位税与无谓损失</td></tr>
+<tr><td>第 05 章 · 消费者理论：偏好、需求与希克斯分解</td><td><a href='../part1/05-consumer-choice/code/05-consumer.py'><code>code/05-consumer.py</code></a></td><td>需求、支出函数、CV/EV 与斯勒茨基分解</td></tr>
+<tr><td>第 06 章 · 生产者理论、成本曲线与供给</td><td><a href='../part1/06-production-cost/code/06-cost.py'><code>code/06-cost.py</code></a></td><td>生产、成本曲线与利润最大化的数值验证</td></tr>
+<tr><td>第 07 章 · 比较优势、专业化与贸易收益</td><td><a href='../part1/07-trade/code/07-trade.py'><code>code/07-trade.py</code></a></td><td>两国两商品：机会成本、专业化与市场出清</td></tr>
+<tr><td>第 08 章 · 跨期选择与不确定下的决策</td><td><a href='../part1/08-risk-time/code/08-risk.py'><code>code/08-risk.py</code></a></td><td>现值、欧拉方程、确定性等价与蒙特卡洛</td></tr>
+<tr><td>第 09 章 · 福利经济学：剩余、效率与两条福利定理</td><td><a href='../part2/09-welfare/code/09-welfare.py'><code>code/09-welfare.py</code></a></td><td>剩余积分、价格上限与无谓损失</td></tr>
+<tr><td>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视</td><td><a href='../part2/10-monopoly/code/10-monopoly.py'><code>code/10-monopoly.py</code></a></td><td>垄断、勒纳指数与三级价格歧视</td></tr>
+<tr><td>第 11 章 · 博弈论与寡头：策略互动与不动点</td><td><a href='../part2/11-games-oligopoly/code/11-games.py'><code>code/11-games.py</code></a></td><td>纳什均衡、古诺迭代与重复博弈阈值</td></tr>
+<tr><td>第 12 章 · 外部性、公共品与科斯谈判</td><td><a href='../part2/12-externality/code/12-externality.py'><code>code/12-externality.py</code></a></td><td>庇古税、科斯交易成本与公共品供给</td></tr>
+<tr><td>第 13 章 · 信息不对称：逆向选择、信号与道德风险</td><td><a href='../part2/13-information/code/13-information.py'><code>code/13-information.py</code></a></td><td>柠檬市场收敛与信号分离区间</td></tr>
+<tr><td>第 14 章 · 一般均衡与加总：微观部分的收口</td><td><a href='../part2/14-general-equilibrium/code/14-ge.py'><code>code/14-ge.py</code></a></td><td>两市场一般均衡：超额需求、二分法与瓦尔拉斯法则</td></tr>
+<tr><td>第 15 章 · 国民账户与价格指数：如何度量总量</td><td><a href='../part3/15-national-accounts/code/15-accounts.py'><code>code/15-accounts.py</code></a></td><td>三种核算口径与四种价格指数</td></tr>
+<tr><td>第 16 章 · 短期波动：乘数、IS-LM 与 AD-AS</td><td><a href='../part3/16-is-lm/code/16-multiplier.py'><code>code/16-multiplier.py</code></a></td><td>乘数迭代、IS-LM 联立与挤出效应</td></tr>
+<tr><td>第 17 章 · 货币政策、通胀与利率：费雪方程与泰勒规则</td><td><a href='../part3/17-monetary-policy/code/17-monetary.py'><code>code/17-monetary.py</code></a></td><td>费雪方程、泰勒规则与冲击传导模拟</td></tr>
+<tr><td>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</td><td><a href='../part3/18-growth/code/18-solow.py'><code>code/18-solow.py</code></a></td><td>索洛稳态、收敛速度与黄金律</td></tr>
+<tr><td>第 19 章 · 开放经济：国际收支、汇率与三元悖论</td><td><a href='../part3/19-open-economy/code/19-open.py'><code>code/19-open.py</code></a></td><td>国际收支、PPP、利率平价与三元悖论</td></tr>
+<tr><td>第 20 章 · 识别：从数据生成过程到因果参数</td><td><a href='../part4/20-identification/code/20-identification.py'><code>code/20-identification.py</code></a></td><td>潜在结果、选择偏误与随机化</td></tr>
+<tr><td>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</td><td><a href='../part4/21-ols/code/21-ols.py'><code>code/21-ols.py</code></a></td><td>手写矩阵求逆、OLS 全量输出与蒙特卡洛</td></tr>
+<tr><td>第 22 章 · 诊断与修正：异方差、自相关与共线性</td><td><a href='../part4/22-diagnostics/code/22-diagnostics.py'><code>code/22-diagnostics.py</code></a></td><td>异方差稳健标准误、DW 与 VIF</td></tr>
+<tr><td>第 23 章 · 内生性与工具变量：2SLS 的手写实现</td><td><a href='../part4/23-iv/code/23-iv.py'><code>code/23-iv.py</code></a></td><td>内生性偏误、IV/2SLS 等价与弱工具变量</td></tr>
+<tr><td>第 24 章 · 面板与准实验：DID、固定效应与断点回归</td><td><a href='../part4/24-did-panel/code/24-did-panel.py'><code>code/24-did-panel.py</code></a></td><td>DID、固定效应与局部线性 RDD</td></tr>
+<tr><td>第 25 章 · 时间序列：平稳性、单位根与伪回归</td><td><a href='../part4/25-time-series/code/25-timeseries.py'><code>code/25-timeseries.py</code></a></td><td>AR(1)、随机游走、伪回归与协整残差</td></tr>
+<tr><td>第 26 章 · 收益、复利与波动：把价格变成可建模的序列</td><td><a href='../part5/26-returns/code/26-returns.py'><code>code/26-returns.py</code></a></td><td>复利、波动拖累与 GBM 路径模拟</td></tr>
+<tr><td>第 27 章 · 均值-方差组合：分散化与有效前沿</td><td><a href='../part5/27-portfolio/code/27-portfolio.py'><code>code/27-portfolio.py</code></a></td><td>最小方差、有效前沿与最大夏普组合</td></tr>
+<tr><td>第 28 章 · CAPM 与因子模型：什么风险该有补偿</td><td><a href='../part5/28-capm-factors/code/28-capm.py'><code>code/28-capm.py</code></a></td><td>估计 beta/alpha、横截面检验与因子增量 R²</td></tr>
+<tr><td>第 29 章 · 债券、久期与期限结构：利率风险的一阶与二阶</td><td><a href='../part5/29-bonds/code/29-bonds.py'><code>code/29-bonds.py</code></a></td><td>债券定价、久期/凸性与远期利率</td></tr>
+<tr><td>第 30 章 · 期权、二叉树与蒙特卡洛：无套利定价的闭环</td><td><a href='../part5/30-options/code/30-options.py'><code>code/30-options.py</code></a></td><td>二叉树、Black-Scholes、蒙特卡洛与平价校验</td></tr>
+<tr><td>第 31 章 · 复现、多重检验与研究规范</td><td><a href='../part6/31-reproducibility/code/31-reproducibility.py'><code>code/31-reproducibility.py</code></a></td><td>p-hacking、Bonferroni 与功效分析</td></tr>
+<tr><td>第 32 章 · 综合课题：一项政策评估从数据到结论</td><td><a href='../part6/32-capstone/code/32-capstone.py'><code>code/32-capstone.py</code></a></td><td>端到端政策评估：DID、预趋势、安慰剂与稳健推断</td></tr></tbody></table><h3>手写实现 → 工业库对照</h3><table><thead><tr><th style="width:34%">本书手写</th><th>工业实现</th><th>对应章节</th></tr></thead><tbody><tr><td>高斯-约当求逆 / XᵀX 累加</td><td><code>numpy.linalg.solve</code>、<code>numpy.dot</code></td><td>21、28</td></tr><tr><td>OLS / 标准误 / t 值</td><td><code>statsmodels.OLS(...).fit()</code></td><td>21、28</td></tr><tr><td>三明治稳健协方差</td><td><code>fit(cov_type="HC0")</code> / <code>cluster</code></td><td>22、32</td></tr><tr><td>IV / 2SLS 两阶段</td><td><code>linearmodels.IV2SLS</code></td><td>23</td></tr><tr><td>面板组内去均值 / DID</td><td><code>linearmodels.PanelOLS</code></td><td>24、32</td></tr><tr><td>ADF / 协整</td><td><code>statsmodels.tsa.stattools</code></td><td>25</td></tr><tr><td>组合前沿 / 协方差矩阵</td><td><code>numpy</code> + <code>scipy.optimize</code></td><td>27</td></tr><tr><td>二项树 / 蒙特卡洛</td><td><code>numpy</code> 向量化、<code>QuantLib</code></td><td>30</td></tr></tbody></table>
+</section>
+<section id="sA-6"><h2><span class="sec-num">§A.6</span>数据字典与复现清单模板</h2>
+<table><thead><tr><th style="width:24%">字段</th><th>填写内容</th></tr></thead><tbody>
+<tr><td>数据来源</td><td>URL、下载日期、版本号、许可证</td></tr>
+<tr><td>观测单位</td><td>个体/企业/地区 × 时间频率</td></tr>
+<tr><td>变量定义</td><td>名称、单位、是否季节调整、名义/实际、基期</td></tr>
+<tr><td>清洗规则</td><td>缺失、异常值、缩尾、排除条件（<strong>事前固定</strong>）</td></tr>
+<tr><td>随机性</td><td><code>random.seed(7)</code>、重复次数、并行是否影响顺序</td></tr>
+<tr><td>环境</td><td>Python 版本、依赖清单、一键运行命令</td></tr>
+<tr><td>输出</td><td>可手算核对的数值、主表与全部稳健性表</td></tr>
+</tbody></table>
+<p>把这张表随项目一起提交，比事后回忆「当时是不是删过几个异常值」可靠得多。</p>
+</section>
+<section id="sA-7"><h2><span class="sec-num">§A.7</span>扩展学习链接总表</h2>
+<p>本书全部外部链接的唯一来源，按用途分组；各章的「知识点地图」「本章参考资料」「扩展学习」都指向这里。</p>
+<h3>教材（5）</h3>
+<table><thead><tr><th style="width:28%">名称</th><th>说明</th></tr></thead><tbody>
+<tr><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></td><td>免费开源的本科经济学教材，以实证与数据贯穿全书，与本书的系统视角最接近</td></tr>
+<tr><td><a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></td><td>免费、可下载的本科原理教材，适合查公式与习题</td></tr>
+<tr><td><a href="https://www.econlib.org/" target="_blank" rel="noopener">Econlib</a></td><td>经济学文库与经典文本导读</td></tr>
+<tr><td><a href="https://matheusfacure.github.io/python-causality-handbook/landing-page.html" target="_blank" rel="noopener">Causal Inference for the Brave and True</a></td><td>用 Python 讲因果推断的开放教材，含可运行代码</td></tr>
+<tr><td><a href="https://mixtape.scunning.com/" target="_blank" rel="noopener">Causal Inference: The Mixtape</a></td><td>因果推断开放教材，DID / IV / RDD 讲得直观</td></tr>
+</tbody></table>
+<h3>课程（5）</h3>
+<table><thead><tr><th style="width:28%">名称</th><th>说明</th></tr></thead><tbody>
+<tr><td><a href="https://ocw.mit.edu/search/?q=economics" target="_blank" rel="noopener">MIT OpenCourseWare 经济学课程</a></td><td>检索 14.01 微观、14.02 宏观、14.32 计量等完整课程材料</td></tr>
+<tr><td><a href="https://marginalrevolutionuniversity.com/" target="_blank" rel="noopener">Marginal Revolution University</a></td><td>免费短视频课程，按主题讲清直觉</td></tr>
+<tr><td><a href="https://www.khanacademy.org/economics-finance-domain" target="_blank" rel="noopener">Khan Academy 经济与金融</a></td><td>交互式入门讲解与练习，适合补齐基础</td></tr>
+<tr><td><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Aswath Damodaran（NYU Stern）</a></td><td>估值、风险溢价与行业数据的公开教学资料</td></tr>
+<tr><td><a href="https://www.johnhcochrane.com/" target="_blank" rel="noopener">John H. Cochrane 资产定价资料</a></td><td>资产定价课程讲义与论文，研究生进阶</td></tr>
+</tbody></table>
+<h3>百科（119）</h3>
+<table><thead><tr><th style="width:28%">名称</th><th>说明</th></tr></thead><tbody>
+<tr><td><a href="https://en.wikipedia.org/wiki/Scarcity" target="_blank" rel="noopener">Scarcity</a></td><td>经济学问题的起点：资源有限而欲望无限</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Opportunity_cost" target="_blank" rel="noopener">Opportunity cost</a></td><td>被放弃的最优替代用途，决策的真正成本</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Marginalism" target="_blank" rel="noopener">Marginalism</a></td><td>边际量而非总量决定最优选择</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Production-possibility_frontier" target="_blank" rel="noopener">Production-possibility frontier</a></td><td>稀缺、取舍与机会成本的几何表示</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a></td><td>局部均衡最基本的模型</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a></td><td>均衡作为不动点的一般概念</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a></td><td>相对变化的响应程度，量纲无关</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Tax_incidence" target="_blank" rel="noopener">Tax incidence</a></td><td>税负归宿由弹性决定，与法定纳税人无关</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Deadweight_loss" target="_blank" rel="noopener">Deadweight loss</a></td><td>扭曲造成的净福利损失</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Economic_surplus" target="_blank" rel="noopener">Economic surplus</a></td><td>消费者剩余与生产者剩余</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Utility" target="_blank" rel="noopener">Utility</a></td><td>偏好表示与效用函数</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Indifference_curve" target="_blank" rel="noopener">Indifference curve</a></td><td>无差异曲线与边际替代率</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Budget_constraint" target="_blank" rel="noopener">Budget constraint</a></td><td>可行集与相对价格</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="noopener">Lagrange multiplier</a></td><td>约束最优的一阶条件与影子价格</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Production_function" target="_blank" rel="noopener">Production function</a></td><td>投入产出技术与规模报酬</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Marginal_cost" target="_blank" rel="noopener">Marginal cost</a></td><td>多生产一单位的增量成本</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Cobb%E2%80%93Douglas_production_function" target="_blank" rel="noopener">Cobb-Douglas production function</a></td><td>最常用的可解析生产/效用函数</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Comparative_advantage" target="_blank" rel="noopener">Comparative advantage</a></td><td>按机会成本分工使双方受益</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Present_value" target="_blank" rel="noopener">Present value</a></td><td>跨期选择的贴现基础</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Discounted_utility" target="_blank" rel="noopener">Discounted utility</a></td><td>跨期效用与贴现因子</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Expected_utility_hypothesis" target="_blank" rel="noopener">Expected utility hypothesis</a></td><td>不确定下的偏好表示</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Risk_aversion" target="_blank" rel="noopener">Risk aversion</a></td><td>凹效用、风险溢价与确定性等价</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Perfect_competition" target="_blank" rel="noopener">Perfect competition</a></td><td>价格接受者、零利润与效率</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Fundamental_theorems_of_welfare_economics" target="_blank" rel="noopener">Fundamental theorems of welfare economics</a></td><td>竞争均衡与帕累托效率的两条定理</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Pareto_efficiency" target="_blank" rel="noopener">Pareto efficiency</a></td><td>无人可在不损人时获益</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Monopoly" target="_blank" rel="noopener">Monopoly</a></td><td>边际收益等于边际成本的定价</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Price_discrimination" target="_blank" rel="noopener">Price discrimination</a></td><td>按支付意愿分段榨取剩余</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Game_theory" target="_blank" rel="noopener">Game theory</a></td><td>策略互动的一般框架</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Nash_equilibrium" target="_blank" rel="noopener">Nash equilibrium</a></td><td>互为最优反应的策略组合</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Prisoner%27s_dilemma" target="_blank" rel="noopener">Prisoner&#x27;s dilemma</a></td><td>个体理性导致集体低效</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Oligopoly" target="_blank" rel="noopener">Oligopoly</a></td><td>古诺/伯特兰/斯塔克尔伯格竞争</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Externality" target="_blank" rel="noopener">Externality</a></td><td>私人成本与社会成本分离</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Public_good" target="_blank" rel="noopener">Public good</a></td><td>非排他与非竞争性导致搭便车</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Coase_theorem" target="_blank" rel="noopener">Coase theorem</a></td><td>产权清晰且交易成本为零时的谈判效率</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Pigouvian_tax" target="_blank" rel="noopener">Pigouvian tax</a></td><td>把外部性内部化的单位税</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Adverse_selection" target="_blank" rel="noopener">Adverse selection</a></td><td>签约前隐藏信息导致的市场失灵</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Moral_hazard" target="_blank" rel="noopener">Moral hazard</a></td><td>签约后隐藏行动导致的风险扭曲</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Signalling_(economics)" target="_blank" rel="noopener">Signalling (economics)</a></td><td>通过可观测成本传递私有信息</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a></td><td>所有市场同时出清的联立系统</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Walras%27_law" target="_blank" rel="noopener">Walras&#x27; law</a></td><td>超额需求总和恒为零，价格只需解 n−1 个方程</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Fallacy_of_composition" target="_blank" rel="noopener">Fallacy of composition</a></td><td>个体成立不等于总量成立（微观到宏观的陷阱）</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Gross_domestic_product" target="_blank" rel="noopener">Gross domestic product</a></td><td>国民核算的核心总量</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/National_accounts" target="_blank" rel="noopener">National accounts</a></td><td>支出法/收入法/生产法三套恒等式</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Inflation" target="_blank" rel="noopener">Inflation</a></td><td>一般价格水平持续上涨</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Consumer_price_index" target="_blank" rel="noopener">Consumer price index</a></td><td>价格指数编制与替代偏差</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Unemployment" target="_blank" rel="noopener">Unemployment</a></td><td>失业率度量与结构性/摩擦性失业</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/IS%E2%80%93LM_model" target="_blank" rel="noopener">IS–LM model</a></td><td>产品市场与货币市场同时均衡</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/AD%E2%80%93AS_model" target="_blank" rel="noopener">AD–AS model</a></td><td>总需求总供给与短期波动</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Multiplier_(economics)" target="_blank" rel="noopener">Multiplier (economics)</a></td><td>边际消费倾向决定的支出乘数</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Monetary_policy" target="_blank" rel="noopener">Monetary policy</a></td><td>政策目标、工具与传导机制</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Central_bank" target="_blank" rel="noopener">Central bank</a></td><td>央行职能与独立性</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Taylor_rule" target="_blank" rel="noopener">Taylor rule</a></td><td>以通胀与产出缺口设定政策利率的简单规则</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Fisher_hypothesis" target="_blank" rel="noopener">Fisher hypothesis</a></td><td>名义利率 ≈ 实际利率 + 预期通胀</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model" target="_blank" rel="noopener">Solow–Swan model</a></td><td>资本积累、折旧与稳态增长</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Endogenous_growth_theory" target="_blank" rel="noopener">Endogenous growth theory</a></td><td>把技术进步内生化的增长模型</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Convergence_(economics)" target="_blank" rel="noopener">Convergence (economics)</a></td><td>条件收敛与跨国增长实证</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Exchange_rate" target="_blank" rel="noopener">Exchange rate</a></td><td>名义/实际汇率与标价方式</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Balance_of_payments" target="_blank" rel="noopener">Balance of payments</a></td><td>经常账户与资本账户恒等关系</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Purchasing_power_parity" target="_blank" rel="noopener">Purchasing power parity</a></td><td>长期汇率的一价定律版本</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Impossible_trinity" target="_blank" rel="noopener">Impossible trinity</a></td><td>汇率稳定、资本自由流动与独立货币政策不可兼得</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Data-generating_process" target="_blank" rel="noopener">Data-generating process</a></td><td>把「数据从哪来」写成可模拟的概率模型</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Identification_(economics)" target="_blank" rel="noopener">Identification (economics)</a></td><td>参数能否由观测分布唯一确定</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target="_blank" rel="noopener">Ordinary least squares</a></td><td>最小化残差平方和的线性估计</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem" target="_blank" rel="noopener">Gauss–Markov theorem</a></td><td>经典假设下 OLS 为 BLUE</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Central_limit_theorem" target="_blank" rel="noopener">Central limit theorem</a></td><td>估计量渐近正态的理论基础</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Law_of_large_numbers" target="_blank" rel="noopener">Law of large numbers</a></td><td>样本均值收敛到期望</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Expected_value" target="_blank" rel="noopener">Expected value</a></td><td>概率加权平均与线性性质</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Variance" target="_blank" rel="noopener">Variance</a></td><td>离散程度与方差分解</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/P-value" target="_blank" rel="noopener">p-value</a></td><td>原假设下观测到当前或更极端结果的概率</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Confidence_interval" target="_blank" rel="noopener">Confidence interval</a></td><td>重复抽样意义下的覆盖概率</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Coefficient_of_determination" target="_blank" rel="noopener">Coefficient of determination</a></td><td>拟合优度及其误导性</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Heteroscedasticity" target="_blank" rel="noopener">Heteroscedasticity</a></td><td>误差方差非常数使标准误失效</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Heteroscedasticity-consistent_standard_errors" target="_blank" rel="noopener">Heteroscedasticity-consistent standard errors</a></td><td>不假设同方差的稳健推断</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Autocorrelation" target="_blank" rel="noopener">Autocorrelation</a></td><td>序列相关与时间序列推断</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Multicollinearity" target="_blank" rel="noopener">Multicollinearity</a></td><td>解释变量高度相关导致估计不稳</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Endogeneity_(economics)" target="_blank" rel="noopener">Endogeneity (economics)</a></td><td>解释变量与误差相关造成偏误</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Omitted-variable_bias" target="_blank" rel="noopener">Omitted-variable bias</a></td><td>遗漏变量的偏误方向与大小</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Instrumental_variable" target="_blank" rel="noopener">Instrumental variable</a></td><td>用外生变动隔离出因果通道</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Two-stage_least_squares" target="_blank" rel="noopener">Two-stage least squares</a></td><td>IV 的两阶段实现</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Difference in differences</a></td><td>处理组与对照组的前后差分之差</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Panel_data" target="_blank" rel="noopener">Panel data</a></td><td>同一主体多期观测的数据结构</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Fixed_effects_model" target="_blank" rel="noopener">Fixed effects model</a></td><td>吸收不随时间变化的个体异质性</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Difference_in_differences" target="_blank" rel="noopener">Parallel trends assumption</a></td><td>DID 成立的关键识别假设</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Regression_discontinuity_design" target="_blank" rel="noopener">Regression discontinuity design</a></td><td>利用阈值附近局部随机性识别因果</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Stationary_process" target="_blank" rel="noopener">Stationary process</a></td><td>均值方差不随时间漂移</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Unit_root" target="_blank" rel="noopener">Unit root</a></td><td>非平稳与随机游走</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Autoregressive%E2%80%93moving-average_model" target="_blank" rel="noopener">ARMA model</a></td><td>自回归与移动平均的组合</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Cointegration" target="_blank" rel="noopener">Cointegration</a></td><td>非平稳序列的长期均衡关系</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Spurious_relationship" target="_blank" rel="noopener">Spurious relationship</a></td><td>共同趋势造成的伪相关</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Data_dredging" target="_blank" rel="noopener">Data dredging / p-hacking</a></td><td>多重尝试后挑显著结果的偏误</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem" target="_blank" rel="noopener">Multiple comparisons problem</a></td><td>多次检验抬高假阳性率</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Replication_crisis" target="_blank" rel="noopener">Replication crisis</a></td><td>可复现性与研究规范</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Causality_(economics)" target="_blank" rel="noopener">Causality (economics)</a></td><td>相关不等于因果的经济学表述</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Rubin_causal_model" target="_blank" rel="noopener">Rubin causal model</a></td><td>潜在结果框架与平均处理效应</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Compound_interest" target="_blank" rel="noopener">Compound interest</a></td><td>复利与长期增长的非线性</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Rate_of_return" target="_blank" rel="noopener">Rate of return</a></td><td>简单收益、对数收益与年化</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Log-normal_distribution" target="_blank" rel="noopener">Log-normal distribution</a></td><td>资产价格建模的常用分布</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory" target="_blank" rel="noopener">Modern portfolio theory</a></td><td>均值-方差框架与分散化</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Efficient_frontier" target="_blank" rel="noopener">Efficient frontier</a></td><td>给定风险下最高期望收益的组合集合</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Sharpe_ratio" target="_blank" rel="noopener">Sharpe ratio</a></td><td>单位总风险的超额收益</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Diversification_(finance)" target="_blank" rel="noopener">Diversification (finance)</a></td><td>相关性低于 1 时可降低组合波动</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Capital_asset_pricing_model" target="_blank" rel="noopener">Capital asset pricing model</a></td><td>beta 与期望收益的线性关系</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Beta_(finance)" target="_blank" rel="noopener">Beta (finance)</a></td><td>资产对市场因子的暴露</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Fama%E2%80%93French_three-factor_model" target="_blank" rel="noopener">Fama–French three-factor model</a></td><td>规模与价值因子对 CAPM 的扩展</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Efficient-market_hypothesis" target="_blank" rel="noopener">Efficient-market hypothesis</a></td><td>价格是否反映全部可用信息</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Value_at_risk" target="_blank" rel="noopener">Value at risk</a></td><td>分位数意义下的潜在损失</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Bond_duration" target="_blank" rel="noopener">Bond duration</a></td><td>价格对利率的一阶敏感度</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Yield_curve" target="_blank" rel="noopener">Yield curve</a></td><td>不同期限利率的结构</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Arbitrage" target="_blank" rel="noopener">Arbitrage</a></td><td>无套利是定价模型的共同约束</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Option_(finance)" target="_blank" rel="noopener">Option (finance)</a></td><td>或有权益与非线性 payoff</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Binomial_options_pricing_model" target="_blank" rel="noopener">Binomial options pricing model</a></td><td>离散时间风险中性定价与回溯</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model" target="_blank" rel="noopener">Black–Scholes model</a></td><td>连续时间无套利定价的闭式解</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Monte_Carlo_method" target="_blank" rel="noopener">Monte Carlo method</a></td><td>用模拟逼近期望与积分</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Geometric_Brownian_motion" target="_blank" rel="noopener">Geometric Brownian motion</a></td><td>股票价格的经典随机过程</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Risk-neutral_measure" target="_blank" rel="noopener">Risk-neutral measure</a></td><td>贴现期望等于无套利价格</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Behavioral_finance" target="_blank" rel="noopener">Behavioral finance</a></td><td>偏离完全理性的系统性行为偏差</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Prospect_theory" target="_blank" rel="noopener">Prospect theory</a></td><td>参照点依赖与损失厌恶</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Risk_premium" target="_blank" rel="noopener">Risk premium</a></td><td>承担风险所要求的额外期望收益</td></tr>
+<tr><td><a href="https://en.wikipedia.org/wiki/Factor_investing" target="_blank" rel="noopener">Factor investing</a></td><td>把实证因子转成可交易策略</td></tr>
+</tbody></table>
+<h3>数据（13）</h3>
+<table><thead><tr><th style="width:28%">名称</th><th>说明</th></tr></thead><tbody>
+<tr><td><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></td><td>美联储圣路易斯分行的宏观与金融时间序列，免费可下载</td></tr>
+<tr><td><a href="https://data.worldbank.org/" target="_blank" rel="noopener">World Bank Data</a></td><td>跨国发展指标，适合增长与制度研究</td></tr>
+<tr><td><a href="https://data.oecd.org/" target="_blank" rel="noopener">OECD Data</a></td><td>成员国可比宏观与劳动力数据</td></tr>
+<tr><td><a href="https://ourworldindata.org/" target="_blank" rel="noopener">Our World in Data</a></td><td>带图表与数据下载的长周期发展数据</td></tr>
+<tr><td><a href="https://www.bea.gov/" target="_blank" rel="noopener">U.S. Bureau of Economic Analysis</a></td><td>GDP 与国民账户的官方来源</td></tr>
+<tr><td><a href="https://www.bls.gov/" target="_blank" rel="noopener">U.S. Bureau of Labor Statistics</a></td><td>CPI、失业率与工资数据</td></tr>
+<tr><td><a href="https://www.federalreserve.gov/" target="_blank" rel="noopener">Federal Reserve</a></td><td>货币政策声明、利率与政策规则资料</td></tr>
+<tr><td><a href="https://www.ecb.europa.eu/" target="_blank" rel="noopener">European Central Bank</a></td><td>欧元区货币政策与统计数据</td></tr>
+<tr><td><a href="https://www.imf.org/en/Data" target="_blank" rel="noopener">IMF Data</a></td><td>国际收支、汇率与跨国宏观数据</td></tr>
+<tr><td><a href="https://www.bis.org/" target="_blank" rel="noopener">Bank for International Settlements</a></td><td>利率、汇率与金融稳定统计</td></tr>
+<tr><td><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Ken French Data Library</a></td><td>Fama-French 因子与组合收益，复现资产定价实证的标准数据</td></tr>
+<tr><td><a href="https://www.cbo.gov/" target="_blank" rel="noopener">Congressional Budget Office</a></td><td>政策评估与财政预测报告，学习政策分析的范本</td></tr>
+<tr><td><a href="https://wrds-www.wharton.upenn.edu/" target="_blank" rel="noopener">WRDS</a></td><td>CRSP / Compustat 等金融库（多需机构订阅）</td></tr>
+</tbody></table>
+<h3>工具（11）</h3>
+<table><thead><tr><th style="width:28%">名称</th><th>说明</th></tr></thead><tbody>
+<tr><td><a href="https://docs.python.org/3/" target="_blank" rel="noopener">Python 官方文档</a></td><td>语言与标准库权威参考</td></tr>
+<tr><td><a href="https://docs.python.org/3/library/math.html" target="_blank" rel="noopener">Python math 模块</a></td><td>指数、对数、误差函数等定价与效用计算所需函数</td></tr>
+<tr><td><a href="https://docs.python.org/3/library/random.html" target="_blank" rel="noopener">Python random 模块</a></td><td>随机数与固定种子，保证模拟可复现</td></tr>
+<tr><td><a href="https://docs.python.org/3/library/statistics.html" target="_blank" rel="noopener">Python statistics 模块</a></td><td>均值、方差、相关等基础统计量</td></tr>
+<tr><td><a href="https://numpy.org/doc/stable/" target="_blank" rel="noopener">NumPy</a></td><td>向量化与线性代数；本书手写实现的工业版</td></tr>
+<tr><td><a href="https://docs.scipy.org/doc/scipy/" target="_blank" rel="noopener">SciPy</a></td><td>最优化、积分与统计分布</td></tr>
+<tr><td><a href="https://pandas.pydata.org/docs/" target="_blank" rel="noopener">pandas</a></td><td>表格数据与时间序列处理</td></tr>
+<tr><td><a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></td><td>OLS / IV / 面板 / 时间序列的成熟实现</td></tr>
+<tr><td><a href="https://www.statsmodels.org/stable/generated/statsmodels.regression.linear_model.OLS.html" target="_blank" rel="noopener">statsmodels OLS 文档</a></td><td>对照本书手写 OLS 的输出与检验</td></tr>
+<tr><td><a href="https://matplotlib.org/stable/contents.html" target="_blank" rel="noopener">Matplotlib</a></td><td>把曲线与模拟结果画出来</td></tr>
+<tr><td><a href="https://jupyter.org/" target="_blank" rel="noopener">Project Jupyter</a></td><td>把公式、代码与结果放在同一份可复现笔记里</td></tr>
+</tbody></table>
+<h3>机构（6）</h3>
+<table><thead><tr><th style="width:28%">名称</th><th>说明</th></tr></thead><tbody>
+<tr><td><a href="https://www.aeaweb.org/" target="_blank" rel="noopener">American Economic Association</a></td><td>学会资源、JEL 分类与教学资料</td></tr>
+<tr><td><a href="https://www.nber.org/" target="_blank" rel="noopener">NBER</a></td><td>工作论文与数据集，追踪前沿实证研究的入口</td></tr>
+<tr><td><a href="https://ideas.repec.org/" target="_blank" rel="noopener">IDEAS / RePEc</a></td><td>免费的经济学论文与引文检索</td></tr>
+<tr><td><a href="https://arxiv.org/archive/econ" target="_blank" rel="noopener">arXiv econ</a></td><td>经济学预印本，含计算与计量方法新进展</td></tr>
+<tr><td><a href="https://www.ssrn.com/" target="_blank" rel="noopener">SSRN</a></td><td>金融与会计领域工作论文库</td></tr>
+<tr><td><a href="https://www.cfainstitute.org/" target="_blank" rel="noopener">CFA Institute</a></td><td>投资学职业知识体系与伦理准则</td></tr>
+</tbody></table>
+</section>
+<section id="sA-8"><h2><span class="sec-num">§A.8</span>中英术语对照</h2>
+<table><thead><tr><th style="width:34%">中文</th><th>英文</th><th style="width:34%">中文</th><th>英文</th></tr></thead><tbody>
+<tr><td>机会成本</td><td>opportunity cost</td><td>一般均衡</td><td>general equilibrium</td></tr>
+<tr><td>边际替代率</td><td>marginal rate of substitution</td><td>帕累托效率</td><td>Pareto efficiency</td></tr>
+<tr><td>无谓损失</td><td>deadweight loss</td><td>外部性</td><td>externality</td></tr>
+<tr><td>纳什均衡</td><td>Nash equilibrium</td><td>逆向选择</td><td>adverse selection</td></tr>
+<tr><td>国内生产总值</td><td>gross domestic product</td><td>菲利普斯曲线</td><td>Phillips curve</td></tr>
+<tr><td>条件收敛</td><td>conditional convergence</td><td>购买力平价</td><td>purchasing power parity</td></tr>
+<tr><td>潜在结果</td><td>potential outcomes</td><td>工具变量</td><td>instrumental variable</td></tr>
+<tr><td>双重差分</td><td>difference-in-differences</td><td>固定效应</td><td>fixed effects</td></tr>
+<tr><td>伪回归</td><td>spurious regression</td><td>协整</td><td>cointegration</td></tr>
+<tr><td>夏普比率</td><td>Sharpe ratio</td><td>有效前沿</td><td>efficient frontier</td></tr>
+<tr><td>修正久期</td><td>modified duration</td><td>风险中性测度</td><td>risk-neutral measure</td></tr>
+<tr><td>多重检验</td><td>multiple testing</td><td>预注册</td><td>pre-registration</td></tr>
+</tbody></table>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>全书实例与工具</h2><div class="card note"><p style="margin-bottom:0">附录不新增示例脚本；全部可运行实例见 <a href="#sA-5">A.5 示例索引</a>。生成、抽取、批量运行与自检命令见 <a href='../index.html#contribute'>维护约定</a>。</p></div></section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></h3>
+<span class="tag">教材 · 参考资料</span>
+<p>免费开源的本科经济学教材，以实证与数据贯穿全书，与本书的系统视角最接近</p>
+<span class="why"><strong>怎么用</strong>：系统视角的开放教材</span>
+<p style="margin:0"><code>https://www.core-econ.org/</code></p></div>
+<div class="repo-card">
+<h3><a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></h3>
+<span class="tag">工具 · 参考资料</span>
+<p>OLS / IV / 面板 / 时间序列的成熟实现</p>
+<span class="why"><strong>怎么用</strong>：工业计量实现</span>
+<p style="margin:0"><code>https://www.statsmodels.org/stable/index.html</code></p></div>
+<div class="repo-card">
+<h3><a href="https://ocw.mit.edu/search/?q=economics" target="_blank" rel="noopener">MIT OpenCourseWare 经济学课程</a></h3>
+<span class="tag">课程 · 参考资料</span>
+<p>检索 14.01 微观、14.02 宏观、14.32 计量等完整课程材料</p>
+<span class="why"><strong>怎么用</strong>：配套课程</span>
+<p style="margin:0"><code>https://ocw.mit.edu/search/?q=economics</code></p></div>
+<div class="repo-card">
+<h3><a href="https://jupyter.org/" target="_blank" rel="noopener">Project Jupyter</a></h3>
+<span class="tag">工具 · 参考资料</span>
+<p>把公式、代码与结果放在同一份可复现笔记里</p>
+<span class="why"><strong>怎么用</strong>：把公式、代码、结果放在同一份笔记里</span>
+<p style="margin:0"><code>https://jupyter.org/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>直接编辑章节 HTML：下次重建会被覆盖，应改 <code>tools/chapters_*.py</code>。</li>
+<li>改了代码却忘了同步：先重建、再抽取、最后自检。</li>
+<li>把附录里的公式当定义使用：正文里有前提与推导，查表时留意适用条件。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>用 A.5 的脚本索引挑一个模型，改成 <code>numpy</code> 实现并对照数值。</li>
+<li>用 A.7 的资源清单为一门 16 周课程排一份阅读计划。</li>
+<li>把 A.6 的模板复制到 <a href='../part6/32-capstone/index.html'>第 32 章 · 综合课题：一项政策评估从数据到结论</a> 的课题里，逐项填满。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>CORE Econ 开放教材</strong>（教材）：免费开源的本科经济学教材，以实证与数据贯穿全书，与本书的系统视角最接近<br><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></li>
+<li><strong>OpenStax Principles of Economics</strong>（教材）：免费、可下载的本科原理教材，适合查公式与习题<br><a href="https://openstax.org/details/books/principles-economics" target="_blank" rel="noopener">OpenStax Principles of Economics</a></li>
+<li><strong>MIT OpenCourseWare 经济学课程</strong>（课程）：检索 14.01 微观、14.02 宏观、14.32 计量等完整课程材料<br><a href="https://ocw.mit.edu/search/?q=economics" target="_blank" rel="noopener">MIT OpenCourseWare 经济学课程</a></li>
+<li><strong>statsmodels</strong>（工具）：OLS / IV / 面板 / 时间序列的成熟实现<br><a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></li>
+<li><strong>FRED 经济数据</strong>（数据）：美联储圣路易斯分行的宏观与金融时间序列，免费可下载<br><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></li>
+<li><strong>Ken French Data Library</strong>（数据）：Fama-French 因子与组合收益，复现资产定价实证的标准数据<br><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Ken French Data Library</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=economics%20formulas%20cheat%20sheet%20terminology" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=economics%20formulas%20cheat%20sheet%20terminology" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=economics%20formulas%20cheat%20sheet%20terminology" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../index.html#resources">全书参考资源总表</a> · <a href="../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../index.html'>总目录</a>　全书总目录</li>
+<li><a href='../part0/00-preface/index.html'>第 00 章 · 绪论：一条主线，五个阶段</a>　主线与学习闭环</li>
+<li><a href='../part6/32-capstone/index.html'>第 32 章 · 综合课题：一项政策评估从数据到结论</a>　端到端综合课题</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 01 章 · 约束最优化与比较静态：经济学的核心 API | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="01">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">卷首 · 共同语言 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 01 章</span>约束最优化与比较静态：经济学的核心 API</h1>
+<p class="lede">把「最优选择」抽象成带约束的极值问题，程序员只要会写目标函数、约束与一阶条件，就掌握了后面十章反复调用的核心接口。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">共同语言</span>
+<span>建议 2 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>承接绪论里「选择即优化」；本篇 00 章只做了网格暴力搜索，这里补上可推导的一阶条件，<a href='../../part1/05-consumer-choice/index.html'>第 05 章 · 消费者理论：偏好、需求与希克斯分解</a>、<a href='../../part1/06-production-cost/index.html'>第 06 章 · 生产者理论、成本曲线与供给</a>、<a href='../../part5/27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> 都会直接复用。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">目标函数是 loss，约束是可行域，拉格朗日乘子是约束放松一个单位带来的最优值增益——就是带约束优化里对偶变量的敏感度；二分法求一阶条件等价于求梯度为零的根。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>会写出约束最优化的一阶条件，并解释拉格朗日乘子的经济含义（影子价格）</li>
+<li>能用二分法数值求解一阶条件，并与解析解互相验证</li>
+<li>理解比较静态：参数变化如何通过一阶条件传导到最优解</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>约束最优化与拉格朗日</td><td><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="noopener">Lagrange multiplier</a> · <a href="https://en.wikipedia.org/wiki/Marginalism" target="_blank" rel="noopener">Marginalism</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>一阶条件与二阶条件</td><td><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="noopener">Lagrange multiplier</a> · <a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>影子价格</td><td><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="noopener">Lagrange multiplier</a> · <a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>比较静态</td><td><a href="https://en.wikipedia.org/wiki/Marginalism" target="_blank" rel="noopener">Marginalism</a> · <a href="https://en.wikipedia.org/wiki/Elasticity_(economics)" target="_blank" rel="noopener">Elasticity (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>数值求解与二分法</td><td><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="noopener">Lagrange multiplier</a> · <a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>包络定理</td><td><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="noopener">Lagrange multiplier</a> · <a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s1-1"><h2><span class="sec-num">§1.1</span>从网格搜索到一阶条件</h2>
+<p>00 章用网格暴力枚举可行组合。枚举法直观但不可扩展：变量一多就是维度灾难。经济学标准做法是把问题写成</p><p class="eq">max_x  f(x; θ)    s.t.  g(x; θ) ≤ 0 ;  L(x,λ;θ) = f(x;θ) − λ·g(x;θ)</p><p>在 interior solution（内点解）与凹性成立时，最优解满足<strong>一阶条件</strong>（FOC）：</p><p class="eq">∂f/∂x = λ·∂g/∂x ,   g(x;θ) = 0 ,   λ ≥ 0</p><p>λ 是<strong>影子价格</strong>：把约束放松一个单位（预算多 1 元、排放配额多 1 吨）最优值能增加多少。这个解释在 <a href='../../part2/12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a> 的庇古税、<a href='../../part2/14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a> 的一般均衡、<a href='../../part5/27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a> 的组合前沿里都原样复用。</p>
+<p>二阶条件（SOC）负责排除「一阶导为零但其实是极小值或鞍点」的情况：单变量看二阶导为负，多变量看海塞矩阵负定。经济模型里通常靠<strong>凹目标 + 凸可行集</strong>一次保证全局最优，这也是 Cobb-Douglas、对数效用被反复使用的原因。</p>
+</section>
+<section id="s1-2"><h2><span class="sec-num">§1.2</span>比较静态：参数怎么影响解</h2>
+<p>比较静态问的是「θ 变了，最优解 x*(θ) 往哪走」，<strong>不是</strong>「经济如何随时间走过去」（那是动态，见 <a href='../../part3/18-growth/index.html'>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</a>）。做法是把恒成立的 FOC 对 θ 求导：</p><p class="eq">F(x*(θ), θ) ≡ 0  ⇒  dx*/dθ = − (∂F/∂θ) / (∂F/∂x)</p><p>符号判断往往比数值更重要：需求定律说价格上升需求量下降，本质是 FOC 里分母为负、分子为正。<strong>包络定理</strong>给出更省事的结果：求最优值对参数的导数时，只需对拉格朗日函数直接求偏导，x* 的间接变动在最优处一阶抵消：</p><p class="eq">dV(θ)/dθ = ∂L(x*, λ*; θ)/∂θ</p><p>这条定理在 <a href='../../part1/05-consumer-choice/index.html'>第 05 章 · 消费者理论：偏好、需求与希克斯分解</a> 推导支出函数、<a href='../../part5/29-bonds/index.html'>第 29 章 · 债券、久期与期限结构：利率风险的一阶与二阶</a> 计算久期（价格对利率的敏感度）时都省掉大量求导。</p>
+</section>
+<section id="s1-3"><h2><span class="sec-num">§1.3</span>数值求解：手写一个二分法</h2>
+<p>很多模型没有闭式解，但 FOC 是单调函数时可以用二分法。下面的脚本求解 Cobb-Douglas 效用下的最优需求，并与解析解 <code>x* = αB/pₓ</code> 对照；同时打印 λ 作为「预算的边际效用」。</p>
+<div class="card tip"><p style="margin-bottom:0"><strong>数值习惯</strong>：先把有解析解的模型算一遍，确认数值方法可信，再把它用到没有解析解的模型上。这是本书所有模拟脚本的固定套路。</p></div>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>二分法解一阶条件 + 影子价格</h3>
+<pre class="code" data-file="code/01-lagrange.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""01-lagrange.py | FOC 数值求解、比较静态与影子价格"""
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+B, PX, PY, ALPHA = 100.0, 2.0, 5.0, 0.5
+TOL_ITER = 80
+# ---- 模型：MRS = (a/(1-a))*(y/x)，最优时 MRS = p_x/p_y ----
+def y_of(x):
+    return (B - PX * x) / PY
+
+def mrs(x):
+    return (ALPHA / (1 - ALPHA)) * (y_of(x) / x)
+
+lo, hi = 1e-9, B / PX - 1e-9
+for _ in range(TOL_ITER):
+    mid = (lo + hi) / 2
+    if mrs(mid) &gt; PX / PY:      # x 偏小，MRS 偏高，需增大 x
+        lo = mid
+    else:
+        hi = mid
+x = (lo + hi) / 2
+y = y_of(x)
+u = (x ** ALPHA) * (y ** (1 - ALPHA))
+lam = ALPHA * (x ** (ALPHA - 1)) * (y ** (1 - ALPHA)) / PX
+# ---- 比较静态：预算增加 1 元时效用增加多少 ----
+dB = 1.0
+B2 = B + dB
+x2 = ALPHA * B2 / PX
+y2 = (1 - ALPHA) * B2 / PY
+u2 = (x2 ** ALPHA) * (y2 ** (1 - ALPHA))
+# ---- 数值验证：打印可手算核对的量 ----
+print("FOC 数值解 x=%.6f y=%.6f MRS=%.6f p比=%.6f" % (x, y, mrs(x), PX / PY))
+print("解析解     x=%.6f y=%.6f" % (ALPHA * B / PX, (1 - ALPHA) * B / PY))
+print("最大效用 u=%.6f  影子价格 lambda=%.6f" % (u, lam))
+print("预算+1 的效用增益=%.6f (包络定理预测=%.6f)" % (u2 - u, lam * dB))</code></pre>
+<p class="code-hint"><strong>操作：</strong>运行后把 <code>PX</code> 改成 4，观察 x、MRS 与 λ 的变化方向；这就是比较静态。　<strong>预期与判读：</strong>x=25、y=10、MRS=0.4=pₓ/pᵧ；u≈15.8114；λ≈0.158114，预算增加 1 元的效用增益≈0.158114，与包络定理一致。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>PX 上升 → x 下降、λ 上升；ALPHA 上升 → x 份额上升；TOL_ITER 控制二分精度。　文件位置：<code>part0/01-math-tools/code/01-lagrange.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="noopener">Lagrange multiplier</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>约束最优的一阶条件与影子价格</p>
+<span class="why"><strong>怎么用</strong>：查约束最优的一阶条件与乘子解释</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Lagrange_multiplier</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Marginalism" target="_blank" rel="noopener">Marginalism</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>边际量而非总量决定最优选择</p>
+<span class="why"><strong>怎么用</strong>：理解边际量为什么决定最优而非总量</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Marginalism</code></p></div>
+<div class="repo-card">
+<h3><a href="https://docs.python.org/3/library/math.html" target="_blank" rel="noopener">Python math 模块</a></h3>
+<span class="tag">工具 · 参考资料</span>
+<p>指数、对数、误差函数等定价与效用计算所需函数</p>
+<span class="why"><strong>怎么用</strong>：标准库数学函数，脚本唯一依赖之一</span>
+<p style="margin:0"><code>https://docs.python.org/3/library/math.html</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把 λ 当成「价格」本身：它是目标函数对约束松紧的边际价值，单位随目标函数而定。</li>
+<li>忽略二阶条件：FOC 只是驻点条件，非凹目标时可能停在极小值。</li>
+<li>把比较静态当成动态调整：前者比较两个均衡，后者研究均衡之间的路径。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>把预算约束改成不等式并写出互补松弛条件，说明为什么本例会取等号。</li>
+<li>在脚本里加入 <code>PX</code> 从 1 到 10 的循环，打印 x* 曲线并判断是否符合需求定律。</li>
+<li>用包络定理手算 <a href='../../part1/05-consumer-choice/index.html'>第 05 章 · 消费者理论：偏好、需求与希克斯分解</a> 中支出函数对价格的导数（即希克斯需求）。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Lagrange multiplier</strong>（百科）：约束最优的一阶条件与影子价格<br><a href="https://en.wikipedia.org/wiki/Lagrange_multiplier" target="_blank" rel="noopener">Lagrange multiplier</a></li>
+<li><strong>Economic equilibrium</strong>（百科）：均衡作为不动点的一般概念<br><a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a></li>
+<li><strong>Python 官方文档</strong>（工具）：语言与标准库权威参考<br><a href="https://docs.python.org/3/" target="_blank" rel="noopener">Python 官方文档</a></li>
+<li><strong>Python math 模块</strong>（工具）：指数、对数、误差函数等定价与效用计算所需函数<br><a href="https://docs.python.org/3/library/math.html" target="_blank" rel="noopener">Python math 模块</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=constrained%20optimization%20comparative%20statics%20economics" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=constrained%20optimization%20comparative%20statics%20economics" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=constrained%20optimization%20comparative%20statics%20economics" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part1/05-consumer-choice/index.html'>第 05 章 · 消费者理论：偏好、需求与希克斯分解</a>　把 FOC 用到消费者需求</li>
+<li><a href='../../part5/27-portfolio/index.html'>第 27 章 · 均值-方差组合：分散化与有效前沿</a>　把二次型优化用到组合选择</li>
+<li><a href='../../index.html#howto'>使用说明</a>　全书代码契约</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

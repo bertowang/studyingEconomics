@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 31 章 · 复现、多重检验与研究规范 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="31">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第六篇 · 方法论与综合课题 · 第五阶段 · 综合与方法论</span>
+<h1><span class="ch-num">第 31 章</span>复现、多重检验与研究规范</h1>
+<p class="lede">把「显著性」放回抽样分布的语境：反复试设定、反复看数据、只汇报成功的一次，都会让假阳性率远远超过 5%。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s5">方法论 · 综合</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>把 <a href='../../part0/02-probability-simulation/index.html'>第 02 章 · 概率、统计与模拟：从分布到证据</a> 的覆盖率、<a href='../../part4/22-diagnostics/index.html'>第 22 章 · 诊断与修正：异方差、自相关与共线性</a> 的设定搜索、<a href='../../part5/28-capm-factors/index.html'>第 28 章 · CAPM 与因子模型：什么风险该有补偿</a> 的因子动物园收口成一套研究规范；<a href='../32-capstone/index.html'>第 32 章 · 综合课题：一项政策评估从数据到结论</a> 用它来约束一个完整课题。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">每次额外尝试都是一次新的单元测试，但如果你只在失败后改断言、并且只汇报最后一次通过的结果，测试套件就失去了意义；预注册相当于把断言在跑之前先写死。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>会用蒙特卡洛量化 p-hacking 与多重检验造成的假阳性膨胀</li>
+<li>理解 Bonferroni / FDR 校正与预注册的作用</li>
+<li>能列出一份可复现研究的最小清单</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>p 值的正确含义</td><td><a href="https://en.wikipedia.org/wiki/P-value" target="_blank" rel="noopener">p-value</a> · <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem" target="_blank" rel="noopener">Multiple comparisons problem</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>多重检验与假阳性</td><td><a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem" target="_blank" rel="noopener">Multiple comparisons problem</a> · <a href="https://en.wikipedia.org/wiki/Data_dredging" target="_blank" rel="noopener">Data dredging / p-hacking</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>p-hacking 与花园分叉路径</td><td><a href="https://en.wikipedia.org/wiki/Data_dredging" target="_blank" rel="noopener">Data dredging / p-hacking</a> · <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem" target="_blank" rel="noopener">Multiple comparisons problem</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>Bonferroni 校正</td><td><a href="https://en.wikipedia.org/wiki/Data_dredging" target="_blank" rel="noopener">Data dredging / p-hacking</a> · <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem" target="_blank" rel="noopener">Multiple comparisons problem</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>FDR 与 BH 过程</td><td><a href="https://en.wikipedia.org/wiki/Data_dredging" target="_blank" rel="noopener">Data dredging / p-hacking</a> · <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem" target="_blank" rel="noopener">Multiple comparisons problem</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>预注册与分析计划</td><td><a href="https://en.wikipedia.org/wiki/Data_dredging" target="_blank" rel="noopener">Data dredging / p-hacking</a> · <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem" target="_blank" rel="noopener">Multiple comparisons problem</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>功效分析</td><td><a href="https://en.wikipedia.org/wiki/Data_dredging" target="_blank" rel="noopener">Data dredging / p-hacking</a> · <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem" target="_blank" rel="noopener">Multiple comparisons problem</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>可复现清单</td><td><a href="https://en.wikipedia.org/wiki/Replication_crisis" target="_blank" rel="noopener">Replication crisis</a> · <a href="https://en.wikipedia.org/wiki/Data_dredging" target="_blank" rel="noopener">Data dredging / p-hacking</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s31-1"><h2><span class="sec-num">§31.1</span>p 值不是结论为真的概率</h2>
+<p><code>p = P(观测到当前或更极端结果 | H₀ 为真)</code>。它不回答「H₀ 为真的概率」，也不回答「效应有多大」。在 5% 阈值下重复 20 次独立检验，至少一次假阳性的概率是</p><p class="eq">P(至少一次假阳性) = 1 − (1−0.05)^20 ≈ 0.6415</p><p>「花园分叉路径」更隐蔽：不同控制变量、样本窗口、变量变换、剔除规则都算一次尝试，即使研究者没有恶意，最终汇报的那条路径也是被结果选出来的。</p>
+</section>
+<section id="s31-2"><h2><span class="sec-num">§31.2</span>校正、功效与预注册</h2>
+<p><strong>Bonferroni</strong> 把阈值改为 <code>α/m</code>，控制家族错误率（FWER），但保守、降低功效。<strong>Benjamini–Hochberg</strong> 控制错误发现率（FDR），在高维因子筛选中更常用。另一条路是<strong>预注册</strong>：先固定假设、主设定、样本与排除规则，再跑数据，把探索性分析与验证性分析明确分开。</p>
+<p>还要做<strong>功效分析</strong>：真实效应 δ、样本量 n、噪声 σ 决定 <code>z ≈ δ√n/σ</code>；低功效研究即使显著，效应量也常被高估（赢家诅咒）。这与 <a href='../../part4/21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a> 的标准误、<a href='../../part4/23-iv/index.html'>第 23 章 · 内生性与工具变量：2SLS 的手写实现</a> 的弱工具在数学上是同一件事：<strong>信息量不足时，条件在「显著」上的估计必然偏大</strong>。</p>
+</section>
+<section id="s31-3"><h2><span class="sec-num">§31.3</span>最小可复现清单</h2>
+<table><thead><tr><th style="width:26%">项目</th><th>具体要求</th><th>本书对应</th></tr></thead><tbody>
+<tr><td>数据与 DGP</td><td>数据来源、单位、清洗规则；合成数据固定种子</td><td>全书 <code>random.seed(7)</code></td></tr>
+<tr><td>代码</td><td>版本、依赖、一键运行脚本、输出可核对数值</td><td><code>tools/run_python.sh</code></td></tr>
+<tr><td>设定</td><td>主设定与全部稳健性设定都报告</td><td><a href='../32-capstone/index.html'>第 32 章 · 综合课题：一项政策评估从数据到结论</a> 研究日志</td></tr>
+<tr><td>推断</td><td>标准误类型、多重检验处理、置信区间</td><td><a href='../../part4/22-diagnostics/index.html'>第 22 章 · 诊断与修正：异方差、自相关与共线性</a>、本章</td></tr>
+<tr><td>边界</td><td>外部效度、识别假设、卢卡斯批判</td><td><a href='../../part4/20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a></td></tr>
+</tbody></table>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>p-hacking、Bonferroni 与功效分析</h3>
+<pre class="code" data-file="code/31-reproducibility.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 31-reproducibility.py | 多重检验的蒙特卡洛（只用标准库）
+import math, random, statistics
+from statistics import NormalDist
+random.seed(7)
+# ---- 参数区 ----
+N, M_TESTS, REPS = 100, 20, 1000
+ALPHA = 0.05
+TRUE_EFFECT = 0.3
+
+def norm_sf(x):
+    return 0.5 * (1 - math.erf(abs(x) / math.sqrt(2)))
+
+def p_from_t(t):
+    return 2 * norm_sf(t)
+
+def mean(v):
+    return statistics.fmean(v)
+
+def t_stat(xs, ys):
+    mx, my = mean(xs), mean(ys)
+    sxx = sum((x - mx) ** 2 for x in xs)
+    b = sum((xs[i] - mx) * (ys[i] - my) for i in range(len(xs))) / sxx
+    e = [ys[i] - my - b * (xs[i] - mx) for i in range(len(xs))]
+    s2 = sum(v * v for v in e) / (len(xs) - 2)
+    return b / math.sqrt(s2 / sxx)
+
+# ---- t 分布临界值（Cornish-Fisher 一阶修正，df=N-2）----
+df = N - 2
+def t_crit(alpha):
+    z = NormalDist().inv_cdf(1 - alpha / 2)
+    return z + (z ** 3 + z) / (4 * df)
+crit05 = t_crit(ALPHA)
+crit_bonf = t_crit(ALPHA / M_TESTS)
+# ---- 原假设为真：20 个候选解释变量都与 y 无关 ----
+rng = random.Random(7)
+raw, corrected, minp_sum = 0, 0, 0.0
+for _ in range(REPS):
+    y = [rng.gauss(0, 1) for _ in range(N)]
+    ts = []
+    for _ in range(M_TESTS):
+        x = [rng.gauss(0, 1) for _ in range(N)]
+        ts.append(abs(t_stat(x, y)))
+    maxt = max(ts)
+    minp_sum += p_from_t(maxt)
+    if maxt &gt; crit05:
+        raw += 1
+    if maxt &gt; crit_bonf:
+        corrected += 1
+# ---- 真实效应下的功效 ----
+power_rng = random.Random(19)
+hits = 0
+for _ in range(REPS):
+    x = [power_rng.gauss(0, 1) for _ in range(N)]
+    y = [TRUE_EFFECT * x[i] + power_rng.gauss(0, 1) for i in range(N)]
+    if abs(t_stat(x, y)) &gt; crit05:
+        hits += 1
+theory = 1 - (1 - ALPHA) ** M_TESTS
+# ---- 数值验证：打印可手算核对的量 ----
+print("临界值: t(0.975,df=%d)≈%.4f  Bonferroni 对应≈%.4f" % (df, crit05, crit_bonf))
+print("单次检验 alpha=%.2f, m=%d, 独立检验至少一次假阳性理论=%.4f" %
+      (ALPHA, M_TESTS, theory))
+print("蒙特卡洛 %d 次: 未校正假阳性率=%.4f (最小 p 平均=%.4f)" %
+      (REPS, raw / REPS, minp_sum / REPS))
+print("Bonferroni 阈值=%.6f 校正后假阳性率=%.4f" %
+      (ALPHA / M_TESTS, corrected / REPS))
+print("真实效应 delta=%.2f, n=%d 时检出率(功效)=%.4f" %
+      (TRUE_EFFECT, N, hits / REPS))
+print("理论 z≈delta*sqrt(n)/sigma=%.4f" % (TRUE_EFFECT * math.sqrt(N)))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>M_TESTS</code> 改成 1、5、20，观察假阳性率如何随尝试次数上升；把 <code>TRUE_EFFECT</code> 改成 0.1 看功效下降。　<strong>预期与判读：</strong>df=98 时 t 临界值≈1.984；m=20 的理论假阳性率≈0.6415，未校正模拟≈0.68（多次检验共享同一 y，略有相关）；Bonferroni 阈值 0.0025 后≈0.034（略保守）；δ=0.3、n=100 时功效≈0.83（理论 z≈3）。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>M_TESTS 越大假阳性越严重；TRUE_EFFECT 或 N 越小功效越低；ALPHA 决定整条曲线。　文件位置：<code>part6/31-reproducibility/code/31-reproducibility.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Data_dredging" target="_blank" rel="noopener">Data dredging / p-hacking</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>多重尝试后挑显著结果的偏误</p>
+<span class="why"><strong>怎么用</strong>：p-hacking 与数据疏浚</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Data_dredging</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem" target="_blank" rel="noopener">Multiple comparisons problem</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>多次检验抬高假阳性率</p>
+<span class="why"><strong>怎么用</strong>：多重比较问题</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Multiple_comparisons_problem</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Replication_crisis" target="_blank" rel="noopener">Replication crisis</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>可复现性与研究规范</p>
+<span class="why"><strong>怎么用</strong>：复现危机与研究规范</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Replication_crisis</code></p></div>
+<div class="repo-card">
+<h3><a href="https://ideas.repec.org/" target="_blank" rel="noopener">IDEAS / RePEc</a></h3>
+<span class="tag">机构 · 参考资料</span>
+<p>免费的经济学论文与引文检索</p>
+<span class="why"><strong>怎么用</strong>：检索已发表研究与复现材料</span>
+<p style="margin:0"><code>https://ideas.repec.org/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把 p&lt;0.05 当成「效应为真」的概率：它只描述原假设下的尾部概率。</li>
+<li>只汇报最终设定：探索过程中的每一次尝试都应披露或预注册。</li>
+<li>忽略功效：低功效研究的显著效应量往往被严重高估。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>实现 Benjamini–Hochberg 过程并与 Bonferroni 的拒绝数比较。</li>
+<li>模拟「边收数据边看 p 值」的 optional stopping，量化假阳性膨胀。</li>
+<li>为 <a href='../../part5/28-capm-factors/index.html'>第 28 章 · CAPM 与因子模型：什么风险该有补偿</a> 的因子筛选写一份预注册分析计划。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Data dredging / p-hacking</strong>（百科）：多重尝试后挑显著结果的偏误<br><a href="https://en.wikipedia.org/wiki/Data_dredging" target="_blank" rel="noopener">Data dredging / p-hacking</a></li>
+<li><strong>Multiple comparisons problem</strong>（百科）：多次检验抬高假阳性率<br><a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem" target="_blank" rel="noopener">Multiple comparisons problem</a></li>
+<li><strong>Replication crisis</strong>（百科）：可复现性与研究规范<br><a href="https://en.wikipedia.org/wiki/Replication_crisis" target="_blank" rel="noopener">Replication crisis</a></li>
+<li><strong>IDEAS / RePEc</strong>（机构）：免费的经济学论文与引文检索<br><a href="https://ideas.repec.org/" target="_blank" rel="noopener">IDEAS / RePEc</a></li>
+<li><strong>Congressional Budget Office</strong>（数据）：政策评估与财政预测报告，学习政策分析的范本<br><a href="https://www.cbo.gov/" target="_blank" rel="noopener">Congressional Budget Office</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=p%20hacking%20multiple%20testing%20replication%20crisis%20economics" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=p%20hacking%20multiple%20testing%20replication%20crisis%20economics" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=p%20hacking%20multiple%20testing%20replication%20crisis%20economics" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part0/02-probability-simulation/index.html'>第 02 章 · 概率、统计与模拟：从分布到证据</a>　覆盖率的频率学含义</li>
+<li><a href='../../part4/22-diagnostics/index.html'>第 22 章 · 诊断与修正：异方差、自相关与共线性</a>　设定搜索与诊断</li>
+<li><a href='../32-capstone/index.html'>第 32 章 · 综合课题：一项政策评估从数据到结论</a>　端到端研究日志</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

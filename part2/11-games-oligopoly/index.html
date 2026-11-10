@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 11 章 · 博弈论与寡头：策略互动与不动点 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="11">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第二篇 · 市场结构、策略与失灵 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 11 章</span>博弈论与寡头：策略互动与不动点</h1>
+<p class="lede">当一方的收益依赖另一方的选择，「最优」变成「互为最优反应」；纳什均衡是策略空间上的不动点，古诺模型是它最干净的数值例子。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">市场 · 策略</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>打破 <a href='../09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a> 的「个体决策互不影响」隐含假设；<a href='../12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a> 的公共品搭便车、<a href='../14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a> 的多市场出清都是同一类联立问题。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">纳什均衡就是分布式系统里的稳定状态：每个节点在给定其他节点配置时都没有单方面改动的动机；最优反应迭代是同步更新，收敛性对应迭代算法的稳定性。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能写出支付矩阵并找出纯策略纳什均衡</li>
+<li>会用最优反应迭代求古诺均衡，并与垄断、竞争结果比较</li>
+<li>推导重复博弈中触发策略可持续的贴现因子阈值</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>支付矩阵与占优策略</td><td><a href="https://en.wikipedia.org/wiki/Game_theory" target="_blank" rel="noopener">Game theory</a> · <a href="https://en.wikipedia.org/wiki/Nash_equilibrium" target="_blank" rel="noopener">Nash equilibrium</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>纳什均衡</td><td><a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a> · <a href="https://en.wikipedia.org/wiki/Supply_and_demand" target="_blank" rel="noopener">Supply and demand</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>囚徒困境</td><td><a href="https://en.wikipedia.org/wiki/Prisoner%27s_dilemma" target="_blank" rel="noopener">Prisoner&#x27;s dilemma</a> · <a href="https://en.wikipedia.org/wiki/Nash_equilibrium" target="_blank" rel="noopener">Nash equilibrium</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>古诺最优反应</td><td><a href="https://en.wikipedia.org/wiki/Game_theory" target="_blank" rel="noopener">Game theory</a> · <a href="https://en.wikipedia.org/wiki/Nash_equilibrium" target="_blank" rel="noopener">Nash equilibrium</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>不动点迭代</td><td><a href="https://en.wikipedia.org/wiki/Economic_equilibrium" target="_blank" rel="noopener">Economic equilibrium</a> · <a href="https://en.wikipedia.org/wiki/General_equilibrium_theory" target="_blank" rel="noopener">General equilibrium theory</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>重复博弈与合作</td><td><a href="https://en.wikipedia.org/wiki/Game_theory" target="_blank" rel="noopener">Game theory</a> · <a href="https://en.wikipedia.org/wiki/Nash_equilibrium" target="_blank" rel="noopener">Nash equilibrium</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>子博弈精炼</td><td><a href="https://en.wikipedia.org/wiki/Game_theory" target="_blank" rel="noopener">Game theory</a> · <a href="https://en.wikipedia.org/wiki/Nash_equilibrium" target="_blank" rel="noopener">Nash equilibrium</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s11-1"><h2><span class="sec-num">§11.1</span>纳什均衡作为不动点</h2>
+<p>在标准式博弈中，策略组合 <code>s*</code> 满足</p><p class="eq">u_i(s*_i, s*_{−i}) ≥ u_i(s_i, s*_{−i})  对所有 i 与所有 s_i</p><p>纳什均衡<strong>不保证集体最优</strong>：囚徒困境里双方都选择背叛，是唯一的纳什均衡，却帕累托劣于双方合作。这与 <a href='../09-welfare/index.html'>第 09 章 · 福利经济学：剩余、效率与两条福利定理</a> 福利第一定理形成对照——那里个体之间只通过价格间接联系，这里收益直接耦合。</p>
+</section>
+<section id="s11-2"><h2><span class="sec-num">§11.2</span>古诺双寡头：从最优反应到均衡</h2>
+<p>设反需求 <code>p = a − b(q₁+q₂)</code>、边际成本 <code>c</code>。企业 i 解 <code>max (p−c)q_i</code>，得最优反应：</p><p class="eq">q_i = (a − c − b·q_j)/(2b)  ;  对称均衡 q* = (a−c)/(3b) , Q* = 2(a−c)/(3b)</p><p>产量排序：<code>Q_垄断 = (a−c)/2b &lt; Q*_古诺 &lt; Q_竞争 = (a−c)/b</code>；价格与利润同向排序。把每家企业的最优反应看成一次映射，反复迭代就是在求这个映射的不动点——与 <a href='../14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a> 求解价格向量、<a href='../../part3/18-growth/index.html'>第 18 章 · 长期增长：索洛稳态、条件收敛与内生增长</a> 求解稳态 <code>k*=s·f(k*)</code> 是同一套数值思想。</p>
+</section>
+<section id="s11-3"><h2><span class="sec-num">§11.3</span>重复博弈：合作何时能自我维持</h2>
+<p>有限次重复且阶段博弈有唯一均衡时，逆向归纳仍给出每期背叛。无限次重复则不同：触发策略（一旦有人背叛就永远回到纳什惩罚）可持续，当</p><p class="eq">π_C/(1−δ) ≥ π_D + δ·π_N/(1−δ)   ⇔   δ ≥ (π_D−π_C)/(π_D−π_N)</p><p><code>δ</code> 是贴现因子（见 <a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a>），衡量「未来有多重要」；合作收益 <code>π_C</code>、背叛一次性收益 <code>π_D</code>、惩罚期收益 <code>π_N</code>。<strong>制度、声誉、长期关系的作用，就是把 δ 有效抬高</strong>。这也解释了 <a href='../12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a> 公共品自愿供给为什么在小社区里比匿名大社会更容易维持。</p>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>纳什均衡、古诺迭代与重复博弈阈值</h3>
+<pre class="code" data-file="code/11-games.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 11-games.py | 最优反应迭代与触发策略（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+A, B, C = 100.0, 1.0, 10.0
+ITERS = 60
+PD = {("C", "C"): (3, 3), ("C", "D"): (0, 5),
+      ("D", "C"): (5, 0), ("D", "D"): (1, 1)}
+# ---- 囚徒困境：逐个检查是否为纳什均衡 ----
+acts = ["C", "D"]
+nash = []
+for s1 in acts:
+    for s2 in acts:
+        stable = all(PD[(s1, s2)][0] &gt;= PD[(t, s2)][0] for t in acts) and \
+                 all(PD[(s1, s2)][1] &gt;= PD[(s1, t)][1] for t in acts)
+        if stable:
+            nash.append((s1, s2))
+# ---- 古诺：最优反应迭代 ----
+def br(qj):
+    return max(0.0, (A - C - B * qj) / (2 * B))
+q1 = q2 = 0.0
+history = []
+for _ in range(ITERS):
+    n1, n2 = br(q2), br(q1)
+    history.append((n1, n2))
+    q1, q2 = n1, n2
+q_star = (A - C) / (3 * B)
+price = A - B * (q1 + q2)
+pi_each = (price - C) * q1
+# ---- 重复博弈：合作 / 背叛 / 惩罚收益 ----
+q_coop = (A - C) / (2 * B) / 2          # 两家平分垄断产量
+pi_c = (A - B * (2 * q_coop) - C) * q_coop
+q_dev = br(q_coop)                       # 对方合作时的最优背叛
+pi_d = (A - B * (q_dev + q_coop) - C) * q_dev
+pi_n = pi_each
+delta_min = (pi_d - pi_c) / (pi_d - pi_n)
+# ---- 数值验证：打印可手算核对的量 ----
+print("囚徒困境纳什均衡:", nash, " 支付=", PD[nash[0]])
+print("古诺迭代第1轮=(%.4f, %.4f) 第2轮=(%.4f, %.4f)" %
+      (history[0][0], history[0][1], history[1][0], history[1][1]))
+print("迭代收敛 q=%.6f  解析解=%.6f  价格=%.4f  单家利润=%.4f" % (q1, q_star, price, pi_each))
+print("垄断/古诺/竞争总产量=%.2f / %.2f / %.2f" %
+      ((A - C) / (2 * B), 2 * q_star, (A - C) / B))
+print("合作收益=%.4f 背叛收益=%.4f 惩罚收益=%.4f" % (pi_c, pi_d, pi_n))
+print("触发策略可持续所需 delta &gt;= %.4f" % delta_min)</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>ITERS</code> 改成 3，观察同步最优反应迭代的振荡；把 <code>A</code> 改成 200 看 δ 阈值是否变化。　<strong>预期与判读：</strong>纳什均衡为 (D,D)，支付 (1,1)；古诺迭代从 (45,45)→(22.5,22.5) 逐步收敛到 30；价格 40、单家利润 900；总产量 45/60/90；合作收益 1012.5、背叛收益≈1139.06、δ 阈值≈0.5294。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>A 或 C 改变只影响规模，δ 阈值主要由需求线性结构决定；ITERS 体现迭代收敛速度。　文件位置：<code>part2/11-games-oligopoly/code/11-games.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Game_theory" target="_blank" rel="noopener">Game theory</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>策略互动的一般框架</p>
+<span class="why"><strong>怎么用</strong>：策略式博弈的标准定义</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Game_theory</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Nash_equilibrium" target="_blank" rel="noopener">Nash equilibrium</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>互为最优反应的策略组合</p>
+<span class="why"><strong>怎么用</strong>：均衡存在性与不动点定理</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Nash_equilibrium</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Oligopoly" target="_blank" rel="noopener">Oligopoly</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>古诺/伯特兰/斯塔克尔伯格竞争</p>
+<span class="why"><strong>怎么用</strong>：古诺 / 伯特兰 / 斯塔克尔伯格对比</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Oligopoly</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把纳什均衡等同于集体最优：囚徒困境是最直接的的反例。</li>
+<li>把最优反应迭代的收敛当成必然：某些博弈同步迭代会震荡或发散，需要阻尼或异质更新。</li>
+<li>忽略子博弈精炼：有限次重复博弈里的「威胁」未必可信。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>推导伯特兰价格竞争均衡并解释「伯特兰悖论」，与古诺结果比较。</li>
+<li>在脚本里给迭代加入阻尼 <code>q = 0.5·q + 0.5·br(q)</code>，观察收敛速度变化。</li>
+<li>用 <a href='../../part1/08-risk-time/index.html'>第 08 章 · 跨期选择与不确定下的决策</a> 的 β 解释 δ：β 上升时 δ 阈值更容易满足意味着什么。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Game theory</strong>（百科）：策略互动的一般框架<br><a href="https://en.wikipedia.org/wiki/Game_theory" target="_blank" rel="noopener">Game theory</a></li>
+<li><strong>Nash equilibrium</strong>（百科）：互为最优反应的策略组合<br><a href="https://en.wikipedia.org/wiki/Nash_equilibrium" target="_blank" rel="noopener">Nash equilibrium</a></li>
+<li><strong>Prisoner&#x27;s dilemma</strong>（百科）：个体理性导致集体低效<br><a href="https://en.wikipedia.org/wiki/Prisoner%27s_dilemma" target="_blank" rel="noopener">Prisoner&#x27;s dilemma</a></li>
+<li><strong>Oligopoly</strong>（百科）：古诺/伯特兰/斯塔克尔伯格竞争<br><a href="https://en.wikipedia.org/wiki/Oligopoly" target="_blank" rel="noopener">Oligopoly</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=game%20theory%20Nash%20equilibrium%20repeated%20games" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=game%20theory%20Nash%20equilibrium%20repeated%20games" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=game%20theory%20Nash%20equilibrium%20repeated%20games" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../10-monopoly/index.html'>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视</a>　单一企业的市场势力</li>
+<li><a href='../12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a>　公共品供给中的搭便车</li>
+<li><a href='../14-general-equilibrium/index.html'>第 14 章 · 一般均衡与加总：微观部分的收口</a>　价格向量的不动点</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

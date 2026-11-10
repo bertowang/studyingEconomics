@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 09 章 · 福利经济学：剩余、效率与两条福利定理 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="09">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第二篇 · 市场结构、策略与失灵 · 第一阶段 · 个体、市场与效率</span>
+<h1><span class="ch-num">第 09 章</span>福利经济学：剩余、效率与两条福利定理</h1>
+<p class="lede">把供需曲线下的面积翻译成福利，给「市场好不好」一个可计算的答案；两条福利定理说明竞争均衡与帕累托效率在什么条件下互为表里。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s1">市场 · 策略</span>
+<span>建议 3 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>用 <a href='../../part1/04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a> 的供需模型加上 <a href='../../part1/05-consumer-choice/index.html'>第 05 章 · 消费者理论：偏好、需求与希克斯分解</a> 的偏好基础，第一次给「效率」下定义；<a href='../10-monopoly/index.html'>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视</a>～<a href='../13-information/index.html'>第 13 章 · 信息不对称：逆向选择、信号与道德风险</a> 逐条打破福利定理的前提。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">总剩余是系统的目标函数，竞争均衡是无约束一阶条件的解，价格管制是强行加一条不等式约束；DWL 就是约束造成的 objective gap。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能由反需求/反供给曲线计算消费者剩余、生产者剩余与总剩余</li>
+<li>会量化价格管制造成的短缺与无谓损失</li>
+<li>说清福利第一/第二定理的前提与常见误用</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>消费者剩余与生产者剩余</td><td><a href="https://en.wikipedia.org/wiki/Economic_surplus" target="_blank" rel="noopener">Economic surplus</a> · <a href="https://en.wikipedia.org/wiki/Deadweight_loss" target="_blank" rel="noopener">Deadweight loss</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>总剩余最大化</td><td><a href="https://en.wikipedia.org/wiki/Economic_surplus" target="_blank" rel="noopener">Economic surplus</a> · <a href="https://en.wikipedia.org/wiki/Deadweight_loss" target="_blank" rel="noopener">Deadweight loss</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>帕累托效率</td><td><a href="https://en.wikipedia.org/wiki/Pareto_efficiency" target="_blank" rel="noopener">Pareto efficiency</a> · <a href="https://en.wikipedia.org/wiki/Fundamental_theorems_of_welfare_economics" target="_blank" rel="noopener">Fundamental theorems of welfare economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>价格上限与短缺</td><td><a href="https://en.wikipedia.org/wiki/Perfect_competition" target="_blank" rel="noopener">Perfect competition</a> · <a href="https://en.wikipedia.org/wiki/Fundamental_theorems_of_welfare_economics" target="_blank" rel="noopener">Fundamental theorems of welfare economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>无谓损失</td><td><a href="https://en.wikipedia.org/wiki/Deadweight_loss" target="_blank" rel="noopener">Deadweight loss</a> · <a href="https://en.wikipedia.org/wiki/Tax_incidence" target="_blank" rel="noopener">Tax incidence</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>福利第一定理</td><td><a href="https://en.wikipedia.org/wiki/Perfect_competition" target="_blank" rel="noopener">Perfect competition</a> · <a href="https://en.wikipedia.org/wiki/Fundamental_theorems_of_welfare_economics" target="_blank" rel="noopener">Fundamental theorems of welfare economics</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>福利第二定理</td><td><a href="https://en.wikipedia.org/wiki/Perfect_competition" target="_blank" rel="noopener">Perfect competition</a> · <a href="https://en.wikipedia.org/wiki/Fundamental_theorems_of_welfare_economics" target="_blank" rel="noopener">Fundamental theorems of welfare economics</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s9-1"><h2><span class="sec-num">§9.1</span>剩余是可计算的福利</h2>
+<p>把需求曲线理解为边际支付意愿、供给曲线理解为边际成本，则交易第 <code>q</code> 单位带来的净剩余是 <code>p_d(q) − p_s(q)</code>：</p><p class="eq">CS = ∫₀^Q [p_d(q) − p] dq ;  PS = ∫₀^Q [p − p_s(q)] dq ;  TS = ∫₀^Q [p_d(q) − p_s(q)] dq</p><p>价格只是 CS 与 PS 之间的<strong>转移</strong>，不改变 TS；改变交易量才改变 TS。因此无谓损失总可以写成「被挤掉的那段交易上边际支付意愿与边际成本之差的积分」——<a href='../../part1/04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a> 的三角形公式是线性曲线下的特例。</p>
+</section>
+<section id="s9-2"><h2><span class="sec-num">§9.2</span>价格管制：短缺、配置与 DWL</h2>
+<p>设上限 <code>p̄ &lt; p*</code>，则 <code>Q_s(p̄) &lt; Q_d(p̄)</code>，实际成交量是<strong>短边</strong> <code>Q̄ = min(Q_d, Q_s)</code>。此时「谁买到」变得关键：</p><table><thead><tr><th style="width:34%">配给方式</th><th style="width:20%">实际成交</th><th style="width:46%">福利结果</th></tr></thead><tbody>
+<tr><td>有效配给（支付意愿最高者买到）</td><td>Q_s(p̄)</td><td>DWL = TS(Q*) − TS(Q̄)</td></tr>
+<tr><td>随机配给 / 排队</td><td>Q_s(p̄)</td><td>额外损失：错配 + 排队耗散的租</td></tr>
+<tr><td>黑市 / 变相收费</td><td>可能接近 Q*</td><td>名义价格失效，租转移给中间人</td></tr>
+</tbody></table><p>这解释了为什么单看「价格低了」判断不了政策好坏：必须说明成交量、配置规则与租的归属。<a href='../12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a> 的庇古税同样是插楔子，但那个楔子把原本未被计入的成本内部化，方向恰好相反。</p>
+</section>
+<section id="s9-3"><h2><span class="sec-num">§9.3</span>两条福利定理及其前提</h2>
+<p><strong>第一定理</strong>：在完全竞争、完备市场、无外部性、无信息不对称、凸技术下，竞争均衡是帕累托有效的。<strong>第二定理</strong>：在上述条件加凸偏好下，任一帕累托有效分配都可通过对初始禀赋的一次性再分配 + 竞争市场实现。</p>
+<div class="card warn"><p style="margin-bottom:0">两个定理都不是「市场万能」的证明，而是<strong>一份前提清单</strong>：<a href='../10-monopoly/index.html'>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视</a> 打破价格接受，<a href='../11-games-oligopoly/index.html'>第 11 章 · 博弈论与寡头：策略互动与不动点</a> 引入策略互动，<a href='../12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a> 引入外部性与公共品，<a href='../13-information/index.html'>第 13 章 · 信息不对称：逆向选择、信号与道德风险</a> 引入私有信息。第二定理还常被误读：它说的是<em>一次性 lump-sum 再分配</em>，现实中的所得税会扭曲边际激励（回到 <a href='../../part1/04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a> 的楔子）。效率与公平是可分离的问题，但只在极强假设下可分离。</p></div>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>剩余积分、价格上限与无谓损失</h3>
+<pre class="code" data-file="code/09-welfare.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 09-welfare.py | 从反供需曲线积分计算福利（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+A, B, C, D = 100.0, 2.0, 10.0, 3.0    # Qd=A-B*p, Qs=C+D*p
+CEILING = 14.0                         # 价格上限
+# ---- 反需求 / 反供给及其原函数 ----
+def pd(q):
+    return (A - q) / B
+
+def ps(q):
+    return (q - C) / D
+
+def int_pd(q):
+    return (A * q - q * q / 2) / B
+
+def int_ps(q):
+    return (q * q / 2 - C * q) / D
+
+def ts(q):
+    return int_pd(q) - int_ps(q)
+
+p0 = (A - C) / (B + D)
+q0 = A - B * p0
+cs0 = int_pd(q0) - p0 * q0
+psi0 = p0 * q0 - int_ps(q0)
+# ---- 价格上限：成交取短边 ----
+qs = C + D * CEILING
+qd = A - B * CEILING
+qt = min(qd, qs)
+cs_t = int_pd(qt) - CEILING * qt
+ps_t = CEILING * qt - int_ps(qt)
+dwl = ts(q0) - ts(qt)
+# ---- 数值验证：打印可手算核对的量 ----
+print("均衡 p*=%.4f Q*=%.4f" % (p0, q0))
+print("均衡 CS=%.4f PS=%.4f TS=%.4f" % (cs0, psi0, ts(q0)))
+print("上限 p=%.2f: Qs=%.2f Qd=%.2f 短缺=%.2f 成交=%.2f" % (CEILING, qs, qd, qd - qs, qt))
+print("管制后 CS=%.4f PS=%.4f TS=%.4f" % (cs_t, ps_t, ts(qt)))
+print("无谓损失=%.4f  三角公式=%.4f" %
+      (dwl, 0.5 * (pd(qt) - ps(qt)) * (q0 - qt)))
+print("检验: 上限处反供给=%.4f (应等于上限)" % ps(qs))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>CEILING</code> 改成 18（等于均衡价），观察 DWL 是否归零；改成 10 观察短缺与 DWL 如何放大。　<strong>预期与判读：</strong>p*=18、Q*=64；CS=1024、PS=682.6667、TS=1706.6667；上限 14 时 Qs=52、Qd=72、短缺 20，CS=1196、PS=450.6667、DWL=60，与三角公式一致。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>CEILING 越低于均衡价，短缺按 (B+D)·(p*−p̄) 增大，DWL 按缺口平方增长。　文件位置：<code>part2/09-welfare/code/09-welfare.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Economic_surplus" target="_blank" rel="noopener">Economic surplus</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>消费者剩余与生产者剩余</p>
+<span class="why"><strong>怎么用</strong>：剩余概念与几何</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Economic_surplus</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Fundamental_theorems_of_welfare_economics" target="_blank" rel="noopener">Fundamental theorems of welfare economics</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>竞争均衡与帕累托效率的两条定理</p>
+<span class="why"><strong>怎么用</strong>：两条定理的严格前提</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Fundamental_theorems_of_welfare_economics</code></p></div>
+<div class="repo-card">
+<h3><a href="https://en.wikipedia.org/wiki/Pareto_efficiency" target="_blank" rel="noopener">Pareto efficiency</a></h3>
+<span class="tag">百科 · 参考资料</span>
+<p>无人可在不损人时获益</p>
+<span class="why"><strong>怎么用</strong>：帕累托效率的定义</span>
+<p style="margin:0"><code>https://en.wikipedia.org/wiki/Pareto_efficiency</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>把价格管制下的需求量当成交量：市场按短边成交，出现的是短缺而非超额供给。</li>
+<li>忽略配给规则：随机配给会在 DWL 之外再叠加错配与排队成本。</li>
+<li>引用福利第二定理时忽略 lump-sum 假设：现实再分配工具本身会制造楔子。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>推导价格下限（支持价）下的福利变化，并说明政府收购成本该记在哪一项。</li>
+<li>在脚本里加入「配额随机分配」的模拟，估计错配带来的额外损失。</li>
+<li>用 <a href='../12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a> 的语言说明：若存在负外部性，TS 的积分该改成哪条曲线。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>Perfect competition</strong>（百科）：价格接受者、零利润与效率<br><a href="https://en.wikipedia.org/wiki/Perfect_competition" target="_blank" rel="noopener">Perfect competition</a></li>
+<li><strong>Fundamental theorems of welfare economics</strong>（百科）：竞争均衡与帕累托效率的两条定理<br><a href="https://en.wikipedia.org/wiki/Fundamental_theorems_of_welfare_economics" target="_blank" rel="noopener">Fundamental theorems of welfare economics</a></li>
+<li><strong>Pareto efficiency</strong>（百科）：无人可在不损人时获益<br><a href="https://en.wikipedia.org/wiki/Pareto_efficiency" target="_blank" rel="noopener">Pareto efficiency</a></li>
+<li><strong>Economic surplus</strong>（百科）：消费者剩余与生产者剩余<br><a href="https://en.wikipedia.org/wiki/Economic_surplus" target="_blank" rel="noopener">Economic surplus</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=welfare%20economics%20deadweight%20loss%20price%20ceiling" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=welfare%20economics%20deadweight%20loss%20price%20ceiling" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=welfare%20economics%20deadweight%20loss%20price%20ceiling" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part1/04-supply-demand/index.html'>第 04 章 · 供需、弹性与税收归宿：第一个均衡</a>　供需与税收楔子</li>
+<li><a href='../10-monopoly/index.html'>第 10 章 · 市场势力：垄断定价、勒纳指数与价格歧视</a>　垄断造成的效率损失</li>
+<li><a href='../12-externality/index.html'>第 12 章 · 外部性、公共品与科斯谈判</a>　外部性与庇古税</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>

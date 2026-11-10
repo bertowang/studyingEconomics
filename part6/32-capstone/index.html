@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 32 章 · 综合课题：一项政策评估从数据到结论 | 经济学：从稀缺到证据</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script src="../../assets/toc.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</head>
+<body data-root="../../" data-chapter="32">
+<aside id="sidebar"></aside>
+<main class="book-page">
+<nav class="breadcrumb" data-autofill>总目录</nav>
+<header class="chapter-head">
+<span class="kicker">第六篇 · 方法论与综合课题 · 第五阶段 · 综合与方法论</span>
+<h1><span class="ch-num">第 32 章</span>综合课题：一项政策评估从数据到结论</h1>
+<p class="lede">把全书环节拼成一条流水线：DGP → 描述与平衡 → 识别策略 → 估计 → 稳健性 → 边界 → 可复现报告。</p>
+<div class="meta">
+<span class="badge done">已完稿</span>
+<span class="badge s5">方法论 · 综合</span>
+<span>建议 4 学时</span>
+<span>1 个 Python 实例</span>
+<span>经济学：从稀缺到证据</span>
+</div></header>
+<p class="bridge"><strong>本章位置：</strong>收口全书：<a href='../../part4/20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a> 的识别、<a href='../../part4/21-ols/index.html'>第 21 章 · 最小二乘：手写 OLS、标准误与高斯-马尔可夫</a>～<a href='../../part4/25-time-series/index.html'>第 25 章 · 时间序列：平稳性、单位根与伪回归</a> 的估计与诊断、<a href='../31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a> 的规范，在一次完整的政策评估里同时出场。</p>
+<div class="analogy"><span class="card-label">给程序员的翻译</span><p style="margin-bottom:0">这是一份端到端的「可复现实验报告」：数据生成是测试夹具，主估计是主断言，稳健性与安慰剂是对照实验，结论部分是适用范围与已知限制。</p></div>
+<div class="card objectives"><span class="card-label">学习目标</span><ul>
+<li>能独立写出一个合成面板的 DGP 与数据字典</li>
+<li>会依次完成 DID、预趋势、安慰剂、稳健标准误与敏感性分析</li>
+<li>能把识别假设、卢卡斯批判与外部效度写进结论</li>
+</ul></div>
+<section id="map"><h2><span class="sec-num">§</span>知识点地图</h2>
+<p class="code-hint">每个知识点都配了 1～2 个扩展学习链接；本章完整资源清单见 <a href="#extra-links">扩展学习</a>。</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:26%">知识点</th><th>扩展学习</th><th style="width:100px">状态</th></tr></thead><tbody>
+<tr><td>1</td><td>研究问题与 estimand</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></td><td>正文已覆盖</td></tr>
+<tr><td>2</td><td>数据字典与 DGP</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></td><td>正文已覆盖</td></tr>
+<tr><td>3</td><td>描述统计与平衡检验</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></td><td>正文已覆盖</td></tr>
+<tr><td>4</td><td>DID 识别</td><td><a href="https://en.wikipedia.org/wiki/Identification_(economics)" target="_blank" rel="noopener">Identification (economics)</a> · <a href="https://en.wikipedia.org/wiki/Causality_(economics)" target="_blank" rel="noopener">Causality (economics)</a></td><td>正文已覆盖</td></tr>
+<tr><td>5</td><td>事件研究与预趋势</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></td><td>正文已覆盖</td></tr>
+<tr><td>6</td><td>安慰剂检验</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></td><td>正文已覆盖</td></tr>
+<tr><td>7</td><td>稳健标准误</td><td><a href="https://en.wikipedia.org/wiki/Confidence_interval" target="_blank" rel="noopener">Confidence interval</a> · <a href="https://en.wikipedia.org/wiki/Heteroscedasticity-consistent_standard_errors" target="_blank" rel="noopener">Heteroscedasticity-consistent standard errors</a></td><td>正文已覆盖</td></tr>
+<tr><td>8</td><td>敏感性分析</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></td><td>正文已覆盖</td></tr>
+<tr><td>9</td><td>外部效度与卢卡斯批判</td><td><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a> · <a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></td><td>正文已覆盖</td></tr>
+</tbody></table></section>
+<section id="s32-1"><h2><span class="sec-num">§32.1</span>研究问题与 estimand</h2>
+<p>问题：某地区在第 5 期提高最低工资，是否影响就业？目标参数 <code>ATT</code>：受政策影响地区在政策后的平均处理效应。先明确<strong>处理单位、时间、结果变量与反事实</strong>，再谈用什么估计量；把「显著/不显著」当研究目标是最常见的本末倒置。</p>
+<p>反事实由未受影响地区构造，识别假设是<strong>平行趋势</strong>（<a href='../../part4/24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a>）：若无政策，两组就业趋势应相同。这个假设不能直接检验，但可以用处理前多期数据、安慰剂与敏感性分析来「证伪」。</p>
+</section>
+<section id="s32-2"><h2><span class="sec-num">§32.2</span>端到端流水线</h2>
+<table><thead><tr><th style="width:18%">步骤</th><th>输出物</th><th>对应章节</th></tr></thead><tbody>
+<tr><td>1 数据字典</td><td>单位、频率、变量定义、缺失与排除规则</td><td><a href='../../part3/15-national-accounts/index.html'>第 15 章 · 国民账户与价格指数：如何度量总量</a></td></tr>
+<tr><td>2 描述与平衡</td><td>分组均值、处理前协变量差异</td><td><a href='../../part0/02-probability-simulation/index.html'>第 02 章 · 概率、统计与模拟：从分布到证据</a></td></tr>
+<tr><td>3 主估计</td><td>DID 点估计 + 置信区间</td><td><a href='../../part4/24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a></td></tr>
+<tr><td>4 识别检验</td><td>事件研究图、预趋势、安慰剂</td><td><a href='../../part4/24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a>、<a href='../31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a></td></tr>
+<tr><td>5 推断</td><td>地区层面聚类的稳健标准误</td><td><a href='../../part4/22-diagnostics/index.html'>第 22 章 · 诊断与修正：异方差、自相关与共线性</a></td></tr>
+<tr><td>6 稳健性</td><td>换对照组、换窗口、加控制变量</td><td><a href='../31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a></td></tr>
+<tr><td>7 结论</td><td>效应量、识别假设、外部效度、卢卡斯批判</td><td><a href='../../part4/20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a></td></tr>
+</tbody></table>
+</section>
+<section id="s32-3"><h2><span class="sec-num">§32.3</span>结论该怎么写</h2>
+<p>一份合格的结论至少包含四句话：<strong>估计量是什么</strong>（ATT 而非「相关」）、<strong>点估计与区间是多少</strong>、<strong>识别假设及其证据有多强</strong>、<strong>结论能外推到哪里</strong>。还要主动说明：政策可能改变企业行为方式（卢卡斯批判）、处理效应可能异质、合成数据只用于验证流水线而非回答真实政策问题。</p>
+<div class="card tip"><p style="margin-bottom:0"><strong>给程序员的最后一条建议</strong>：把「模型 → 数据 → 估计 → 检验 → 报告」写成一条可重跑的 pipeline，把每次改动的参数、种子、输出都留在日志里。这样当结论变化时，你能定位到是假设变了、数据变了，还是代码变了——这正是全书反复强调的<strong>可复现性</strong>。</p></div>
+</section>
+<section id="lab"><h2><span class="sec-num">§</span>Python 建模实例</h2>
+<h3>端到端政策评估：DID、预趋势、安慰剂与稳健推断</h3>
+<pre class="code" data-file="code/32-capstone.py" data-lang="Python 3 · 标准库"><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 32-capstone.py | 综合课题：合成地区面板的政策评估（只用标准库）
+import math, random, statistics
+random.seed(7)
+# ---- 参数区 ----
+N_REGIONS, T_PERIODS = 200, 8
+TREAT_START = 4                  # 第 5 期开始处理（0 起索引）
+TRUE_TAU = -0.4                  # 对 log 就业的真实 ATT
+GROUP_DIFF, TIME_TREND = 0.10, 0.03
+BETA_X = 0.2
+NOISE_SD = 0.15
+
+def mean(v):
+    return statistics.fmean(v)
+
+# ---- 1. DGP: 地区固定效应 + 共同趋势 + 组间差异 + 政策效应 ----
+rng = random.Random(7)
+panel = []
+for i in range(N_REGIONS):
+    a_i = rng.gauss(0, 0.3)
+    g = 1 if i &gt;= N_REGIONS // 2 else 0
+    for t in range(T_PERIODS):
+        post = 1 if t &gt;= TREAT_START else 0
+        x_it = rng.gauss(0, 1)
+        y = (2.0 + a_i + TIME_TREND * t + GROUP_DIFF * g +
+             TRUE_TAU * g * post + BETA_X * x_it + rng.gauss(0, NOISE_SD))
+        panel.append((i, t, g, post, x_it, y))
+# ---- 2. 描述与处理前平衡 ----
+x_pre_t = mean([r[4] for r in panel if r[1] &lt; TREAT_START and r[2] == 1])
+x_pre_c = mean([r[4] for r in panel if r[1] &lt; TREAT_START and r[2] == 0])
+# ---- 3. 主估计：按地区求前后差，再比较两组（地区层面聚类稳健）----
+delta_t, delta_c = [], []
+for i in range(N_REGIONS):
+    pre = mean([r[5] for r in panel if r[0] == i and r[1] &lt; TREAT_START])
+    post = mean([r[5] for r in panel if r[0] == i and r[1] &gt;= TREAT_START])
+    (delta_t if i &gt;= N_REGIONS // 2 else delta_c).append(post - pre)
+did = mean(delta_t) - mean(delta_c)
+se = math.sqrt(statistics.variance(delta_t) / len(delta_t) +
+               statistics.variance(delta_c) / len(delta_c))
+ci = (did - 1.96 * se, did + 1.96 * se)
+# ---- 4. 事件研究：各期组间差减去处理前基准 ----
+def group_diff(t):
+    return (mean([r[5] for r in panel if r[1] == t and r[2] == 1]) -
+            mean([r[5] for r in panel if r[1] == t and r[2] == 0]))
+base = mean([group_diff(t) for t in range(TREAT_START)])
+event = [group_diff(t) - base for t in range(T_PERIODS)]
+pre_trend = mean(event[:TREAT_START])
+# ---- 5. 安慰剂：处理前随机指派「假处理组」，做随机化推断 ----
+fake = 2
+pre_delta = []
+for i in range(N_REGIONS):
+    p0 = mean([r[5] for r in panel if r[0] == i and r[1] &lt; fake])
+    p1 = mean([r[5] for r in panel if r[0] == i and fake &lt;= r[1] &lt; TREAT_START])
+    pre_delta.append(p1 - p0)
+placebo_rng = random.Random(31)
+placebos = []
+for _ in range(500):
+    idx = placebo_rng.sample(range(N_REGIONS), N_REGIONS // 2)
+    s = set(idx)
+    a = mean([pre_delta[i] for i in idx])
+    b = mean([pre_delta[i] for i in range(N_REGIONS) if i not in s])
+    placebos.append(a - b)
+placebo = mean(placebos)
+placebo_sd = statistics.pstdev(placebos)
+p_ri = sum(1 for v in placebos if abs(v) &gt;= abs(did)) / len(placebos)
+# ---- 6. 朴素横截面差（对照：会被组间差异污染）----
+naive = mean([r[5] for r in panel if r[1] &gt;= TREAT_START and r[2] == 1]) - \
+        mean([r[5] for r in panel if r[1] &gt;= TREAT_START and r[2] == 0])
+# ---- 数值验证：打印可手算核对的量 ----
+print("真实 ATT=%.4f  地区=%d 期数=%d 政策起点 t=%d" %
+      (TRUE_TAU, N_REGIONS, T_PERIODS, TREAT_START))
+print("[描述] 处理前协变量均值: 处理组=%.4f 对照组=%.4f 差=%.4f" %
+      (x_pre_t, x_pre_c, x_pre_t - x_pre_c))
+print("[估计] DID=%.4f  稳健 se=%.4f  95%%CI=[%.4f, %.4f]" % (did, se, ci[0], ci[1]))
+print("[识别] 事件研究处理前平均系数=%.4f (应≈0)" % pre_trend)
+print("[识别] 政策前各期系数: " + " ".join("%.3f" % v for v in event[:TREAT_START]))
+print("[识别] 政策后各期系数: " + " ".join("%.3f" % v for v in event[TREAT_START:]))
+print("[安慰剂] 随机假处理组 500 次: 均值=%.4f 标准差=%.4f" % (placebo, placebo_sd))
+print("[安慰剂] 随机化推断 p=%.4f (无假政策能产生 |DID|≥%.4f)" % (p_ri, abs(did)))
+print("[对照] 朴素横截面差=%.4f (混入组间差异 %.2f，偏误明显)" %
+      (naive, GROUP_DIFF))
+print("[结论] 估计 %.4f 与真值 %.4f 相差 %.4f；识别依赖平行趋势，外推需谨慎" %
+      (did, TRUE_TAU, did - TRUE_TAU))</code></pre>
+<p class="code-hint"><strong>操作：</strong>把 <code>GROUP_DIFF</code> 改成 0.5，观察朴素横截面差如何被污染而 DID 仍接近真值；把 <code>TRUE_TAU</code> 改成 0 看安慰剂与功效。　<strong>预期与判读：</strong>真实 ATT=−0.4；处理前协变量近似平衡；DID≈−0.4、稳健 se≈0.026，95% 区间覆盖真值；事件研究处理前系数≈0、政策后≈−0.4；随机假处理组安慰剂均值≈0 且随机化推断 p≈0；朴素横截面差混入 0.10 的组间差异而明显偏离。</p>
+<p class="code-hint"><strong>改参数看趋势：</strong>N_REGIONS 越大 se 越小；NOISE_SD 越大区间越宽；TRUE_TAU=0 时可检验假阳性率。　文件位置：<code>part6/32-capstone/code/32-capstone.py</code></p>
+<div class="card note"><p style="margin-bottom:0">代码块右上角可一键复制；仓库里的 <code>code/*.py</code> 由 <code>tools/extract_code.py</code> 从这些代码块自动抽取。脚本只用标准库、固定 <code>random.seed(7)</code>，批量运行用 <code>./tools/run_python.sh</code>。</p></div>
+</section>
+<section id="highlights"><h2><span class="sec-num">§</span>本章参考资料</h2><p>按本章知识点挑选的精读资料；更多检索入口见 <a href="#extra-links">扩展学习</a>。</p><div class="repo-grid">
+<div class="repo-card">
+<h3><a href="https://matheusfacure.github.io/python-causality-handbook/landing-page.html" target="_blank" rel="noopener">Causal Inference for the Brave and True</a></h3>
+<span class="tag">教材 · 参考资料</span>
+<p>用 Python 讲因果推断的开放教材，含可运行代码</p>
+<span class="why"><strong>怎么用</strong>：完整的因果推断实战教材</span>
+<p style="margin:0"><code>https://matheusfacure.github.io/python-causality-handbook/landing-page.html</code></p></div>
+<div class="repo-card">
+<h3><a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></h3>
+<span class="tag">工具 · 参考资料</span>
+<p>OLS / IV / 面板 / 时间序列的成熟实现</p>
+<span class="why"><strong>怎么用</strong>：把流水线换成工业实现</span>
+<p style="margin:0"><code>https://www.statsmodels.org/stable/index.html</code></p></div>
+<div class="repo-card">
+<h3><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></h3>
+<span class="tag">数据 · 参考资料</span>
+<p>美联储圣路易斯分行的宏观与金融时间序列，免费可下载</p>
+<span class="why"><strong>怎么用</strong>：真实宏观/地区面板数据</span>
+<p style="margin:0"><code>https://fred.stlouisfed.org/</code></p></div>
+<div class="repo-card">
+<h3><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></h3>
+<span class="tag">教材 · 参考资料</span>
+<p>免费开源的本科经济学教材，以实证与数据贯穿全书，与本书的系统视角最接近</p>
+<span class="why"><strong>怎么用</strong>：全书系统视角的起点</span>
+<p style="margin:0"><code>https://www.core-econ.org/</code></p></div>
+</div></section>
+<section id="pitfalls"><h2><span class="sec-num">§</span>常见误区</h2><div class="card warn"><ul><li>先跑回归再想 estimand：不知道估计什么参数，显著性没有意义。</li>
+<li>把合成数据的结论当真实政策结论：合成数据只验证流水线是否可靠。</li>
+<li>只报告主估计：没有预趋势、安慰剂与稳健性，识别假设就无从判断。</li></ul></div></section>
+<section id="exercises"><h2><span class="sec-num">§</span>习题与思考</h2><ol><li>把地区固定效应改成与协变量相关的形式，观察 DID 是否仍一致。</li>
+<li>加入处理效应异质性，讨论 ATT 与 ATE 的差别（联系 <a href='../../part4/20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a>）。</li>
+<li>把全部设定写成命令行参数，实现一条一键重跑的 pipeline。</li></ol></section>
+<section id="extra-links"><h2><span class="sec-num">§</span>扩展学习</h2>
+<p>以下资料按本章知识点挑选，可直接精读或对照数据；知识点地图里每一条也挂了 1～2 个直达链接。</p>
+<ul>
+<li><strong>CORE Econ 开放教材</strong>（教材）：免费开源的本科经济学教材，以实证与数据贯穿全书，与本书的系统视角最接近<br><a href="https://www.core-econ.org/" target="_blank" rel="noopener">CORE Econ 开放教材</a></li>
+<li><strong>statsmodels</strong>（工具）：OLS / IV / 面板 / 时间序列的成熟实现<br><a href="https://www.statsmodels.org/stable/index.html" target="_blank" rel="noopener">statsmodels</a></li>
+<li><strong>FRED 经济数据</strong>（数据）：美联储圣路易斯分行的宏观与金融时间序列，免费可下载<br><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED 经济数据</a></li>
+<li><strong>Ken French Data Library</strong>（数据）：Fama-French 因子与组合收益，复现资产定价实证的标准数据<br><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Ken French Data Library</a></li>
+<li><strong>Project Jupyter</strong>（工具）：把公式、代码与结果放在同一份可复现笔记里<br><a href="https://jupyter.org/" target="_blank" rel="noopener">Project Jupyter</a></li>
+</ul>
+<p class="code-hint">继续扩展：<a href="https://ideas.repec.org/cgi-bin/short.cgi?q=applied%20economics%20project%20theory%20simulation%20estimation%20policy" target="_blank" rel="noopener">在 RePEc 检索本章相关论文</a> · <a href="https://ocw.mit.edu/search/?q=applied%20economics%20project%20theory%20simulation%20estimation%20policy" target="_blank" rel="noopener">在 MIT OCW 检索配套课程</a> · <a href="https://www.google.com/search?q=applied%20economics%20project%20theory%20simulation%20estimation%20policy" target="_blank" rel="noopener">按本章主题检索资料</a> · <a href="../../index.html#resources">全书参考资源总表</a> · <a href="../../appendix/index.html">附录 A 速查与链接总表</a></p>
+</section>
+<section id="further"><h2><span class="sec-num">§</span>延伸阅读与内链</h2><ul><li><a href='../../part4/20-identification/index.html'>第 20 章 · 识别：从数据生成过程到因果参数</a>　识别与反事实</li>
+<li><a href='../../part4/24-did-panel/index.html'>第 24 章 · 面板与准实验：DID、固定效应与断点回归</a>　DID 与事件研究</li>
+<li><a href='../31-reproducibility/index.html'>第 31 章 · 复现、多重检验与研究规范</a>　预注册与稳健性报告</li>
+<li><a href='../../index.html#toc'>全书目录</a>　全书目录</li></ul></section>
+<footer class="pager" data-autofill></footer>
+<footer class="site-foot">
+<p class="credits"><strong>作者</strong>：汪亮（bertonwang）　<strong>联系邮箱</strong>：<a href="mailto:47608843@qq.com">47608843@qq.com</a></p>
+<p class="ai-note"><strong>AI 使用说明</strong>：本教材的知识框架、正文、Python 建模示例与参考资料清单在 AI 辅助下整理生成，并经人工校订、实际运行与静态自检。公式、数值与运行结果请以Python 3 实际输出及权威教材、官方文档为准；发现错漏欢迎通过上方邮箱勘误。</p>
+<p class="imprint">经济学：从稀缺到证据 · 每章一个 <code>code/*.py</code> 建模脚本（由 <code>tools/extract_code.py</code> 从 HTML 同步） · 只用 Python 3 标准库 · 外部参考资料均为各维护者的项目，本书与之无从属关系。</p>
+</footer>
+</main>
+</body>
+</html>
